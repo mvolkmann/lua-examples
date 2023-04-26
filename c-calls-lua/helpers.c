@@ -20,9 +20,14 @@ void doFile(const char* filePath) {
 
 // static void dumpStack(lua_State *L) {
 static void dumpStack() {
+  int top = lua_gettop(L);
+  if (top == 0) {
+    printf("Lua stack is empty.\n");
+    return;
+  }
+
   printf("Lua stack contains:\n");
   int i;
-  int top = lua_gettop(L);
   for (i = 1; i <= top; i++) {
     int t = lua_type(L, i);
     switch (t) {
@@ -72,6 +77,7 @@ double getGlobalDouble(const char *var) {
   if (!lua_isnumber(L, -1)) {
     error("expected %s to be a number\n", var);
   }
+  
   double result = lua_tonumber(L, -1);
   lua_pop(L, 1); // pops from stack
   return result;
@@ -104,6 +110,10 @@ void createLuaVM() {
   luaL_openlibs(L);
 }
 
+void pop(int n) {
+  lua_pop(L, n);
+}
+
 void pushBoolean(int b) {
   lua_pushboolean(L, b);
 }
@@ -124,3 +134,7 @@ void pushString(const char *s) {
   lua_pushstring(L, s);
 }
 
+void registerCFunction(const char* name, lua_CFunction fn) {
+  lua_pushcfunction(L, fn);
+  lua_setglobal(L, name);
+}
