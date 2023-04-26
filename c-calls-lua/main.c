@@ -85,11 +85,14 @@ int main(void) {
   callFunction(0, 1);
   // The returned table is now on the stack.
   const char *fruit = "apple";
-  const char *color = getStringTableValue(fruit);
+  const char *color = getStringTableValueForStringKey(fruit);
   printf("%s is %s\n", fruit, color);
   fruit = "banana";
-  color = getStringTableValue(fruit);
+  color = getStringTableValueForStringKey(fruit);
   printf("%s is %s\n", fruit, color);
+  int index = 1;
+  int value = getIntTableValueForIndex(index);
+  printf("value at index %d is %d\n", index, value);
   pop(1); // pops the table off of the stack
   dumpStack();
 
