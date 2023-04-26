@@ -1,7 +1,6 @@
 #include <stdlib.h> // defines the exit function and EXIT_FAILURE
 #include "lauxlib.h"
 #include "lua.h"
-#include "lualib.h" // defines the luaL_openlibs function
 
 lua_State *L;
 
@@ -84,57 +83,3 @@ const char* getGlobalString(const char *var) {
   return result;
 }
 
-int main(void) {
-  char name[] = "Mark";
-  printf("Hello %s!\n", name);
-
-  // Create a Lua virtual machine.
-  // lua_State *L = luaL_newstate();
-  L = luaL_newstate();
-
-  // Make the standard library functions available in Lua code.
-  luaL_openlibs(L);
-
-  // Execute a Lua source file.
-  luaL_dofile(L, "config.lua");
-
-  // To check if the top of the stack contains nil ...
-  // if (lua_isnil(L, -1))
-
-  int myBoolean = getGlobalBoolean("myBoolean");
-  printf("myBoolean = %d\n", myBoolean);
-
-  int myInteger = getGlobalInt("myInteger");
-  printf("myInteger = %d\n", myInteger);
-
-  double myDouble = getGlobalDouble("myDouble");
-  printf("myDouble = %g\n", myDouble);
-
-  const char *myString = getGlobalString("myString");
-  printf("myString = %s\n", myString);
-
-  // TODO: Learn how to retrieve a table.
-
-  // Call a function defined in config.lua.
-  lua_getglobal(L, "demo");
-
-  // 2nd argument is the number of arguments being passed to the Lua function.
-  // 3rd argument is the number of values being returned by Lua function.
-  // 4th argument is a pointer to an error handling function,
-  // or 0 to not use one.
-  lua_pcall(L, 0, 0, 0);
-
-  lua_getglobal(L, "add");
-  lua_pushnumber(L, 3);
-  lua_pushnumber(L, 4);
-  dumpStack();
-  lua_pcall(L, 2, 1, 0);
-  int sum = lua_tonumber(L, -1);
-  printf("sum = %d\n", sum); // 3 + 4 = 7
-  dumpStack();
-
-  // Close the Lua virtual machine.
-  lua_close(L);
-
-  return 0; // success
-}
