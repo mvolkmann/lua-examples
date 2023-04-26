@@ -4,6 +4,20 @@
 
 lua_State *L;
 
+void callFunction(int inputs, int outputs) {
+  // 2nd argument is the number of arguments being passed to the Lua function.
+  // 3rd argument is the number of values being returned by Lua function.
+  // 4th argument is a pointer to an error handling function,
+  // or 0 to not use one.
+  lua_pcall(L, inputs, outputs, 0);
+  // After the call the function and all its arguments are popped from the stack
+  // and the outputs are pushed onto the stack.
+}
+
+void doFile(const char* filePath) {
+  luaL_dofile(L, filePath);
+}
+
 // static void dumpStack(lua_State *L) {
 static void dumpStack() {
   printf("Lua stack contains:\n");
@@ -81,5 +95,32 @@ const char* getGlobalString(const char *var) {
   const char *result = lua_tostring(L, -1);
   lua_pop(L, 1); // pops from stack
   return result;
+}
+
+void createLuaVM() {
+  L = luaL_newstate();
+
+  // Make the standard library functions available in Lua code.
+  luaL_openlibs(L);
+}
+
+void pushBoolean(int b) {
+  lua_pushboolean(L, b);
+}
+
+void pushFunction(const char *name) {
+  lua_getglobal(L, name);
+}
+
+void pushDouble(double n) {
+  lua_pushnumber(L, n);
+}
+
+void pushInt(int n) {
+  lua_pushnumber(L, n);
+}
+
+void pushString(const char *s) {
+  lua_pushstring(L, s);
 }
 
