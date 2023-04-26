@@ -14,6 +14,18 @@ void error(lua_State *L, const char *fmt, ...) {
   exit(EXIT_FAILURE);
 }
 
+/* // This gets a boolean value from the top of the Lua stack.
+bool getBool(lua_State *L, const char *name) {
+  lua_getglobal(L, var);
+  // Verify that the top of the stack holds a boolean value.
+  result = (int) lua_toboolean(L, -1);
+  if (!isNum) {
+    error(L, "%s should be a number\n", var);
+  }
+  lua_pop(L, 1);
+  return result;
+} */
+
 int getGlobalInt(lua_State *L, const char *var) {
   int isNum, result;
   lua_getglobal(L, var);
@@ -37,13 +49,15 @@ int main(void) {
   // To check if the top of the stack contains nil ...
   // if (lua_isnil(L, -1))
 
+  // TODO: Add error handling to validate types.
   lua_getglobal(L, "myBoolean");
   int myBoolean = lua_toboolean(L, -1);
   printf("myBoolean = %d\n", myBoolean);
 
   lua_getglobal(L, "myInteger");
   lua_Integer myInteger = lua_tointeger(L, -1);
-  printf("myInteger = %llu\n", myInteger);
+  // lld is long long decimal
+  printf("myInteger = %lld\n", myInteger);
 
   lua_getglobal(L, "myFloat");
   lua_Number myFloat = lua_tonumber(L, -1);
