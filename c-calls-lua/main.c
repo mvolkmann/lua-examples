@@ -3,15 +3,18 @@
 #include <string.h> // for strlen function
 
 // All C functions that are intended to be called from Lua must
-// 1) have an `int` return type and return the number of result values
+// 1) have an `int` return type
 // 2) take a `lua_State *` argument
+// 3) return the number of result values
 //
 // Beginning the function name with "l_" indicates that
 // this function is written to be called from Lua.
 //
 // This expects a string argument.
 // It returns the length of the string.
+//
 // Making this static restricts its access to this file.
+//
 // Each invocation of this function receives its own stack.
 // There is no need to pop anything off of this stack.
 static int l_strlen(lua_State *L) {
@@ -43,18 +46,22 @@ int main(void) {
 
   // TODO: Learn how to retrieve a table.
 
-  // Call a function defined in config.lua.
+  // Call a function defined in config.lua that
+  // takes no arguments and doesn't return anything.
   pushFunction("demo");
   callFunction(0, 0);
 
+  // Call a function defined in config.lua that
+  // adds two numbers.
   pushFunction("add");
-  pushInt(3);
-  pushInt(4);
-
+  // pushInt(3);
+  // pushInt(4);
+  pushDouble(3.5);
+  pushDouble(4.7);
   dumpStack();
-
   callFunction(2, 1);
 
+  // Get, print, and pop the result.
   int sum = lua_tonumber(L, -1);
   printf("sum = %d\n", sum); // 3 + 4 = 7
   pop(1);
@@ -66,6 +73,8 @@ int main(void) {
   pushFunction("l_strlen");
   lua_pushstring(L, "cheeseburger");
   lua_pcall(L, 1, 1, 0);
+
+  // Get, print, and pop the result.
   int length = lua_tonumber(L, -1);
   printf("length = %d\n", length);
   pop(1);
