@@ -138,3 +138,14 @@ void registerCFunction(const char* name, lua_CFunction fn) {
   lua_pushcfunction(L, fn);
   lua_setglobal(L, name);
 }
+
+// This assumes that a Lua table is at the top of the stack.
+// This must be defined after the `pushString` function.
+const char* getStringTableValue(const char *key) {
+  pushString(key);
+  // The table should now be at -2 on the stack.
+  lua_gettable(L, -2);
+  const char *value = lua_tostring(L, -1);
+  pop(1); // pops the key from the stack
+  return value;
+}

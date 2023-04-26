@@ -80,6 +80,19 @@ int main(void) {
   pop(1);
   dumpStack();
 
+  // Call a Lua function that returns a table.
+  pushFunction("getTable");
+  callFunction(0, 1);
+  // The returned table is now on the stack.
+  const char *fruit = "apple";
+  const char *color = getStringTableValue(fruit);
+  printf("%s is %s\n", fruit, color);
+  fruit = "banana";
+  color = getStringTableValue(fruit);
+  printf("%s is %s\n", fruit, color);
+  pop(1); // pops the table off of the stack
+  dumpStack();
+
   // Close the Lua virtual machine.
   lua_close(L);
 

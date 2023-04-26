@@ -18,3 +18,11 @@ function callC(s)
   local s, len = l_strlen(s)
   return len
 end
+
+function getTable()
+  return {
+    2,
+    apple = "red",
+    banana = "yellow"
+  }
+end
