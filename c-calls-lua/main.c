@@ -1,9 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdlib.h> // defines the exit function and EXIT_FAILURE
 #include "lauxlib.h"
 #include "lua.h"
-#include "lualib.h"
+#include "lualib.h" // defines the luaL_openlibs function
 
 void error(lua_State *L, const char *fmt, ...) {
   va_list argp;
@@ -14,26 +12,43 @@ void error(lua_State *L, const char *fmt, ...) {
   exit(EXIT_FAILURE);
 }
 
-/* // This gets a boolean value from the top of the Lua stack.
-bool getBool(lua_State *L, const char *name) {
-  lua_getglobal(L, var);
-  // Verify that the top of the stack holds a boolean value.
-  result = (int) lua_toboolean(L, -1);
-  if (!isNum) {
-    error(L, "%s should be a number\n", var);
+int getGlobalBoolean(lua_State *L, const char *var) {
+  lua_getglobal(L, var); // pushes onto stack
+  if (!lua_isboolean(L, -1)) {
+    error(L, "expected %s to be a boolean\n", var);
   }
-  lua_pop(L, 1);
+  int result = lua_toboolean(L, -1);
+  lua_pop(L, 1); // pops from stack
   return result;
-} */
+}
+
+double getGlobalDouble(lua_State *L, const char *var) {
+  lua_getglobal(L, var); // pushes onto stack
+  if (!lua_isnumber(L, -1)) {
+    error(L, "expected %s to be a number\n", var);
+  }
+  double result = lua_tonumber(L, -1);
+  lua_pop(L, 1); // pops from stack
+  return result;
+}
 
 int getGlobalInt(lua_State *L, const char *var) {
-  int isNum, result;
-  lua_getglobal(L, var);
-  result = (int) lua_tointegerx(L, -1, &isNum);
-  if (!isNum) {
-    error(L, "%s should be a number\n", var);
+  lua_getglobal(L, var); // pushes onto stack
+  if (!lua_isinteger(L, -1)) {
+    error(L, "expected %s to be an integer\n", var);
   }
-  lua_pop(L, 1);
+  int result = lua_tointeger(L, -1);
+  lua_pop(L, 1); // pops from stack
+  return result;
+}
+
+const char* getGlobalString(lua_State *L, const char *var) {
+  lua_getglobal(L, var); // pushes onto stack
+  if (!lua_isstring(L, -1)) {
+    error(L, "expected %s to be a string\n", var);
+  }
+  const char *result = lua_tostring(L, -1);
+  lua_pop(L, 1); // pops from stack
   return result;
 }
 
@@ -41,32 +56,32 @@ int main(void) {
   char name[] = "Mark";
   printf("Hello %s!\n", name);
 
+  // Create a Lua virtual machine.
   lua_State *L = luaL_newstate();
+
+  // Make the standard library functions available in Lua code.
   luaL_openlibs(L);
 
+  // Execute a Lua source file.
   luaL_dofile(L, "config.lua");
 
   // To check if the top of the stack contains nil ...
   // if (lua_isnil(L, -1))
 
-  // TODO: Add error handling to validate types.
-  lua_getglobal(L, "myBoolean");
-  int myBoolean = lua_toboolean(L, -1);
+  int myBoolean = getGlobalBoolean(L, "myBoolean");
   printf("myBoolean = %d\n", myBoolean);
 
-  lua_getglobal(L, "myInteger");
-  lua_Integer myInteger = lua_tointeger(L, -1);
-  // lld is long long decimal
-  printf("myInteger = %lld\n", myInteger);
+  int myInteger = getGlobalInt(L, "myInteger");
+  printf("myInteger = %d\n", myInteger);
 
-  lua_getglobal(L, "myFloat");
-  lua_Number myFloat = lua_tonumber(L, -1);
-  printf("myFloat = %f\n", myFloat);
+  double myDouble = getGlobalDouble(L, "myDouble");
+  printf("myDouble = %f\n", myDouble);
 
-  lua_getglobal(L, "myString");
-  const char *myString = lua_tostring(L, -1);
+  const char *myString = getGlobalString(L, "myString");
   printf("myString = %s\n", myString);
 
+  // Close the Lua virtual machine.
   lua_close(L);
-  return 0;
+
+  return 0; // success
 }
