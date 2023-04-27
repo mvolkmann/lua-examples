@@ -123,30 +123,25 @@ void printStack() {
   }
 }
 
-void printTable(const char* var) {
-  getGlobalTable(var);
-  // The table is now on the stack.
- 
-  printf("Lua table contains:\n");
+// This assumes that the table is on the top of the stack.
+void printTable() {
+  lua_pushnil(L); // initial key
+  //
+  // lua_next removes the key on the top of the stack and
+  // pushes the next key and value onto the stack.
+  while (lua_next(L, -2) != 0) {
+    // The next key is at index -2 and its value is at index -1.
+    // TODO: Modify this to use the key and value types
+    // TODO: to get their actual values.
+    printf(
+      "  %s = %s\n",
+      lua_typename(L, lua_type(L, -2)),
+      lua_typename(L, lua_type(L, -1))
+    );
 
-  //TODO: Change this to iterate over all keys and values.
-  
-  // Get the value of the "apple" key.
-  const char *fruit = "apple";
-  const char *color = getStringTableValueForStringKey(fruit);
-  printf("  %s is %s\n", fruit, color);
-
-  // Get the value of the "banana" key.
-  fruit = "banana";
-  color = getStringTableValueForStringKey(fruit);
-  printf("  %s is %s\n", fruit, color);
-
-  // Get the value of the 1 key.
-  int index = 1;
-  int value = getIntTableValueForIndex(index);
-  printf("  value at index %d is %d\n", index, value);
-
-  pop(1); // removes the table from the stack
+    // This removes the value and keeps the key for the next iteration.
+    lua_pop(L, 1);
+  }
 }
 
 void pushBoolean(int b) {

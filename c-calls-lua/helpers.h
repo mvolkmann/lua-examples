@@ -29,7 +29,7 @@ void createLuaVM();
 void pop(int n);
 
 void printStack();
-void printTable(const char* var);
+void printTable();
 
 void pushBoolean(int b);
 void pushFunction(const char *name);

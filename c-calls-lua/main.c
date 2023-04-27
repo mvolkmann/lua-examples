@@ -100,12 +100,14 @@ int main(void) {
 
   // Currently the Lua table is the only thing on the stack.
   getGlobalTable("myTable");
-  dumpTable();
+  // dumpTable();
+  printTable();
 
   // Currently the Lua table is the only thing on the stack.
   setTableKeyValue("apple", "green");
 
-  dumpTable();
+  // dumpTable();
+  printTable();
   pop(1); // removes the table from the stack
 
   printStack(); // stack should be empty now
