@@ -1,6 +1,4 @@
-#include <stdlib.h> // defines the exit function and EXIT_FAILURE
-#include "lauxlib.h"
-#include "lua.h"
+#include "lua.h" // for lua_State
 
 lua_State *L;
 

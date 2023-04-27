@@ -1,6 +1,6 @@
-// #include "lualib.h" // defines the luaL_openlibs function
-#include "helpers.h"
+#include <stdio.h> // for printf function
 #include <string.h> // for strlen function
+#include "helpers.h"
 
 // All C functions that are intended to be called from Lua must
 // 1) have an `int` return type
