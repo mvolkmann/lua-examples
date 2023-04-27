@@ -109,6 +109,7 @@ int main(void) {
   pushString("apple"); // key
   pushString("green"); // value
   lua_settable(L, -3); // -3 refers to the Lua table
+  pop(1); // removes the table from the stack
 
   dumpTable();
   pop(1); // removes the table from the stack
