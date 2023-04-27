@@ -6,10 +6,6 @@ void callFunction(int inputs, int outputs);
 
 void doFile(const char* filePath);
 
-void dumpStack();
-
-void error(const char *fmt, ...);
-
 int getGlobalBoolean(const char *var);
 
 double getGlobalDouble(const char *var);
@@ -18,9 +14,14 @@ int getGlobalInt(const char *var);
 
 const char* getGlobalString(const char *var);
 
+void getGlobalTable(const char *var);
+
 void createLuaVM();
 
 void pop(int n);
+
+void printStack();
+void printTable(const char* var);
 
 void pushBoolean(int b);
 void pushFunction(const char *name);

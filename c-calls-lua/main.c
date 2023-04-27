@@ -23,6 +23,28 @@ static int l_strlen(lua_State *L) {
   return 1; // one value is returned
 }
 
+void dumpTable() {
+  getGlobalTable("myTable");
+  // The table is now on the stack.
+ 
+  printf("Lua table contains:\n");
+
+  // Get the value of the "apple" key.
+  const char *fruit = "apple";
+  const char *color = getStringTableValueForStringKey(fruit);
+  printf("  %s is %s\n", fruit, color);
+
+  // Get the value of the "banana" key.
+  fruit = "banana";
+  color = getStringTableValueForStringKey(fruit);
+  printf("  %s is %s\n", fruit, color);
+
+  // Get the value of the 1 key.
+  int index = 1;
+  int value = getIntTableValueForIndex(index);
+  printf("  value at index %d is %d\n", index, value);
+}
+
 int main(void) {
   createLuaVM();
 
@@ -58,43 +80,40 @@ int main(void) {
   // pushInt(4);
   pushDouble(3.5);
   pushDouble(4.7);
-  dumpStack();
+  printStack();
   callFunction(2, 1);
 
   // Get, print, and pop the result.
   int sum = lua_tonumber(L, -1);
   printf("sum = %d\n", sum); // 3 + 4 = 7
   pop(1);
-  dumpStack();
+  printStack();
 
   registerCFunction("l_strlen", l_strlen);
 
   // Call the C function.
   pushFunction("l_strlen");
-  lua_pushstring(L, "cheeseburger");
-  lua_pcall(L, 1, 1, 0);
+  pushString("cheeseburger");
+  callFunction(1, 1);
 
   // Get, print, and pop the result.
   int length = lua_tonumber(L, -1);
   printf("length = %d\n", length);
   pop(1);
-  dumpStack();
+  printStack();
 
-  // Call a Lua function that returns a table.
-  pushFunction("getTable");
-  callFunction(0, 1);
-  // The returned table is now on the stack.
-  const char *fruit = "apple";
-  const char *color = getStringTableValueForStringKey(fruit);
-  printf("%s is %s\n", fruit, color);
-  fruit = "banana";
-  color = getStringTableValueForStringKey(fruit);
-  printf("%s is %s\n", fruit, color);
-  int index = 1;
-  int value = getIntTableValueForIndex(index);
-  printf("value at index %d is %d\n", index, value);
-  pop(1); // pops the table off of the stack
-  dumpStack();
+  dumpTable();
+
+  // Currently the Lua table is the only thing on the stack.
+  // Update the value of the "apple" key.
+  pushString("apple"); // key
+  pushString("green"); // value
+  lua_settable(L, -3); // -3 refers to the Lua table
+
+  dumpTable();
+  pop(1); // removes the table from the stack
+
+  printStack();
 
   // Close the Lua virtual machine.
   lua_close(L);

@@ -10,6 +10,7 @@ void callFunction(int inputs, int outputs) {
   // 3rd argument is the number of values being returned by Lua function.
   // 4th argument is a pointer to an error handling function,
   // or 0 to not use one.
+  // TODO: Learn how to use an error handling function.
   lua_pcall(L, inputs, outputs, 0);
   // After the call the function and all its arguments are popped from the stack
   // and the outputs are pushed onto the stack.
@@ -17,39 +18,6 @@ void callFunction(int inputs, int outputs) {
 
 void doFile(const char* filePath) {
   luaL_dofile(L, filePath);
-}
-
-void dumpStack() {
-  int top = lua_gettop(L);
-  if (top == 0) {
-    printf("Lua stack is empty.\n");
-    return;
-  }
-
-  printf("Lua stack contains:\n");
-  int i;
-  for (i = 1; i <= top; i++) {
-    int t = lua_type(L, i);
-    switch (t) {
-      case LUA_TSTRING: {
-        printf("  %d) %s", i, lua_tostring(L, i));
-        break;
-      }
-      case LUA_TBOOLEAN: {
-        printf("  %d) %s", i, lua_toboolean(L, i) ? "true" : "false");
-        break;
-      }
-      case LUA_TNUMBER: {
-        printf("  %d) %g", i, lua_tonumber(L, i));
-        break;
-      }
-      default: {
-        printf("  %d) %s", i, lua_typename(L, t));
-        break;
-      }
-    }
-    printf("\n");
-  }
 }
 
 void error(const char *fmt, ...) {
@@ -103,6 +71,14 @@ const char* getGlobalString(const char *var) {
   return result;
 }
 
+void getGlobalTable(const char *var) {
+  lua_getglobal(L, var);
+  if (!lua_istable(L, -1)) {
+    error("expected %s to be a table\n", var);
+  }
+  // This leaves the table on the stack.
+}
+
 void createLuaVM() {
   L = luaL_newstate();
 
@@ -112,6 +88,65 @@ void createLuaVM() {
 
 void pop(int n) {
   lua_pop(L, n);
+}
+
+void printStack() {
+  int top = lua_gettop(L);
+  if (top == 0) {
+    printf("Lua stack is empty.\n");
+    return;
+  }
+
+  printf("Lua stack contains:\n");
+  int i;
+  for (i = 1; i <= top; i++) {
+    int t = lua_type(L, i);
+    switch (t) {
+      case LUA_TSTRING: {
+        printf("  %d) %s", i, lua_tostring(L, i));
+        break;
+      }
+      case LUA_TBOOLEAN: {
+        printf("  %d) %s", i, lua_toboolean(L, i) ? "true" : "false");
+        break;
+      }
+      case LUA_TNUMBER: {
+        printf("  %d) %g", i, lua_tonumber(L, i));
+        break;
+      }
+      default: {
+        printf("  %d) %s", i, lua_typename(L, t));
+        break;
+      }
+    }
+    printf("\n");
+  }
+}
+
+void printTable(const char* var) {
+  getGlobalTable(var);
+  // The table is now on the stack.
+ 
+  printf("Lua table contains:\n");
+
+  //TODO: Change this to iterate over all keys and values.
+  
+  // Get the value of the "apple" key.
+  const char *fruit = "apple";
+  const char *color = getStringTableValueForStringKey(fruit);
+  printf("  %s is %s\n", fruit, color);
+
+  // Get the value of the "banana" key.
+  fruit = "banana";
+  color = getStringTableValueForStringKey(fruit);
+  printf("  %s is %s\n", fruit, color);
+
+  // Get the value of the 1 key.
+  int index = 1;
+  int value = getIntTableValueForIndex(index);
+  printf("  value at index %d is %d\n", index, value);
+
+  pop(1); // removes the table from the stack
 }
 
 void pushBoolean(int b) {
