@@ -16,6 +16,14 @@ const char* getGlobalString(const char *var);
 
 void getGlobalTable(const char *var);
 
+// This assumes that a Lua table is at the top of the stack.
+// This must be defined after the `pushString` function.
+int getIntTableValueForIndex(int index);
+
+// This assumes that a Lua table is at the top of the stack.
+// This must be defined after the `pushString` function.
+const char* getStringTableValueForStringKey(const char *key);
+
 void createLuaVM();
 
 void pop(int n);
@@ -31,11 +39,5 @@ void pushString(const char *s);
 
 void registerCFunction(const char* name, lua_CFunction fn);
 
-// This assumes that a Lua table is at the top of the stack.
-// This must be defined after the `pushString` function.
-int getIntTableValueForIndex(int index);
-
-// This assumes that a Lua table is at the top of the stack.
-// This must be defined after the `pushString` function.
-const char* getStringTableValueForStringKey(const char *key);
+void setTableKeyValue(const char* key, const char* value);
 

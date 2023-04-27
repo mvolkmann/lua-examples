@@ -195,3 +195,11 @@ const char* getStringTableValueForStringKey(const char *key) {
   pop(1); // pops the key from the stack
   return value;
 }
+
+// This assumes that the table is already at the top of the stack.
+// Other versions are needed for non-string keys and values.
+void setTableKeyValue(const char* key, const char* value) {
+  pushString(key);
+  pushString(value);
+  lua_settable(L, -3); // -3 refers to the Lua table
+}
