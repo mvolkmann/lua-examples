@@ -1,5 +1,5 @@
-#include "lualib.h" // defines the luaL_openlibs function
-#include "helpers.c" // defines L and several functions
+// #include "lualib.h" // defines the luaL_openlibs function
+#include "helpers.h"
 #include <string.h> // for strlen function
 
 // All C functions that are intended to be called from Lua must

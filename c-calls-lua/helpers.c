@@ -1,6 +1,8 @@
 #include <stdlib.h> // defines the exit function and EXIT_FAILURE
-#include "lauxlib.h"
-#include "lua.h"
+// #include "lauxlib.h"
+// #include "lua.h"
+#include "lualib.h"
+#include "helpers.h"
 
 lua_State *L;
 
@@ -18,8 +20,7 @@ void doFile(const char* filePath) {
   luaL_dofile(L, filePath);
 }
 
-// static void dumpStack(lua_State *L) {
-static void dumpStack() {
+void dumpStack() {
   int top = lua_gettop(L);
   if (top == 0) {
     printf("Lua stack is empty.\n");
