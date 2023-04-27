@@ -1,18 +1,19 @@
 CC=gcc 
-CFLAGS=-llua
+LDFLAGS=-llua
+EXE=main
+objects=helpers.o main.o
 
-#objects = helpers.o main.o
+run: $(EXE)
+	@ ./$(EXE) 
 
-# This is the default target because it is
-# the first one that does not begin with a period.
-all: main run
-
-main: main.c helpers.c
-	$(CC) $^ $(CFLAGS) -o $@
-
-run: main
-	./main
+main: $(objects)
+	@ $(CC) -o $@ $(LDFLAGS) $^
 
 clean:
-	rm -f main *.o
+	@ rm -f *.o $(EXE)
+
+# This causes .c files to be recompiled
+# when the corresponding .h file is modified.
+%.c: %.h
+	@ touch $@
 
