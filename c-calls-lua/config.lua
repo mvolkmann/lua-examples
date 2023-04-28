@@ -5,7 +5,7 @@ _G.myDouble = 1.23
 _G.myInteger = 19
 _G.myString = "test"
 _G.myTable = {
-  2,
+  19,
   apple = "red",
   banana = "yellow"
 }

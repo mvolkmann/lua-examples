@@ -78,12 +78,12 @@ int main(void) {
   // pushInt(4);
   pushDouble(3.5);
   pushDouble(4.7);
-  printStack();
+  // printStack();
   callFunction(2, 1);
 
   // Get, print, and pop the result.
-  int sum = lua_tonumber(L, -1);
-  printf("sum = %d\n", sum); // 3 + 4 = 7
+  float sum = lua_tonumber(L, -1);
+  printf("sum = %f\n", sum); // 3.5 + 4.7 = 8.2
   pop(1); // stack should be empty now
 
   registerCFunction("l_strlen", l_strlen);

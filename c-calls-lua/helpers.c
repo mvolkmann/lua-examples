@@ -90,6 +90,26 @@ void pop(int n) {
   lua_pop(L, n);
 }
 
+const char* getStackString(int i) {
+  int t = lua_type(L, i);
+  switch (t) {
+    case LUA_TSTRING:
+      return lua_tostring(L, i);
+    case LUA_TBOOLEAN:
+      return lua_toboolean(L, i) ? "true" : "false";
+    case LUA_TNUMBER: {
+      static char name[20];
+      sprintf(name, "%g", lua_tonumber(L, i));
+      return name;
+    }
+    default: {
+      static char name[20];
+      sprintf(name, "some %s", lua_typename(L, t));
+      return name;
+    }
+  }
+}
+
 void printStack() {
   int top = lua_gettop(L);
   if (top == 0) {
@@ -100,44 +120,24 @@ void printStack() {
   printf("Lua stack contains:\n");
   int i;
   for (i = 1; i <= top; i++) {
-    int t = lua_type(L, i);
-    switch (t) {
-      case LUA_TSTRING: {
-        printf("  %d) %s", i, lua_tostring(L, i));
-        break;
-      }
-      case LUA_TBOOLEAN: {
-        printf("  %d) %s", i, lua_toboolean(L, i) ? "true" : "false");
-        break;
-      }
-      case LUA_TNUMBER: {
-        printf("  %d) %g", i, lua_tonumber(L, i));
-        break;
-      }
-      default: {
-        printf("  %d) %s", i, lua_typename(L, t));
-        break;
-      }
-    }
-    printf("\n");
+    printf("  %d = %s\n", i, getStackString(i));
   }
 }
 
 // This assumes that the table is on the top of the stack.
 void printTable() {
+  printf("table contains:\n");
   lua_pushnil(L); // initial key
   //
   // lua_next removes the key on the top of the stack and
   // pushes the next key and value onto the stack.
   while (lua_next(L, -2) != 0) {
     // The next key is at index -2 and its value is at index -1.
-    // TODO: Modify this to use the key and value types
-    // TODO: to get their actual values.
-    printf(
-      "  %s = %s\n",
-      lua_typename(L, lua_type(L, -2)),
-      lua_typename(L, lua_type(L, -1))
-    );
+    const char *key = getStackString(-2); // TODO: Why getting value?
+    const char *value = getStackString(-1);
+    printf("  key = %s\n", key);
+    printf("  value = %s\n", value);
+    printf("  %s = %s\n", key, value);
 
     // This removes the value and keeps the key for the next iteration.
     lua_pop(L, 1);
