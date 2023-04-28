@@ -100,7 +100,6 @@ int main(void) {
 
   // Currently the Lua table is the only thing on the stack.
   getGlobalTable("myTable");
-  // dumpTable();
   printTable();
 
   // Currently the Lua table is the only thing on the stack.

@@ -183,9 +183,7 @@ int getIntTableValueForIndex(int index) {
 // This assumes that a Lua table is at the top of the stack.
 // This must be defined after the `pushString` function.
 const char* getStringTableValueForStringKey(const char *key) {
-  pushString(key);
-  // The table should now be at -2 on the stack.
-  lua_gettable(L, -2);
+  lua_getfield(L, -1, key);
   const char *value = lua_tostring(L, -1);
   pop(1); // pops the key from the stack
   return value;
