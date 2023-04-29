@@ -1,4 +1,5 @@
 #include <stdlib.h> // for exit function and EXIT_FAILURE
+#include <string.h> // for strcpy
 #include "lauxlib.h" // for luaL_* functions
 #include "lualib.h" // for luaL_openlibs
 #include "helpers.h"
@@ -98,14 +99,14 @@ const char* getStackString(int i) {
     case LUA_TBOOLEAN:
       return lua_toboolean(L, i) ? "true" : "false";
     case LUA_TNUMBER: {
-      static char name[20];
-      sprintf(name, "%g", lua_tonumber(L, i));
-      return name;
+      static char text[20];
+      sprintf(text, "%g", lua_tonumber(L, i));
+      return text;
     }
     default: {
-      static char name[20];
-      sprintf(name, "some %s", lua_typename(L, t));
-      return name;
+      static char text[20];
+      sprintf(text, "some %s", lua_typename(L, t));
+      return text;
     }
   }
 }
@@ -133,10 +134,9 @@ void printTable() {
   // pushes the next key and value onto the stack.
   while (lua_next(L, -2) != 0) {
     // The next key is at index -2 and its value is at index -1.
-    const char *key = getStackString(-2); // TODO: Why getting value?
+    char key[100];
+    strcpy(key, getStackString(-2));
     const char *value = getStackString(-1);
-    printf("  key = %s\n", key);
-    printf("  value = %s\n", value);
     printf("  %s = %s\n", key, value);
 
     // This removes the value and keeps the key for the next iteration.
