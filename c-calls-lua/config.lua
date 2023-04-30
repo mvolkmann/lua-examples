@@ -15,6 +15,11 @@ function demo()
 end
 
 function add(n1, n2)
+  --[[ This is for testing lua_pcall error handling.
+  if n1 == 0 then
+    error("cannot add to zero")
+  end
+  ]]
   return n1 + n2
 end
 

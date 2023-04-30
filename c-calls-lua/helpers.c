@@ -6,21 +6,7 @@
 
 lua_State *L;
 
-void callFunction(int inputs, int outputs) {
-  // 2nd argument is the number of arguments being passed to the Lua function.
-  // 3rd argument is the number of values being returned by Lua function.
-  // 4th argument is a pointer to an error handling function,
-  // or 0 to not use one.
-  // TODO: Learn how to use an error handling function.
-  lua_pcall(L, inputs, outputs, 0);
-  // After the call the function and all its arguments are popped from the stack
-  // and the outputs are pushed onto the stack.
-}
-
-void doFile(const char* filePath) {
-  luaL_dofile(L, filePath);
-}
-
+// This must be declared before its first use.
 void error(const char *fmt, ...) {
   va_list argp;
   va_start(argp, fmt);
@@ -28,6 +14,27 @@ void error(const char *fmt, ...) {
   va_end(argp);
   lua_close(L);
   exit(EXIT_FAILURE);
+}
+
+void callFunction(int inputs, int outputs) {
+  // lua_pcall returns a status code.
+  // The possible values are LUA_OK, LUA_ERRRUN (normal error),
+  // LUA_ERRERR (error in error handler),
+  // LUA_ERRMEM (memory allocation error), and
+  // LUA_ERRGCMM (error in finalizer).
+  // 2nd argument is the number of arguments being passed to the Lua function.
+  // 3rd argument is the number of values being returned by Lua function.
+  // 4th argument is stack index where error handling function is found
+  // or 0 to not use one.
+  if (lua_pcall(L, inputs, outputs, 0) != LUA_OK) {
+    error("error at %s", lua_tostring(L, -1));
+  }
+  // After the call the function and all its arguments are popped from the stack
+  // and the outputs are pushed onto the stack.
+}
+
+void doFile(const char* filePath) {
+  luaL_dofile(L, filePath);
 }
 
 int getGlobalBoolean(const char *var) {

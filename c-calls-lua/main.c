@@ -77,6 +77,7 @@ int main(void) {
   // pushInt(3);
   // pushInt(4);
   pushDouble(3.5);
+  -- pushDouble(0); -- for testing lua_pcall error handling
   pushDouble(4.7);
   // printStack();
   callFunction(2, 1);
