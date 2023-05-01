@@ -96,7 +96,7 @@ static const luaL_Reg loadedlibs[] = {
 
   // {LUA_COLIBNAME, luaopen_coroutine},
   // {LUA_DBLIBNAME, luaopen_debug},
-  // {LUA_IOLIBNAME, luaopen_io},
+  {LUA_IOLIBNAME, luaopen_io},
   // {LUA_MATHLIBNAME, luaopen_math},
   // {LUA_OSLIBNAME, luaopen_os},
   // {LUA_LOADLIBNAME, luaopen_package},
@@ -113,6 +113,11 @@ LUALIB_API void openlibs(lua_State *L) {
     luaL_requiref(L, lib->name, lib->func, 1);
     lua_pop(L, 1);  /* remove lib */
   }
+
+  // Remove the ability to write files.
+  // TODO: How can you still allow writing to stdout?
+  /* getGlobalTable("io");
+  setTableKeyValue("write", 0); */
 }
 
 void createLuaVM() {
