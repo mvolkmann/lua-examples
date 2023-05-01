@@ -12,6 +12,11 @@ _G.myTable = {
 
 function demo()
   print("config.lua: demo called")
+
+  --[[ This can be used to test whether the `io` standard library was loaded.
+  io.output("demo.txt")
+  io.write("This was written by config.lua.")
+  io.close() ]]
 end
 
 function add(n1, n2)

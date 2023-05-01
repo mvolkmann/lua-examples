@@ -87,11 +87,40 @@ void getGlobalTable(const char *var) {
   // This leaves the table on the stack.
 }
 
+// This variable definition was copied from the Lua source file linit.c.
+static const luaL_Reg loadedlibs[] = {
+  // This loads the "basic" standard library into the global environment.
+  // It includes functions like pairs, ipairs, print,
+  // tonumber, tostring, setmetatable, and getmetatable
+  {LUA_GNAME, luaopen_base},
+
+  // {LUA_COLIBNAME, luaopen_coroutine},
+  // {LUA_DBLIBNAME, luaopen_debug},
+  // {LUA_IOLIBNAME, luaopen_io},
+  // {LUA_MATHLIBNAME, luaopen_math},
+  // {LUA_OSLIBNAME, luaopen_os},
+  // {LUA_LOADLIBNAME, luaopen_package},
+  // {LUA_STRLIBNAME, luaopen_string},
+  // {LUA_TABLIBNAME, luaopen_table},
+  // {LUA_UTF8LIBNAME, luaopen_utf8},
+  {NULL, NULL}
+};
+
+// This function was copied from the Lua source file linit.c.
+LUALIB_API void openlibs(lua_State *L) {
+  const luaL_Reg *lib;
+  for (lib = loadedlibs; lib->func; lib++) {
+    luaL_requiref(L, lib->name, lib->func, 1);
+    lua_pop(L, 1);  /* remove lib */
+  }
+}
+
 void createLuaVM() {
   L = luaL_newstate();
 
   // Make the standard library functions available in Lua code.
-  luaL_openlibs(L);
+  // luaL_openlibs(L);
+  openlibs(L);
 }
 
 void pop(int n) {
