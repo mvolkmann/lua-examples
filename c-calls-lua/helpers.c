@@ -114,10 +114,23 @@ LUALIB_API void openlibs(lua_State *L) {
     lua_pop(L, 1);  /* remove lib */
   }
 
-  // Remove the ability to write files.
-  // TODO: How can you still allow writing to stdout?
-  /* getGlobalTable("io");
-  setTableKeyValue("write", 0); */
+  // Assuming the io library is loaded,
+  // remove the ability to change the default output file.
+  // It will remain set to stdout.
+  getGlobalTable("io");
+  setTableKeyValue("output", 0);
+
+  // TODO: Can Lua send HTTP requests without custom C code from another library?
+  //
+  // You may wish to enable the os library, but disable these os functions:
+  // - os.execute
+  // - os.exit
+  // - os.getenv
+  // - os.remove
+  // - os.rename
+  // - os.rename
+  // - os.rename
+  // - os.rename
 }
 
 void createLuaVM() {
