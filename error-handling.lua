@@ -1,6 +1,6 @@
 function read_number(prompt)
   io.write(prompt .. ": ")
-  local number = io.read("*number")
+  local number = io.read("n")
   -- The previous line does not consume the newline character.
   -- Unless that is done, the next attempt to read a number will return `nil`.
   -- The following line consumes the newline character.
@@ -15,15 +15,15 @@ function process()
     -- a `throw` in many other programming languages.
     -- It is passed a message and an optional integer error level.
     -- The message can be any type, but is typically a string or a table.
-    error({message = "dividend is invalid", code = 1})
+    error({ message = "dividend is invalid", code = 1 })
   end
 
   local divisor = read_number("Enter a divisor")
   if not divisor then
-    error({message = "divisor is invalid", code = 2})
+    error({ message = "divisor is invalid", code = 2 })
   end
   if divisor == 0 then
-    error({message = "cannot divide by zero", code = 3})
+    error({ message = "cannot divide by zero", code = 3 })
   end
 
   local quotient = dividend / divisor

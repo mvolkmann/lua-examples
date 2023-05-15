@@ -1,4 +1,4 @@
-my_table = {alpha = 7}
+my_table = { alpha = 7 }
 print(getmetatable(my_table)) -- nil; no metatable assigned yet
 
 -- Create a metatable containing one metamethod named `__index`.
