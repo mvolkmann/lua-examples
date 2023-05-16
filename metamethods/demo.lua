@@ -8,3 +8,6 @@ print("intersection =", Set.intersection(s1, s2)) -- {30, 10}
 print("intersection =", s1:intersection(s2))      -- {30, 10}
 print("union =", s1 + s2)                         -- {50, 30, 10, 60, 20}
 print("complex =", (s2 + s3) * s1)                -- {30, 10, 50}
+print("subset =", s3 <= s1)                       -- true
+print("proper subset =", s3 < s1)                 -- true
+print("equal =", s1 == s2)                        -- false

@@ -16,6 +16,27 @@ function Set.tostring(set)
   return "{" .. table.concat(l, ", ") .. "}"
 end
 
+-- Determines if a is a subset of b.
+-- This means all elements of a are in b.
+-- It is possible that b contains exactly the same elements as a.
+function Set.subset(a, b)
+  for k in pairs(a) do
+    if not b[k] then return false end
+  end
+  return true
+end
+
+-- Determines if a is a proper subset of b.
+-- This means all elements of a are in b,
+-- but b has at least one element that is not in a.
+function Set.proper_subset(a, b)
+  return a <= b and not (b <= a)
+end
+
+function Set.equal(a, b)
+  return a <= b and b <= a
+end
+
 function Set.union(a, b)
   local res = Set.new {}
   for k in pairs(a) do res[k] = true end
@@ -26,6 +47,9 @@ end
 -- The functions assigned here must already be defined.
 local mt = {
   __add = Set.union,
+  __eq = Set.equal,
+  __le = Set.subset,
+  __lt = Set.proper_subset,
   __mul = Set.intersection,
   __tostring = Set.tostring,
   -- The methods defined here can be called with the colon operator.
