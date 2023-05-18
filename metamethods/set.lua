@@ -46,6 +46,7 @@ end
 
 -- The functions assigned here must already be defined.
 local mt = {
+  __metatable = "private",
   __add = Set.union,
   __eq = Set.equal,
   __le = Set.subset,

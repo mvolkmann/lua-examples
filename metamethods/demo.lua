@@ -11,3 +11,9 @@ print("complex =", (s2 + s3) * s1)                -- {30, 10, 50}
 print("subset =", s3 <= s1)                       -- true
 print("proper subset =", s3 < s1)                 -- true
 print("equal =", s1 == s2)                        -- false
+
+print("metatable =", getmetatable(s1))            -- private
+
+-- Because the Set metatable sets the __metatable property, the
+-- following line gives the error "cannot change a protected metatable".
+-- setmetatable(s1, {})
