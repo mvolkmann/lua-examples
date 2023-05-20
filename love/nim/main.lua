@@ -1,4 +1,7 @@
 local love = require "love"
+local Button = require "button"
+local colors = require "colors"
+local g = love.graphics
 
 function drawImage(image, opt)
   local x = opt.x or 0
@@ -6,14 +9,7 @@ function drawImage(image, opt)
   local angle = opt.angle or 0
   local centerX = opt.width / 2
   local centerY = opt.height / 2
-  -- love.graphics.draw(image, x, y, angle, scale, scale)
-  love.graphics.draw(image, x + centerX, y + centerY, angle, 1, 1, centerX, centerY)
-
-  -- These lines are only for debugging.
-  -- setColor(colors.red)
-  -- love.graphics.rectangle("line", x, y, opt.width, opt.height)
-  -- love.graphics.circle("fill", x + centerX, y + centerY, 10)
-  -- setColor(colors.white)
+  g.draw(image, x + centerX, y + centerY, angle, 1, 1, centerX, centerY)
 end
 
 function drawText(text, opt)
@@ -21,7 +17,7 @@ function drawText(text, opt)
   local y = opt.y or 0
   local angle = opt.angle or 0
   local scale = opt.scale or 1
-  love.graphics.print(text, x, y, angle, scale)
+  g.print(text, x, y, angle, scale)
 end
 
 function dump(o)
@@ -36,34 +32,16 @@ function dump(o)
   end
 end
 
-function rgb(red, green, blue)
-  return red / 255, green / 255, blue / 255
-end
+function setColor(color) g.setColor(color) end
 
-function setColor(color)
-  love.graphics.setColor(color)
-end
-
-function setFont(font)
-  love.graphics.setFont(font)
-end
+function setFont(font) g.setFont(font) end
 
 -- ----------------------------------------------------------------------------
 
 function love.load()
-  colors = {
-    blue = { 0, 0, 1, 1 },
-    gray = { rgb(150, 150, 150) },
-    green = { 0, 1, 0, 1 },
-    green2 = { rgb(25, 125, 75) },
-    red = { 1, 0, 0, 1 },
-    white = { 1, 1, 1, 1 }
-  }
-
-
   fonts = {
-    s18 = love.graphics.newFont(18),
-    s36 = love.graphics.newFont(36)
+    s18 = g.newFont(18),
+    s36 = g.newFont(36)
   }
 
   setColor(colors.white) -- initial
@@ -72,12 +50,12 @@ function love.load()
   sound = love.audio.newSource("sounds/click.wav", "stream")
 
   -- The type of logo is "userdata".
-  logo = love.graphics.newImage('images/lua-128.png')
+  logo = g.newImage('images/lua-128.png')
   local width = logo:getWidth()
   local height = logo:getHeight()
   logoOptions = {
     x = 50,
-    y = 50,
+    y = 30,
     width = width,
     height = height,
     angle = 0
@@ -89,20 +67,30 @@ function love.load()
   math.randomseed(os.time())
   dice = math.random(6)
 
-  love.graphics.setBackgroundColor(colors.green2)
+  g.setBackgroundColor(colors.green2)
 
-  buttons = {}
+  buttons = {
+    Button.new({
+      text = "Press Me",
+      x = 50,
+      y = 200,
+      callback = function()
+        love.audio.play(sound)
+        dice = math.random(6)
+      end
+    })
+  }
 end
 
 function love.draw()
   drawImage(logo, logoOptions)
-  drawText("Hello, Love!", { x = 400, y = 300 })
-  drawText(dice, { x = 400, y = 400, font = fonts.s36 })
+  setFont(fonts.s36)
+  drawText(dice, { x = 200, y = 200 })
+  setFont(fonts.s18)
 
-  setColor(colors.gray)
-  love.graphics.rectangle("fill", 100, 300, 100, 50)
-  setColor(colors.red)
-  drawText("Press Me", { x = 100, y = 300 })
+  for _, b in ipairs(buttons) do
+    b:draw()
+  end
   setColor(colors.white)
 
   -- Display a button that can be clicked.
@@ -114,14 +102,12 @@ end
 
 function love.mousepressed(x, y, button)
   if button == 1 then -- left mouse button
-    for b in pairs(buttons) do
-      b:handle(x, y)
+    for _, b in ipairs(buttons) do
+      b:handleClick(x, y)
     end
   end
 
   -- This will not play again until the currently playing sound completes.
-  love.audio.play(sound)
-  dice = math.random(6)
 end
 
 function love.update(dt)
