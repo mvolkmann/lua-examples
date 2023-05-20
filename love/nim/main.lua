@@ -4,8 +4,16 @@ function drawImage(image, opt)
   local x = opt.x or 0
   local y = opt.y or 0
   local angle = opt.angle or 0
-  local scale = opt.scale or 1
-  love.graphics.draw(image, x, y, angle, scale)
+  local centerX = opt.width / 2
+  local centerY = opt.height / 2
+  -- love.graphics.draw(image, x, y, angle, scale, scale)
+  love.graphics.draw(image, x + centerX, y + centerY, angle, 1, 1, centerX, centerY)
+
+  -- These lines are only for debugging.
+  -- setColor(colors.red)
+  -- love.graphics.rectangle("line", x, y, opt.width, opt.height)
+  -- love.graphics.circle("fill", x + centerX, y + centerY, 10)
+  -- setColor(colors.white)
 end
 
 function drawText(text, opt)
@@ -14,6 +22,18 @@ function drawText(text, opt)
   local angle = opt.angle or 0
   local scale = opt.scale or 1
   love.graphics.print(text, x, y, angle, scale)
+end
+
+function dump(o)
+  if type(o) == 'table' then
+    local s = '{ '
+    for k, v in pairs(o) do
+      s = s .. k .. ' = ' .. dump(v) .. ', '
+    end
+    return s .. '} '
+  else
+    return tostring(o)
+  end
 end
 
 function rgb(red, green, blue)
@@ -28,7 +48,7 @@ function setFont(font)
   love.graphics.setFont(font)
 end
 
--- ####################################
+-- ----------------------------------------------------------------------------
 
 function love.load()
   colors = {
@@ -51,20 +71,33 @@ function love.load()
 
   sound = love.audio.newSource("sounds/click.wav", "stream")
 
-  logo = love.graphics.newImage('images/lua.png')
-  logoAngle = 0
+  -- The type of logo is "userdata".
+  logo = love.graphics.newImage('images/lua-128.png')
+  local width = logo:getWidth()
+  local height = logo:getHeight()
+  logoOptions = {
+    x = 50,
+    y = 50,
+    width = width,
+    height = height,
+    angle = 0
+  }
+  print("logoOptions =", dump(logoOptions))
+
   degreeInRadians = math.pi / 180
 
   math.randomseed(os.time())
   dice = math.random(6)
 
   love.graphics.setBackgroundColor(colors.green2)
+
+  buttons = {}
 end
 
 function love.draw()
-  drawImage(logo, { x = 200, y = 0, angle = logoAngle, scale = 0.2 })
+  drawImage(logo, logoOptions)
   drawText("Hello, Love!", { x = 400, y = 300 })
-  drawText(dice, { x = 400, y = 400, font = font36 })
+  drawText(dice, { x = 400, y = 400, font = fonts.s36 })
 
   setColor(colors.gray)
   love.graphics.rectangle("fill", 100, 300, 100, 50)
@@ -79,7 +112,7 @@ function love.keypressed(k)
   if k == "escape" then love.event.quit("restart") end
 end
 
-function love.mousepressed(x, y, button, istouch, presses)
+function love.mousepressed(x, y, button)
   if button == 1 then -- left mouse button
     for b in pairs(buttons) do
       b:handle(x, y)
@@ -92,5 +125,5 @@ function love.mousepressed(x, y, button, istouch, presses)
 end
 
 function love.update(dt)
-  logoAngle = (logoAngle + degreeInRadians) % (math.pi * 2)
+  logoOptions.angle = (logoOptions.angle + degreeInRadians) % (math.pi * 2)
 end
