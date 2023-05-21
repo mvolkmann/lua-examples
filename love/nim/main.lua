@@ -3,6 +3,7 @@ local Button = require "button"
 local colors = require "colors"
 local fonts = require "fonts"
 local util = require "util"
+require "shapes"
 
 local g = love.graphics
 
@@ -59,8 +60,8 @@ end
 
 local function pointInsideShape(x, y, shape)
   local shapeX, shapeY = shape.x, shape.y
-  return shapeX <= x and x <= shapeX + shape.width and
-      shapeY <= y and y <= shapeY + shape.height
+  return shapeX <= x and x <= shapeX + shape:getWidth() and
+      shapeY <= y and y <= shapeY + shape:getHeight()
 end
 
 local function rotateLogo(dt)
@@ -114,22 +115,8 @@ function love.load()
   }
 
   shapes = {
-    {
-      type = "rectangle",
-      x = 300,
-      y = 200,
-      width = 100,
-      height = 50,
-      color = colors.red
-    },
-    {
-      type = "rectangle",
-      x = 400,
-      y = 400,
-      width = 50,
-      height = 150,
-      color = colors.blue
-    }
+    Rectangle.new(300, 200, 100, 50, colors.red),
+    Circle.new(400, 400, 50, colors.blue)
   }
 
   grad = gradient({ colors.red, colors.blue })
@@ -152,10 +139,7 @@ function love.draw()
   drawText(dice, { x = 170, y = 200 })
 
   for _, shape in ipairs(shapes) do
-    if shape.type == "rectangle" then
-      setColor(shape.color)
-      g.rectangle("fill", shape.x, shape.y, shape.width, shape.height)
-    end
+    shape:draw()
   end
 
   setColor(colors.white)
