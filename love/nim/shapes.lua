@@ -23,6 +23,7 @@ function Circle:draw()
   g.circle("fill", self.x, self.y, self.radius)
   if self.selected then
     g.setColor(colors.black)
+    g.setLineWidth(5)
     g.circle("line", self.x, self.y, self.radius)
   end
 end
@@ -59,6 +60,7 @@ function Rectangle:draw()
   g.rectangle("fill", self.x, self.y, self.width, self.height)
   if self.selected then
     g.setColor(colors.black)
+    g.setLineWidth(5)
     g.rectangle("line", self.x, self.y, self.width, self.height)
   end
 end

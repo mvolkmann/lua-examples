@@ -48,14 +48,19 @@ local function gradient(colors)
   return result
 end
 
-local function handleDragging()
+local function handleMouse()
+  local x = love.mouse.getX()
+  local y = love.mouse.getY()
+
+  for _, shape in ipairs(shapes) do
+    shape.selected = shape:pointInside(x, y)
+  end
+
   if not dragging then return end
 
-  local newX = love.mouse.getX()
-  local newY = love.mouse.getY()
-  dragging.x = dragging.x + newX - dragX
-  dragging.y = dragging.y + newY - dragY
-  dragX, dragY = newX, newY
+  dragging.x = dragging.x + x - dragX
+  dragging.y = dragging.y + y - dragY
+  dragX, dragY = x, y
 end
 
 local function rotateLogo(dt)
@@ -159,7 +164,7 @@ function love.mousepressed(x, y, button)
     button:handleClick(x, y)
   end
 
-  -- for _, shape in ipairs(shapes) do
+  -- Iterating in reverse to prefer shape on top.
   for i = #shapes, 1, -1 do
     local shape = shapes[i]
     if shape:pointInside(x, y) then
@@ -173,11 +178,10 @@ end
 function love.mousereleased(x, y, button)
   if button ~= 1 then return end -- check for left mouse button
 
-  dragging.selected = false
   dragging = nil
 end
 
 function love.update(dt)
   rotateLogo(dt)
-  handleDragging()
+  handleMouse()
 end
