@@ -58,12 +58,6 @@ local function handleDragging()
   dragX, dragY = newX, newY
 end
 
-local function pointInsideShape(x, y, shape)
-  local shapeX, shapeY = shape.x, shape.y
-  return shapeX <= x and x <= shapeX + shape:getWidth() and
-      shapeY <= y and y <= shapeY + shape:getHeight()
-end
-
 local function rotateLogo(dt)
   local twoPi = math.pi * 2
   local anglePerSecond = twoPi / 3 -- take 3 seconds for full rotation
@@ -165,9 +159,13 @@ function love.mousepressed(x, y, button)
     button:handleClick(x, y)
   end
 
-  for _, shape in ipairs(shapes) do
-    if pointInsideShape(x, y, shape) then
+  -- for _, shape in ipairs(shapes) do
+  for i = #shapes, 1, -1 do
+    local shape = shapes[i]
+    if shape:pointInside(x, y) then
       dragging, dragX, dragY = shape, x, y
+      dragging.selected = true
+      break
     end
   end
 end
@@ -175,6 +173,7 @@ end
 function love.mousereleased(x, y, button)
   if button ~= 1 then return end -- check for left mouse button
 
+  dragging.selected = false
   dragging = nil
 end
 

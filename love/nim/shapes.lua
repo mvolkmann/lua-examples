@@ -35,6 +35,11 @@ function Circle:getWidth()
   return self.radius * 2
 end
 
+function Circle:pointInside(x, y)
+  local dSquared = (x - self.x) ^ 2 + (y - self.y) ^ 2
+  return dSquared <= self.radius ^ 2
+end
+
 Rectangle = { name = "rectangle" }
 Rectangle.__index = Rectangle
 setmetatable(Rectangle, Shape)
@@ -64,4 +69,9 @@ end
 
 function Rectangle:getWidth()
   return self.width
+end
+
+function Rectangle:pointInside(x, y)
+  return self.x <= x and x <= self.x + self.width and
+      self.y <= y and y <= self.y + self.height
 end
