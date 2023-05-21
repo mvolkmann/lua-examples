@@ -25,7 +25,7 @@ local mt = {
           x <= self.x + self.width and
           y >= self.y and
           y <= self.y + self.height
-      if clicked then self.callback() end
+      if clicked then self.onclick() end
     end
   }
 }

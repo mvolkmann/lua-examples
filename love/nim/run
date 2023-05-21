@@ -1,1 +1,2 @@
 open -n -a love .
+echo "status is $?"

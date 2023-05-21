@@ -1,6 +1,7 @@
 local love = require "love"
 local Button = require "button"
 local colors = require "colors"
+local fonts = require "fonts"
 local util = require "util"
 
 local g = love.graphics
@@ -53,15 +54,10 @@ function setFont(font) g.setFont(font) end
 -- ----------------------------------------------------------------------------
 
 function love.load()
-  fonts = {
-    s18 = g.newFont(18),
-    s36 = g.newFont(36)
-  }
-
   setColor(colors.white) -- initial
   setFont(fonts.s18)     -- initial
 
-  sound = love.audio.newSource("sounds/click.wav", "stream")
+  diceSound = love.audio.newSource("sounds/dice.wav", "stream")
 
   -- The type of logo is "userdata".
   logo = g.newImage('images/lua-128.png')
@@ -83,12 +79,12 @@ function love.load()
 
   buttons = {
     Button.new({
-      text = "Press Me",
+      text = "Roll Dice",
       x = 50,
       y = 200,
-      callback = function()
+      onclick = function()
         -- This will not play again until the currently playing sound completes.
-        love.audio.play(sound)
+        love.audio.play(diceSound)
         dice = math.random(6)
       end
     })
@@ -122,13 +118,15 @@ end
 
 function love.draw()
   drawImage(logo, logoOptions)
-  setFont(fonts.s36)
-  drawText(dice, { x = 200, y = 200 })
-  setFont(fonts.s18)
 
+  setFont(fonts.s18)
   for _, button in ipairs(buttons) do
     button:draw()
   end
+
+  setFont(fonts.s36)
+  setColor(colors.white)
+  drawText(dice, { x = 170, y = 200 })
 
   for _, shape in ipairs(shapes) do
     if shape.type == "rectangle" then
