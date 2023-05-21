@@ -1,6 +1,8 @@
 local love = require "love"
 local Button = require "button"
 local colors = require "colors"
+local util = require "util"
+
 local g = love.graphics
 
 function drawImage(image, opt)
@@ -20,16 +22,28 @@ function drawText(text, opt)
   g.print(text, x, y, angle, scale)
 end
 
-function dump(o)
-  if type(o) == 'table' then
-    local s = '{ '
-    for k, v in pairs(o) do
-      s = s .. k .. ' = ' .. dump(v) .. ', '
+function gradient(colors)
+  local direction = colors.direction or "horizontal"
+  local isHorizontal = direction == "horizontal"
+
+  local result = love.image.newImageData(
+    isHorizontal and 1 or #colors,
+    isHorizontal and #colors or 1
+  )
+
+  for i, color in ipairs(colors) do
+    local x, y
+    if isHorizontal then
+      x, y = 0, i - 1
+    else
+      x, y = i - 1, 0
     end
-    return s .. '} '
-  else
-    return tostring(o)
+    result:setPixel(x, y, color[1], color[2], color[3], color[4] or 255)
   end
+
+  result = love.graphics.newImage(result)
+  result:setFilter('linear', 'linear')
+  return result
 end
 
 function setColor(color) g.setColor(color) end
@@ -60,14 +74,12 @@ function love.load()
     height = height,
     angle = 0
   }
-  print("logoOptions =", dump(logoOptions))
+  util.dump("logoOptions", logoOptions)
 
   degreeInRadians = math.pi / 180
 
   math.randomseed(os.time())
   dice = math.random(6)
-
-  g.setBackgroundColor(colors.green2)
 
   buttons = {
     Button.new({
@@ -80,6 +92,10 @@ function love.load()
       end
     })
   }
+
+  grad = gradient({ colors.red, colors.blue })
+
+  g.setBackgroundColor(colors.green2)
 end
 
 function love.draw()
@@ -91,9 +107,16 @@ function love.draw()
   for _, b in ipairs(buttons) do
     b:draw()
   end
+
   setColor(colors.white)
 
-  -- Display a button that can be clicked.
+  -- TODO: Why doesn't this display anything?
+  drawImage(grad, {
+    x = 0,
+    y = 0,
+    width = 500,
+    height = 500
+  })
 end
 
 function love.keypressed(k)
