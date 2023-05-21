@@ -6,7 +6,7 @@ local util = require "util"
 
 local g = love.graphics
 
-function drawImage(image, opt)
+local function drawImage(image, opt)
   local x = opt.x or 0
   local y = opt.y or 0
   local angle = opt.angle or 0
@@ -15,7 +15,7 @@ function drawImage(image, opt)
   g.draw(image, x + centerX, y + centerY, angle, 1, 1, centerX, centerY)
 end
 
-function drawText(text, opt)
+local function drawText(text, opt)
   local x = opt.x or 0
   local y = opt.y or 0
   local angle = opt.angle or 0
@@ -23,7 +23,7 @@ function drawText(text, opt)
   g.print(text, x, y, angle, scale)
 end
 
-function gradient(colors)
+local function gradient(colors)
   local direction = colors.direction or "horizontal"
   local isHorizontal = direction == "horizontal"
 
@@ -47,9 +47,26 @@ function gradient(colors)
   return result
 end
 
-function setColor(color) g.setColor(color) end
+local function handleDragging()
+  if not dragging then return end
 
-function setFont(font) g.setFont(font) end
+  local newX = love.mouse.getX()
+  local newY = love.mouse.getY()
+  dragging.x = dragging.x + newX - dragX
+  dragging.y = dragging.y + newY - dragY
+  dragX, dragY = newX, newY
+end
+
+local function rotateLogo(dt)
+  local twoPi = math.pi * 2
+  local anglePerSecond = twoPi / 3 -- take 3 seconds for full rotation
+  local deltaAngle = anglePerSecond * dt
+  logoOptions.angle = (logoOptions.angle + deltaAngle) % twoPi
+end
+
+local function setColor(color) g.setColor(color) end
+
+local function setFont(font) g.setFont(font) end
 
 -- ----------------------------------------------------------------------------
 
@@ -152,7 +169,7 @@ function love.keypressed(k)
 end
 
 function love.mousepressed(x, y, button)
-  if button ~= 1 then return end -- left mouse button
+  if button ~= 1 then return end -- check for left mouse button
 
   for _, button in ipairs(buttons) do
     button:handleClick(x, y)
@@ -167,19 +184,12 @@ function love.mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
-  if button ~= 1 then return end -- left mouse button
+  if button ~= 1 then return end -- check for left mouse button
 
   dragging = nil
 end
 
 function love.update(dt)
-  logoOptions.angle = (logoOptions.angle + degreeInRadians) % (math.pi * 2)
-
-  if dragging then
-    local newX = love.mouse.getX()
-    local newY = love.mouse.getY()
-    dragging.x = dragging.x + newX - dragX
-    dragging.y = dragging.y + newY - dragY
-    dragX, dragY = newX, newY
-  end
+  rotateLogo(dt)
+  handleDragging()
 end
