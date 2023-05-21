@@ -111,6 +111,7 @@ function love.draw()
   setColor(colors.white)
 
   -- TODO: Why doesn't this display anything?
+  -- See https://love2d.org/wiki/Gradients.
   drawImage(grad, {
     x = 0,
     y = 0,
