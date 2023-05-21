@@ -189,6 +189,8 @@ function love.mousereleased(x, y, button)
   dragging = nil
 end
 
+-- dt is "delta time" which is the seconds since the last call.
+-- This is typically much less than one second.
 function love.update(dt)
   rotateLogo(dt)
   handleMouse()
