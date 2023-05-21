@@ -70,15 +70,11 @@ local function rotateLogo(dt)
   logoOptions.angle = (logoOptions.angle + deltaAngle) % twoPi
 end
 
-local function setColor(color) g.setColor(color) end
-
-local function setFont(font) g.setFont(font) end
-
 -- ----------------------------------------------------------------------------
 
 function love.load()
-  setColor(colors.white) -- initial
-  setFont(fonts.s18)     -- initial
+  g.setColor(colors.white) -- initial
+  g.setFont(fonts.s18)     -- initial
 
   diceSound = love.audio.newSource("sounds/dice.wav", "stream")
 
@@ -129,20 +125,20 @@ end
 function love.draw()
   drawImage(logo, logoOptions)
 
-  setFont(fonts.s18)
+  g.setFont(fonts.s18)
   for _, button in ipairs(buttons) do
     button:draw()
   end
 
-  setFont(fonts.s36)
-  setColor(colors.white)
+  g.setFont(fonts.s36)
+  g.setColor(colors.white)
   drawText(dice, { x = 170, y = 200 })
 
   for _, shape in ipairs(shapes) do
     shape:draw()
   end
 
-  setColor(colors.white)
+  g.setColor(colors.white)
 
   -- TODO: Why doesn't this display anything?
   -- See https://love2d.org/wiki/Gradients.
