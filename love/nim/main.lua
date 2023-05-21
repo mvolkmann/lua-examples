@@ -113,10 +113,11 @@ function love.load()
     })
   }
 
-  shapes = {
-    Rectangle.new(300, 200, 100, 50, colors.red),
-    Circle.new(400, 400, 50, colors.blue)
-  }
+  local rectangle = Rectangle.new(300, 200, 100, 50, colors.red)
+  rectangle.draggable = true
+  local circle = Circle.new(400, 400, 50, colors.blue)
+  circle.draggable = true
+  shapes = { rectangle, circle }
 
   grad = gradient({ colors.red, colors.blue })
 
@@ -168,13 +169,15 @@ function love.mousepressed(x, y, button)
   for i = #shapes, 1, -1 do
     local shape = shapes[i]
     if shape:pointInside(x, y) then
-      dragging, dragX, dragY = shape, x, y
-      dragging.selected = true
+      shape.selected = true
+      if shape.draggable then
+        dragging, dragX, dragY = shape, x, y
 
-      -- Move the selected shape to the end of shapes
-      -- so it renders on top of other shapes.
-      table.remove(shapes, i)
-      table.insert(shapes, shape)
+        -- Move the selected shape to the end of shapes
+        -- so it renders on top of other shapes.
+        table.remove(shapes, i)
+        table.insert(shapes, shape)
+      end
       break
     end
   end
