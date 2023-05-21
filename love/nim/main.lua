@@ -87,13 +87,35 @@ function love.load()
       x = 50,
       y = 200,
       callback = function()
+        -- This will not play again until the currently playing sound completes.
         love.audio.play(sound)
         dice = math.random(6)
       end
     })
   }
 
+  shapes = {
+    {
+      type = "rectangle",
+      x = 300,
+      y = 200,
+      width = 100,
+      height = 50,
+      color = colors.red
+    },
+    {
+      type = "rectangle",
+      x = 400,
+      y = 400,
+      width = 50,
+      height = 150,
+      color = colors.blue
+    }
+  }
+
   grad = gradient({ colors.red, colors.blue })
+
+  dragging, dragX, dragY = nil, 0, 0
 
   g.setBackgroundColor(colors.green2)
 end
@@ -104,8 +126,15 @@ function love.draw()
   drawText(dice, { x = 200, y = 200 })
   setFont(fonts.s18)
 
-  for _, b in ipairs(buttons) do
-    b:draw()
+  for _, button in ipairs(buttons) do
+    button:draw()
+  end
+
+  for _, shape in ipairs(shapes) do
+    if shape.type == "rectangle" then
+      setColor(shape.color)
+      g.rectangle("fill", shape.x, shape.y, shape.width, shape.height)
+    end
   end
 
   setColor(colors.white)
@@ -125,15 +154,34 @@ function love.keypressed(k)
 end
 
 function love.mousepressed(x, y, button)
-  if button == 1 then -- left mouse button
-    for _, b in ipairs(buttons) do
-      b:handleClick(x, y)
-    end
+  if button ~= 1 then return end -- left mouse button
+
+  for _, button in ipairs(buttons) do
+    button:handleClick(x, y)
   end
 
-  -- This will not play again until the currently playing sound completes.
+  for _, shape in ipairs(shapes) do
+    if shape.x <= x and x <= shape.x + shape.width and
+        shape.y <= y and y <= shape.y + shape.height then
+      dragging, dragX, dragY = shape, x, y
+    end
+  end
+end
+
+function love.mousereleased(x, y, button)
+  if button ~= 1 then return end -- left mouse button
+
+  dragging = nil
 end
 
 function love.update(dt)
   logoOptions.angle = (logoOptions.angle + degreeInRadians) % (math.pi * 2)
+
+  if dragging then
+    local newX = love.mouse.getX()
+    local newY = love.mouse.getY()
+    dragging.x = dragging.x + newX - dragX
+    dragging.y = dragging.y + newY - dragY
+    dragX, dragY = newX, newY
+  end
 end
