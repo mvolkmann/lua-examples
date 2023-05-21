@@ -170,6 +170,11 @@ function love.mousepressed(x, y, button)
     if shape:pointInside(x, y) then
       dragging, dragX, dragY = shape, x, y
       dragging.selected = true
+
+      -- Move the selected shape to the end of shapes
+      -- so it renders on top of other shapes.
+      table.remove(shapes, i)
+      table.insert(shapes, shape)
       break
     end
   end
