@@ -21,8 +21,9 @@ function addBox()
   local box = { x = x, y = 0, width = boxSize, height = boxSize }
   box.body = p.newBody(world, box.x, box.y, "dynamic")
   box.shape = p.newRectangleShape(box.width, box.height)
-  box.fixture = p.newFixture(box.body, box.shape, 1)
-  box.fixture:setRestitution(0.3)
+  local density = 2 -- 1
+  box.fixture = p.newFixture(box.body, box.shape, density)
+  -- box.fixture:setRestitution(0.9)
   table.insert(boxes, box)
 end
 
@@ -66,7 +67,14 @@ function love.draw()
   -- Draw all the boxes.
   g.setColor(colors.red)
   for _, box in ipairs(boxes) do
-    g.rectangle("fill", box.body:getX(), box.body:getY(), box.width, box.height)
+    -- Must draw a polygon, not a rectangle, in order to
+    -- allow the shapes to rotate when they collide.
+    g.polygon(
+      "fill",
+      box.body:getWorldPoints( -- returns multiple x,y values
+        box.shape:getPoints()  -- returns multiple x,y values
+      )
+    )
   end
 end
 
