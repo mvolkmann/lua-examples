@@ -125,6 +125,7 @@ end
 function love.draw()
   drawImage(logo, logoOptions)
 
+  -- Changes from setFont and setColor remain in effect until changed.
   g.setFont(fonts.s18)
   for _, button in ipairs(buttons) do
     button:draw()

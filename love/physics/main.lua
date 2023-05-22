@@ -2,6 +2,9 @@ local colors = require "colors"
 local love = require "love"
 
 local g = love.graphics
+-- From the docs, "This module is essentially just a binding to Box2D."
+-- Also see breezefield (https://github.com/HDictus/breezefield)
+-- which purports to be easier to use.
 local p = love.physics
 
 local boxSize = 50
