@@ -13,7 +13,7 @@ local boxes = {}
 local buttons = {}
 
 -- These variables are set in love.load.
-local buttonFont, windowWidth, windowHeight
+local buttonFont, collisionSound, windowWidth, windowHeight
 
 -- ----------------------------------------------------------------------------
 
@@ -33,15 +33,25 @@ function addBox()
   table.insert(boxes, box)
 end
 
+function beginContact()
+  -- We need to copy the sound in order for multiple copies
+  -- to overlap playing at the same time.
+  local clone = collisionSound:clone()
+  clone:play()
+end
+
 -- ----------------------------------------------------------------------------
 
 function love.load()
   math.randomseed(os.time())
 
+  collisionSound = love.audio.newSource("sounds/collision.mp3", "stream")
+
   p.setMeter(pixelsPerMeter)
   local xGravity = 0
   local yGravity = 9.81 * pixelsPerMeter
   world = p.newWorld(xGravity, yGravity)
+  world:setCallbacks(beginContact)
 
   windowWidth, windowHeight = g.getDimensions()
 
