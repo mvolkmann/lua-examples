@@ -4,23 +4,40 @@ local love = require "love"
 local g = love.graphics
 local p = love.physics
 
+local boxSize = 50
 local metersPerPixel = 32
+
+local windowWidth, windowHeight = g.getDimensions()
+
+local boxes = {}
 
 -- ----------------------------------------------------------------------------
 
-function love.load()
-  size = 50
-  box = { x = 100, y = 0, width = size, height = size }
-
-  p.setMeter(metersPerPixel)
-  world = p.newWorld(0, 9.81 * metersPerPixel, true)
+function addBox()
+  local x = math.random(0, windowWidth - boxSize)
+  local box = { x = x, y = 0, width = boxSize, height = boxSize }
   box.body = p.newBody(world, box.x, box.y, "dynamic")
   box.shape = p.newRectangleShape(box.width, box.height)
   box.fixture = p.newFixture(box.body, box.shape, 1)
   box.fixture:setRestitution(0.3)
+  table.insert(boxes, box)
+end
 
-  local width, height = g.getDimensions()
-  ground = { x = 0, y = height - 30, width = width, height = 30 }
+-- ----------------------------------------------------------------------------
+
+function love.load()
+  math.randomseed(os.time())
+
+  p.setMeter(metersPerPixel)
+  world = p.newWorld(0, 9.81 * metersPerPixel, true)
+
+  local groundHeight = 30
+  ground = {
+    x = 0,
+    y = windowHeight - groundHeight,
+    width = windowWidth,
+    height = groundHeight
+  }
   ground.body = p.newBody(world, ground.x, ground.y, "static")
   ground.shape = p.newRectangleShape(ground.width, ground.height)
   ground.fixture = p.newFixture(ground.body, ground.shape, 1)
@@ -33,16 +50,25 @@ function love.update(dt)
 end
 
 function love.draw()
-  g.setColor(colors.red)
-  g.rectangle("fill", box.body:getX(), box.body:getY(), box.width, box.height)
+  -- Draw the ground.
   g.setColor(colors.green)
   g.rectangle(
     "fill",
     ground.body:getX(), ground.body:getY(),
     ground.width, ground.height
   )
+
+  -- Draw all the boxes.
+  g.setColor(colors.red)
+  for _, box in ipairs(boxes) do
+    g.rectangle("fill", box.body:getX(), box.body:getY(), box.width, box.height)
+  end
 end
 
 function love.keypressed(k)
-  if k == "escape" then love.event.quit("restart") end
+  if k == "escape" then
+    love.event.quit("restart")
+  elseif k == "b" then
+    addBox()
+  end
 end
