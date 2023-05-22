@@ -10,9 +10,10 @@ local p = love.physics
 
 local pixelsPerMeter = 64
 local boxes = {}
+local buttons = {}
 
 -- These variables are set in love.load.
-local buttonFont, dropButton, windowWidth, windowHeight
+local buttonFont, windowWidth, windowHeight
 
 -- ----------------------------------------------------------------------------
 
@@ -54,13 +55,24 @@ function love.load()
   ground.fixture = p.newFixture(ground.body, ground.shape)
 
   buttonFont = g.newFont(30)
-  dropButton = Button.new({
-    font = buttonFont,
-    text = "Drop Box",
-    x = 120,
-    y = 70,
-    onclick = addBox
-  })
+  buttons = {
+    Button.new({
+      font = buttonFont,
+      text = "Drop Box",
+      x = 120,
+      y = 70,
+      onclick = addBox
+    }),
+    Button.new({
+      font = buttonFont,
+      text = "Reset",
+      x = 145,
+      y = 140,
+      onclick = function()
+        boxes = {}
+      end
+    })
+  }
 end
 
 -- dt is "delta time" which is the seconds since the last call.
@@ -93,19 +105,21 @@ function love.draw()
   end
 
   g.setFont(buttonFont)
-  dropButton:draw()
+  for _, button in ipairs(buttons) do
+    button:draw()
+  end
 end
 
 function love.keypressed(k)
   if k == "escape" then
-    love.event.quit("restart")
-  elseif k == "b" then
-    addBox()
+    love.event.quit("restart") -- for debugging
   end
 end
 
 function love.mousepressed(x, y, button)
   if button ~= 1 then return end -- check for left mouse button
 
-  dropButton:handleClick(x, y)
+  for _, button in ipairs(buttons) do
+    button:handleClick(x, y)
+  end
 end
