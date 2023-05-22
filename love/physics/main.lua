@@ -8,7 +8,7 @@ local g = love.graphics
 local p = love.physics
 
 local boxSize = 50
-local metersPerPixel = 32
+local pixelsPerMeter = 64
 
 local windowWidth, windowHeight = g.getDimensions()
 
@@ -31,8 +31,10 @@ end
 function love.load()
   math.randomseed(os.time())
 
-  p.setMeter(metersPerPixel)
-  world = p.newWorld(0, 9.81 * metersPerPixel, true)
+  p.setMeter(pixelsPerMeter)
+  local xGravity = 0
+  local yGravity = 9.81 * pixelsPerMeter
+  world = p.newWorld(xGravity, yGravity)
 
   local groundHeight = 30
   ground = {

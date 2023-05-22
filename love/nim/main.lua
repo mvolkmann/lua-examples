@@ -5,6 +5,10 @@ local fonts = require "fonts"
 local util = require "util"
 require "shapes"
 
+-- These variables are set in the love.load function.
+local buttons, dice, diceSound, dragging, dragX, dragY
+local logo, logoOptions, shapes
+
 local g = love.graphics
 
 local function drawImage(image, opt)
@@ -76,7 +80,8 @@ function love.load()
   g.setColor(colors.white) -- initial
   g.setFont(fonts.s18)     -- initial
 
-  diceSound = love.audio.newSource("sounds/dice.wav", "stream")
+  -- diceSound = love.audio.newSource("sounds/dice.mp3", "stream")
+  diceSound = love.audio.newSource("sounds/dice.mp3", "static")
 
   -- The type of logo is "userdata".
   logo = g.newImage('images/lua-128.png')
@@ -91,8 +96,6 @@ function love.load()
   }
   -- util.dump("logoOptions", logoOptions)
 
-  degreeInRadians = math.pi / 180
-
   math.randomseed(os.time())
   dice = math.random(6)
 
@@ -102,22 +105,23 @@ function love.load()
       x = 50,
       y = 200,
       onclick = function()
-        -- This will not play again until the currently playing sound completes.
-        love.audio.play(diceSound)
+        -- The sound will not play again until
+        -- the currently playing sound completes.
+        diceSound:play()
         dice = math.random(6)
       end
     })
   }
 
-  local rectangle = Rectangle.new(300, 50, 100, 50, colors.red)
+  local rectangle = Rectangle.new(250, 50, 100, 50, colors.red)
   rectangle.draggable = true
-  local circle1 = Circle.new(350, 200, 50, colors.blue)
+  local circle1 = Circle.new(300, 200, 50, colors.yellow)
   circle1.draggable = true
-  local circle2 = Circle.new(350, 300, 30, colors.white)
+  local circle2 = Circle.new(300, 300, 30, colors.pink)
   circle2.draggable = true
   shapes = { rectangle, circle1, circle2 }
 
-  grad = gradient({ colors.red, colors.blue })
+  -- grad = gradient({ colors.red, colors.blue })
 
   dragging, dragX, dragY = nil, 0, 0
 
@@ -145,12 +149,12 @@ function love.draw()
 
   -- TODO: Why doesn't this display anything?
   -- See https://love2d.org/wiki/Gradients.
-  drawImage(grad, {
+  --[[ drawImage(grad, {
     x = 0,
     y = 0,
     width = 500,
     height = 500
-  })
+  }) ]]
 end
 
 function love.keypressed(k)

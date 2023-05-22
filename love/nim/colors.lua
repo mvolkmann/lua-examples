@@ -8,6 +8,8 @@ return {
   gray = { rgb(150, 150, 150) },
   green = { 0, 1, 0 },
   green2 = { rgb(25, 125, 75) },
+  pink = { rgb(255, 192, 203) },
   red = { 1, 0, 0 },
-  white = { 1, 1, 1 }
+  white = { 1, 1, 1 },
+  yellow = { 1, 1, 0 }
 }
