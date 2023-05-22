@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+rm -f physics.love
+zip -r physics.love .

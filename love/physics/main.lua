@@ -72,8 +72,6 @@ end
 function love.draw()
   -- Draw the ground.
   g.setColor(colors.green)
-  print("points =", ground.shape:getPoints())
-  print("worldPoints =", ground.body:getWorldPoints(ground.shape:getPoints()))
   love.graphics.polygon(
     "fill",
     ground.body:getWorldPoints(
