@@ -25,7 +25,6 @@ local mt = {
           x <= self.x + self.width and
           y >= self.y and
           y <= self.y + self.height
-      print("clicked =", clicked)
       if clicked then self.onclick() end
     end
   }
