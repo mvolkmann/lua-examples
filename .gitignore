@@ -1,3 +1,5 @@
 .DS_Store
 c-calls-lua/main
 *.o
+*.love
+nim-ios/

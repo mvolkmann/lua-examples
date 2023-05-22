@@ -89,7 +89,7 @@ function love.load()
     height = height,
     angle = 0
   }
-  util.dump("logoOptions", logoOptions)
+  -- util.dump("logoOptions", logoOptions)
 
   degreeInRadians = math.pi / 180
 
@@ -109,11 +109,13 @@ function love.load()
     })
   }
 
-  local rectangle = Rectangle.new(300, 200, 100, 50, colors.red)
+  local rectangle = Rectangle.new(300, 50, 100, 50, colors.red)
   rectangle.draggable = true
-  local circle = Circle.new(400, 400, 50, colors.blue)
-  circle.draggable = true
-  shapes = { rectangle, circle }
+  local circle1 = Circle.new(350, 200, 50, colors.blue)
+  circle1.draggable = true
+  local circle2 = Circle.new(350, 300, 30, colors.white)
+  circle2.draggable = true
+  shapes = { rectangle, circle1, circle2 }
 
   grad = gradient({ colors.red, colors.blue })
 
