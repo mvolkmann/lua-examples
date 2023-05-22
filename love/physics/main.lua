@@ -112,6 +112,13 @@ function love.draw()
         box.shape:getPoints()  -- returns multiple x,y values
       )
     )
+    --[[ This is an alternate approach.
+    -- Note that we must use unpack instead of table.unpack
+    -- because love2d uses LuaJIT.
+    local points = { box.shape:getPoints() }
+    local worldPoints = { box.body:getWorldPoints(unpack(points)) }
+    g.polygon("fill", worldPoints)
+    --]]
   end
 
   g.setFont(buttonFont)
