@@ -11,16 +11,19 @@ local p = love.physics
 local pixelsPerMeter = 64
 local boxes = {}
 local buttons = {}
+local wallWidth = 6
 
 -- These variables are set in love.load.
-local buttonFont, collisionSound, windowWidth, windowHeight
+local buttonFont, collisionSound, walls, windowWidth, windowHeight
 
 -- ----------------------------------------------------------------------------
 
 function addBox()
   local size = 50
   local halfSize = size / 2
-  local boxCenterX = math.random(halfSize, windowWidth - halfSize)
+  local minX = wallWidth + halfSize
+  local maxX = windowWidth - wallWidth - halfSize
+  local boxCenterX = math.random(minX, maxX)
   local boxCenterY = halfSize
 
   local box = {}
@@ -58,11 +61,24 @@ function love.load()
   local groundHeight = 30
   local groundCenterX = windowWidth / 2
   local groundCenterY = windowHeight - groundHeight / 2
+  local wallCenterY = windowHeight / 2
 
-  ground = {}
+  local ground = {}
   ground.body = p.newBody(world, groundCenterX, groundCenterY, "static")
   ground.shape = p.newRectangleShape(windowWidth, groundHeight)
   ground.fixture = p.newFixture(ground.body, ground.shape)
+
+  local leftWall = {}
+  leftWall.body = p.newBody(world, wallWidth / 2, wallCenterY, "static")
+  leftWall.shape = p.newRectangleShape(wallWidth, windowHeight)
+  leftWall.fixture = p.newFixture(leftWall.body, leftWall.shape)
+
+  local rightWall = {}
+  rightWall.body = p.newBody(world, windowWidth - wallWidth / 2, wallCenterY, "static")
+  rightWall.shape = p.newRectangleShape(wallWidth, windowHeight)
+  rightWall.fixture = p.newFixture(rightWall.body, rightWall.shape)
+
+  walls = { leftWall, ground, rightWall }
 
   buttonFont = g.newFont(30)
   buttons = {
@@ -92,14 +108,16 @@ function love.update(dt)
 end
 
 function love.draw()
-  -- Draw the ground.
-  g.setColor(colors.green)
-  love.graphics.polygon(
-    "fill",
-    ground.body:getWorldPoints(
-      ground.shape:getPoints()
+  -- Draw the walls.
+  g.setColor(colors.purple)
+  for _, wall in ipairs(walls) do
+    love.graphics.polygon(
+      "fill",
+      wall.body:getWorldPoints(
+        wall.shape:getPoints()
+      )
     )
-  )
+  end
 
   -- Draw all the boxes.
   for _, box in ipairs(boxes) do

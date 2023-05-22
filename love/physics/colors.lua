@@ -16,6 +16,7 @@ return {
   blue = { 0, 0, 1 },
   gray = { rgb(150, 150, 150) },
   green = { 0, 1, 0 },
+  purple = { rgb(148, 0, 211) },
   red = { 1, 0, 0 },
   white = { 1, 1, 1 }
 }
