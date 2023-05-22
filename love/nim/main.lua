@@ -164,8 +164,8 @@ end
 function love.mousepressed(x, y, button)
   if button ~= 1 then return end -- check for left mouse button
 
-  for _, button in ipairs(buttons) do
-    button:handleClick(x, y)
+  for _, b in ipairs(buttons) do
+    b:handleClick(x, y)
   end
 
   -- Iterating in reverse to prefer shape on top.

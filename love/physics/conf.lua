@@ -2,7 +2,7 @@ local love = require "love"
 
 function love.conf(t)
   t.title = "Physics Demo"
-  t.version = "11.4" -- version of Love2d
-  t.window.width = 1280
-  t.window.height = 720
+  t.version = "11.4"    -- version of Love2d
+  t.window.width = 393  -- third of 1179 (iPhone 14 Pro width)
+  t.window.height = 852 -- third of 2556 (iPhone 14 Pro height)
 end

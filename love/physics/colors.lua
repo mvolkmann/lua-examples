@@ -1,3 +1,12 @@
+function randomColor()
+  local r = math.random()
+  local g = math.random()
+  local b = math.random()
+  local total = r + g + b
+  -- This makes sure the color isn't too dark.
+  return total >= 1 and { r, g, b } or randomColor()
+end
+
 local function rgb(red, green, blue)
   return red / 255, green / 255, blue / 255
 end
