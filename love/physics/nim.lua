@@ -1,6 +1,4 @@
 local bit = require "bit"
-local computerWon = false
-local gameOver = false
 
 local function all(t, predicate)
   for _, v in ipairs(t) do
@@ -33,16 +31,7 @@ local function isWinning(counts)
   return score == 0
 end
 
-local function removeTabs(counts, row, count, byHuman)
-  gameStarted = true
-  counts[row] = counts[row] - count
-  if gameOver then computerWon = byHuman end
-end
-
 local function getMove(counts)
-  if gameOver then return end
-
-
   -- Find the first move that results in a score of zero.
   for column, count in ipairs(counts) do
     if count == 0 then goto continue end
@@ -58,7 +47,8 @@ local function getMove(counts)
     ::continue::
   end
 
-  -- Remove one from any non-empty row.
+  -- No move with a score of zero was found,
+  -- remove one from any non-empty row.
   while true do
     local column = math.random(1, #counts)
     if counts[column] > 0 then return column, 1 end

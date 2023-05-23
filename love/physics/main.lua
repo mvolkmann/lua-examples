@@ -29,19 +29,36 @@ lurker.postswap = function() love.event.quit "restart" end
 
 -- ----------------------------------------------------------------------------
 
-function assess()
+function computerMove()
+  -- Get the number of boxes remaining in each column.
+  local gameOver = true
   local counts = { 0, 0, 0 }
   for _, box in ipairs(boxes) do
     local data = boxData[box]
     if data.alive then
       counts[data.column] = counts[data.column] + 1
+      gameOver = false
     end
   end
-  util.dump("counts", counts)
-  local winning = nim.isWinning(counts)
-  print("winning =", winning)
-  local column, number = nim.getMove(counts)
-  print("move =", column, number)
+
+  if gameOver then return end
+
+  -- Determine the best move.
+  local column, n = nim.getMove(counts)
+  print("move =", column, n)
+  local row = counts[column] - n + 1
+
+  -- Find the box to remove.
+  local box
+  for _, b in ipairs(boxes) do
+    local data = boxData[b]
+    if data.column == column and data.row == row then
+      box = b
+      break
+    end
+  end
+
+  if box then removeBox(box) end
 end
 
 function beginContact()
@@ -125,26 +142,6 @@ function distanceToRope(x, y, rope)
   local dx = x - xx
   local dy = y - yy
   return math.sqrt(dx ^ 2 + dy ^ 2)
-end
-
-function getBoxBottom(box)
-  local halfSize = box.size / 2
-  return box.centerX, box.centerY + halfSize
-end
-
-function getBoxLeft(box)
-  local halfSize = box.size / 2
-  return box.centerX - halfSize, box.centerY
-end
-
-function getBoxRight(box)
-  local halfSize = box.size / 2
-  return box.centerX + halfSize, box.centerY
-end
-
-function getBoxTop(box)
-  local halfSize = box.size / 2
-  return box.centerX, box.centerY - halfSize
 end
 
 function getShapePoints(s)
@@ -299,7 +296,8 @@ function love.mousepressed(x, y, button)
     local data = boxData[box]
     if data.alive and insideBox(x, y, box) then
       removeBox(box)
+      computerMove()
+      break
     end
   end
-  assess()
 end
