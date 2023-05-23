@@ -18,7 +18,7 @@ local mt = {
         cornerRadius, cornerRadius
       )
       g.setColor(self.textColor)
-      g.print(self.text, self.x + padding, self.y + padding, 0)
+      g.print(self.text, self.x + padding, self.y + padding)
     end,
     handleClick = function(self, x, y)
       local clicked = x >= self.x and
