@@ -12,12 +12,13 @@ local g = love.graphics
 -- which purports to be easier to use.
 local p = love.physics
 
+local boxes = {}
 local boxSize = 50
+local boxData = {}
 local buttons = {}
 local pixelsPerMeter = 64
 local ropeCount = 0
 local ropes = {}
-local shapes = {}
 local walls = {}
 local wallWidth = 6
 
@@ -27,6 +28,17 @@ local buttonFont, ceiling, collisionSound, windowWidth, windowHeight
 lurker.postswap = function() love.event.quit "restart" end
 
 -- ----------------------------------------------------------------------------
+
+function assess()
+  local counts = { 0, 0, 0 }
+  for _, box in ipairs(boxes) do
+    local data = boxData[box]
+    if data.alive then
+      counts[data.column] = counts[data.column] + 1
+    end
+  end
+  util.dump("counts", counts)
+end
 
 function beginContact()
   -- We need to copy the sound in order for multiple copies
@@ -46,21 +58,23 @@ function createBox(size, centerX, centerY)
   box.shape = p.newRectangleShape(size, size)
   box.fixture = p.newFixture(box.body, box.shape)
   box.fixture:setRestitution(0.3)
-  table.insert(shapes, box)
+  table.insert(boxes, box)
   return box
 end
 
-function createColumn(x, count)
+function createColumn(column, count, x)
   local halfSize = boxSize / 2
   local lastShape = ceiling
   local lastX = x
   local lastY = 0
-  for _ = 1, count do
+  for row = 1, count do
     local boxX = x + math.random(-halfSize, halfSize)
-    -- local boxX = x
     local box = createBox(boxSize, boxX, lastY + boxSize)
+    boxData[box] = { column = column, row = row, alive = true }
+
     local ropeEndY = box.centerY - halfSize
     createRope(lastShape, box, lastX, lastY, boxX, ropeEndY)
+
     lastShape = box
     lastX = boxX
     lastY = ropeEndY + boxSize
@@ -143,9 +157,26 @@ function insideBox(x, y, box)
 end
 
 function removeBox(box)
+  -- Remove the rope at the top of this box.
   local rope = ropes[box]
   ropes[box] = nil
   rope:destroy()
+
+  -- Mark this box and all those below as no longer alive.
+  local data = boxData[box]
+  local column = data.column
+  local row = data.row
+  for _, data in pairs(boxData) do
+    if data.column == column and data.row >= row then
+      data.alive = false
+    end
+  end
+end
+
+function reset()
+  boxData = {}
+  boxes = {}
+  ropes = {}
 end
 
 -- ----------------------------------------------------------------------------
@@ -200,17 +231,14 @@ function love.load()
       text = "Clear",
       x = 145,
       y = 70,
-      onclick = function()
-        shapes = {}
-        ropes = {}
-      end
+      onclick = reset
     })
   }
 
   local spacing = windowWidth / 4
-  createColumn(spacing, 3)
-  createColumn(spacing * 2, 5)
-  createColumn(spacing * 3, 7)
+  createColumn(1, 3, spacing)
+  createColumn(2, 5, spacing * 2)
+  createColumn(3, 7, spacing * 3)
 end
 
 -- dt is "delta time" which is the seconds since the last call.
@@ -239,12 +267,12 @@ function love.draw()
     g.line(rope:getAnchors())
   end
 
-  -- Draw all the shapes.
-  for _, s in ipairs(shapes) do
-    g.setColor(s.color or colors.red)
+  -- Draw all the boxes.
+  for _, b in ipairs(boxes) do
+    g.setColor(b.color or colors.white)
     -- We must draw a polygon, not a rectangle, in order to
-    -- allow the shapes to rotate when they collide.
-    g.polygon("fill", getShapePoints(s))
+    -- allow the boxes to rotate when they collide.
+    g.polygon("fill", getShapePoints(b))
   end
 
   -- Draw all the buttons.
@@ -263,9 +291,11 @@ function love.mousepressed(x, y, button)
   end ]]
   --
   -- Check for clicks on boxes.
-  for _, box in ipairs(shapes) do
-    if insideBox(x, y, box) then
+  for _, box in ipairs(boxes) do
+    local data = boxData[box]
+    if data.alive and insideBox(x, y, box) then
       removeBox(box)
     end
   end
+  assess()
 end
