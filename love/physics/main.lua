@@ -24,9 +24,10 @@ local walls = {}
 local wallWidth = 6
 
 -- These variables are set in love.load.
-local buttonFont, ceiling, collisionSound, gameResult
+local buttonFont, ceiling, collisionSound, gameResult, monkey, newGameButton
 local secondsElapsed, windowWidth, windowHeight
 
+-- lurker.postswap = restart
 lurker.postswap = restart
 
 -- ----------------------------------------------------------------------------
@@ -47,7 +48,10 @@ function computerMove()
   elseif remaining == 1 then
     gameResult = "You won!"
   end
-  if gameResult then return end
+  if gameResult then
+    buttons = { newGameButton }
+    return
+  end
 
   -- Determine the best move.
   local column, n = nim.getMove(counts)
@@ -165,10 +169,10 @@ end
 function newGame()
   boxData = {}
   boxes = {}
+  buttons = {}
   gameResult = nil
   ropes = {}
   secondsElapsed = nil
-  restart()
 end
 
 function removeBox(box)
@@ -189,6 +193,7 @@ function removeBox(box)
 end
 
 function restart()
+  newGame()
   love.event.quit "restart"
 end
 
@@ -198,11 +203,14 @@ function love.load()
   math.randomseed(os.time())
 
   collisionSound = love.audio.newSource("sounds/collision.mp3", "stream")
+  monkey = g.newImage('images/monkey.png')
 
+  -- Configure gravity.
   p.setMeter(pixelsPerMeter)
   local xGravity = 0
   local yGravity = 9.81 * pixelsPerMeter
   world = p.newWorld(xGravity, yGravity)
+
   world:setCallbacks(beginContact)
 
   windowWidth, windowHeight = g.getDimensions()
@@ -238,15 +246,14 @@ function love.load()
   walls = { ceiling, leftWall, floor, rightWall }
 
   buttonFont = g.newFont(30)
-  buttons = {
-    Button.new({
-      font = buttonFont,
-      text = "New Game",
-      x = 110,
-      y = 100,
-      onclick = newGame
-    })
-  }
+  buttons = {}
+  newGameButton = Button.new({
+    font = buttonFont,
+    text = "New Game",
+    x = 110,
+    y = 100,
+    onclick = restart
+  })
 
   local spacing = windowWidth / 4
   createColumn(1, 3, spacing)
@@ -272,6 +279,8 @@ function love.update(dt)
 end
 
 function love.draw()
+  g.draw(monkey, 100, 100)
+
   -- Draw the walls.
   g.setColor(colors.purple)
   for _, wall in ipairs(walls) do
@@ -313,10 +322,10 @@ function love.mousepressed(x, y, button)
   if button ~= 1 then return end -- check for left mouse button
 
   -- Check for clicks on buttons.
-  --[[ for _, button in ipairs(buttons) do
+  for _, button in ipairs(buttons) do
     button:handleClick(x, y)
-  end ]]
-  --
+  end
+
   -- Check for clicks on boxes.
   for _, box in ipairs(boxes) do
     local data = boxData[box]
