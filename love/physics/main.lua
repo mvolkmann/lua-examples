@@ -1,6 +1,7 @@
 local Button = require "button"
 local colors = require "colors"
 local love = require "love"
+local util = require "util"
 
 local g = love.graphics
 -- From the docs, "This module is essentially just a binding to Box2D."
@@ -8,9 +9,10 @@ local g = love.graphics
 -- which purports to be easier to use.
 local p = love.physics
 
-local pixelsPerMeter = 64
-local boxes = {}
 local buttons = {}
+local pixelsPerMeter = 64
+local ropes = {}
+local shapes = {}
 local wallWidth = 6
 
 -- These variables are set in love.load.
@@ -23,17 +25,20 @@ function addBox()
   local halfSize = size / 2
   local minX = wallWidth + halfSize
   local maxX = windowWidth - wallWidth - halfSize
-  local boxCenterX = math.random(minX, maxX)
-  local boxCenterY = halfSize
+  local centerX = math.random(minX, maxX)
+  local centerY = halfSize
+  createBox(size, centerX, centerY)
+end
 
-  local box = {}
-  box.color = randomColor()
-  box.body = p.newBody(world, boxCenterX, boxCenterY, "dynamic")
-  box.shape = p.newRectangleShape(size, size)
-  -- local density = 2 -- 1
-  box.fixture = p.newFixture(box.body, box.shape)
-  box.fixture:setRestitution(0.3)
-  table.insert(boxes, box)
+function addPair()
+  local size = 50
+  local box1 = createBox(size, 100, 50)
+  local box2 = createBox(size, 125, 150)
+  local x1, y1 = getBoxBottom(box1)
+  local x2, y2 = getBoxBottom(box2)
+  local d = distance(x1, y1, x2, y2)
+  local rope = p.newRopeJoint(box1.body, box2.body, x1, y1, x2, y2, d, true)
+  table.insert(ropes, rope)
 end
 
 function beginContact()
@@ -41,6 +46,46 @@ function beginContact()
   -- to overlap playing at the same time.
   local clone = collisionSound:clone()
   clone:play()
+end
+
+function createBox(size, centerX, centerY)
+  local box = {
+    centerX = centerX,
+    centerY = centerY,
+    color = randomColor(),
+    size = size
+  }
+  -- util.dump("box", box)
+  box.body = p.newBody(world, centerX, centerY, "dynamic")
+  box.shape = p.newRectangleShape(size, size)
+  box.fixture = p.newFixture(box.body, box.shape)
+  box.fixture:setRestitution(0.3)
+  table.insert(shapes, box)
+  return box
+end
+
+function distance(x1, y1, x2, y2)
+  return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
+end
+
+function getBoxBottom(box)
+  local halfSize = box.size / 2
+  return box.centerX, box.centerY + halfSize
+end
+
+function getBoxLeft(box)
+  local halfSize = box.size / 2
+  return box.centerX - halfSize, box.centerY
+end
+
+function getBoxRight(box)
+  local halfSize = box.size / 2
+  return box.centerX + halfSize, box.centerY
+end
+
+function getBoxTop(box)
+  local halfSize = box.size / 2
+  return box.centerX, box.centerY - halfSize
 end
 
 -- ----------------------------------------------------------------------------
@@ -87,7 +132,8 @@ function love.load()
       text = "Drop Box",
       x = 120,
       y = 70,
-      onclick = addBox
+      onclick = addPair
+      -- onclick = addBox
     }),
     Button.new({
       font = buttonFont,
@@ -95,7 +141,7 @@ function love.load()
       x = 145,
       y = 140,
       onclick = function()
-        boxes = {}
+        shapes = {}
       end
     })
   }
@@ -119,15 +165,23 @@ function love.draw()
     )
   end
 
-  -- Draw all the boxes.
-  for _, box in ipairs(boxes) do
-    g.setColor(box.color)
+  -- Draw all the ropes.
+  g.setColor(colors.red)
+  for _, rope in ipairs(ropes) do
+    g.line(rope:getAnchors())
+  end
+
+  -- Draw all the shapes.
+  for _, s in ipairs(shapes) do
+    -- print("shape type =", s.shape:getType())
+    util.dump("s.shape", s.shape)
+    g.setColor(s.color or colors.red)
     -- Must draw a polygon, not a rectangle, in order to
     -- allow the shapes to rotate when they collide.
     g.polygon(
       "fill",
-      box.body:getWorldPoints( -- returns multiple x,y values
-        box.shape:getPoints()  -- returns multiple x,y values
+      s.body:getWorldPoints( -- returns multiple x,y values
+        s.shape:getPoints()  -- returns multiple x,y values
       )
     )
     --[[ This is an alternate approach.
