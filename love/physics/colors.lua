@@ -18,5 +18,6 @@ return {
   green = { 0, 1, 0 },
   purple = { rgb(148, 0, 211) },
   red = { 1, 0, 0 },
-  white = { 1, 1, 1 }
+  white = { 1, 1, 1 },
+  yellow = { 1, 1, 0 }
 }

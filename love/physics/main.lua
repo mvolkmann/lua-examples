@@ -1,6 +1,7 @@
 local Button = require "button"
 local colors = require "colors"
 local love = require "love"
+local lurker = require "lurker"
 local util = require "util"
 
 local g = love.graphics
@@ -13,10 +14,13 @@ local buttons = {}
 local pixelsPerMeter = 64
 local ropes = {}
 local shapes = {}
+local walls = {}
 local wallWidth = 6
 
 -- These variables are set in love.load.
-local buttonFont, collisionSound, walls, windowWidth, windowHeight
+local buttonFont, collisionSound, windowWidth, windowHeight
+
+lurker.postswap = function() love.event.quit "restart" end
 
 -- ----------------------------------------------------------------------------
 
@@ -55,7 +59,6 @@ function createBox(size, centerX, centerY)
     color = randomColor(),
     size = size
   }
-  -- util.dump("box", box)
   box.body = p.newBody(world, centerX, centerY, "dynamic")
   box.shape = p.newRectangleShape(size, size)
   box.fixture = p.newFixture(box.body, box.shape)
@@ -137,11 +140,12 @@ function love.load()
     }),
     Button.new({
       font = buttonFont,
-      text = "Reset",
+      text = "Clear",
       x = 145,
       y = 140,
       onclick = function()
         shapes = {}
+        ropes = {}
       end
     })
   }
@@ -151,6 +155,7 @@ end
 -- This is typically much less than one second.
 function love.update(dt)
   world:update(dt)
+  lurker.update()
 end
 
 function love.draw()
@@ -166,15 +171,14 @@ function love.draw()
   end
 
   -- Draw all the ropes.
-  g.setColor(colors.red)
+  g.setColor(colors.yellow)
   for _, rope in ipairs(ropes) do
     g.line(rope:getAnchors())
   end
 
   -- Draw all the shapes.
   for _, s in ipairs(shapes) do
-    -- print("shape type =", s.shape:getType())
-    util.dump("s.shape", s.shape)
+    -- util.dump("s.shape", s.shape)
     g.setColor(s.color or colors.red)
     -- Must draw a polygon, not a rectangle, in order to
     -- allow the shapes to rotate when they collide.
@@ -196,12 +200,6 @@ function love.draw()
   g.setFont(buttonFont)
   for _, button in ipairs(buttons) do
     button:draw()
-  end
-end
-
-function love.keypressed(k)
-  if k == "escape" then
-    love.event.quit("restart") -- for debugging
   end
 end
 
