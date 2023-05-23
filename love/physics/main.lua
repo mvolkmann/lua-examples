@@ -38,6 +38,8 @@ function assess()
     end
   end
   util.dump("counts", counts)
+  local winning = nim.isWinning(counts)
+  print("winning =", winning)
 end
 
 function beginContact()
