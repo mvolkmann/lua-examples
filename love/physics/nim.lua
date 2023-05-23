@@ -1,33 +1,15 @@
 local bit = require "bit"
-
-local function all(t, predicate)
-  for _, v in ipairs(t) do
-    if not predicate(v) then return false end
-  end
-  return true
-end
-
-local function reduce(fn, t, initial)
-  local acc = initial
-  for _, v in ipairs(t) do
-    acc = fn(acc, v)
-  end
-  return acc
-end
-
-local function sum(n1, n2) return n1 + n2 end
-
-local function xor(n1, n2) return bit.bxor(n1, n2) end
+local fun = require "fun"
 
 local function isWinning(counts)
   -- We are in the end game if all columns are empty or contain one.
-  local isEndGame = all(counts, function(count) return count <= 1 end)
+  local isEndGame = fun.all(counts, function(count) return count <= 1 end)
   if isEndGame then
-    local total = reduce(sum, counts, 0)
+    local total = fun.tableSum(counts)
     return total % 2 ~= 0 -- odd is winning
   end
   -- Exclusive-or all the row counts.
-  local score = reduce(xor, counts, 0)
+  local score = fun.reduce(fun.xor, counts, 0)
   return score == 0
 end
 

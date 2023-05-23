@@ -1,5 +1,6 @@
 local Button = require "button"
 local colors = require "colors"
+local fun = require "fun"
 local love = require "love"
 local lurker = require "lurker"
 local nim = require "nim"
@@ -23,29 +24,33 @@ local walls = {}
 local wallWidth = 6
 
 -- These variables are set in love.load.
-local buttonFont, ceiling, collisionSound, windowWidth, windowHeight
+local buttonFont, ceiling, collisionSound, gameResult
+local windowWidth, windowHeight
 
-lurker.postswap = function() love.event.quit "restart" end
+lurker.postswap = restart
 
 -- ----------------------------------------------------------------------------
 
 function computerMove()
   -- Get the number of boxes remaining in each column.
-  local gameOver = true
   local counts = { 0, 0, 0 }
   for _, box in ipairs(boxes) do
     local data = boxData[box]
     if data.alive then
       counts[data.column] = counts[data.column] + 1
-      gameOver = false
     end
   end
 
-  if gameOver then return end
+  local remaining = fun.tableSum(counts)
+  if remaining == 0 then
+    gameResult = "The computer won."
+  elseif remaining == 1 then
+    gameResult = "You won!"
+  end
+  if gameResult then return end
 
   -- Determine the best move.
   local column, n = nim.getMove(counts)
-  print("move =", column, n)
   local row = counts[column] - n + 1
 
   -- Find the box to remove.
@@ -157,6 +162,14 @@ function insideBox(x, y, box)
   return PointWithinShape(shape, x, y)
 end
 
+function newGame()
+  boxData = {}
+  boxes = {}
+  gameResult = nil
+  ropes = {}
+  restart()
+end
+
 function removeBox(box)
   -- Remove the rope at the top of this box.
   local rope = ropes[box]
@@ -174,10 +187,8 @@ function removeBox(box)
   end
 end
 
-function reset()
-  boxData = {}
-  boxes = {}
-  ropes = {}
+function restart()
+  love.event.quit "restart"
 end
 
 -- ----------------------------------------------------------------------------
@@ -229,10 +240,10 @@ function love.load()
   buttons = {
     Button.new({
       font = buttonFont,
-      text = "Clear",
-      x = 145,
-      y = 70,
-      onclick = reset
+      text = "New Game",
+      x = 110,
+      y = 100,
+      onclick = newGame
     })
   }
 
@@ -240,6 +251,8 @@ function love.load()
   createColumn(1, 3, spacing)
   createColumn(2, 5, spacing * 2)
   createColumn(3, 7, spacing * 3)
+
+  gameResult = nil
 end
 
 -- dt is "delta time" which is the seconds since the last call.
@@ -276,11 +289,15 @@ function love.draw()
     g.polygon("fill", getShapePoints(b))
   end
 
-  -- Draw all the buttons.
-  --[[ g.setFont(buttonFont)
-  for _, button in ipairs(buttons) do
-    button:draw()
-  end ]]
+  if gameResult then
+    g.setColor(colors.white)
+    g.print(gameResult, 50, 35)
+    -- Draw all the buttons.
+    g.setFont(buttonFont)
+    for _, button in ipairs(buttons) do
+      button:draw()
+    end
+  end
 end
 
 function love.mousepressed(x, y, button)
