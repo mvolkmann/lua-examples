@@ -40,6 +40,8 @@ function assess()
   util.dump("counts", counts)
   local winning = nim.isWinning(counts)
   print("winning =", winning)
+  local column, number = nim.getMove(counts)
+  print("move =", column, number)
 end
 
 function beginContact()
