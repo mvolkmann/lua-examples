@@ -3,13 +3,13 @@ local fun = require "fun"
 
 local function isWinning(counts)
   -- We are in the end game if all columns are empty or contain one.
-  local isEndGame = fun.all(counts, function(count) return count <= 1 end)
+  local isEndGame = fun.every(counts, function(count) return count <= 1 end)
   if isEndGame then
     local total = fun.tableSum(counts)
     return total % 2 ~= 0 -- odd is winning
   end
   -- Exclusive-or all the row counts.
-  local score = fun.reduce(fun.xor, counts, 0)
+  local score = fun.reduce(counts, fun.xor, 0)
   return score == 0
 end
 

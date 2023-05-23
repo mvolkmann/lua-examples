@@ -2,7 +2,6 @@ local love = require "love"
 local Button = require "button"
 local colors = require "colors"
 local fonts = require "fonts"
-local util = require "util"
 require "shapes"
 
 -- These variables are set in the love.load function.
@@ -94,7 +93,6 @@ function love.load()
     height = height,
     angle = 0
   }
-  -- util.dump("logoOptions", logoOptions)
 
   math.randomseed(os.time())
   dice = math.random(6)

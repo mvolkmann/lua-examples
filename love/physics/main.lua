@@ -46,6 +46,11 @@ function computerMove()
   if remaining == 0 then
     gameResult = "The computer won."
   elseif remaining == 1 then
+    local box = fun.find(boxes, function(box)
+      local data = boxData[box]
+      return data.alive
+    end)
+    if box then removeBox(box) end
     gameResult = "You won!"
   end
   if gameResult then
