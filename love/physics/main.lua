@@ -25,7 +25,7 @@ local wallWidth = 6
 
 -- These variables are set in love.load.
 local buttonFont, ceiling, collisionSound, gameResult
-local windowWidth, windowHeight
+local secondsElapsed, windowWidth, windowHeight
 
 lurker.postswap = restart
 
@@ -167,6 +167,7 @@ function newGame()
   boxes = {}
   gameResult = nil
   ropes = {}
+  secondsElapsed = nil
   restart()
 end
 
@@ -258,6 +259,14 @@ end
 -- dt is "delta time" which is the seconds since the last call.
 -- This is typically much less than one second.
 function love.update(dt)
+  if secondsElapsed then
+    secondsElapsed = secondsElapsed + dt
+    if secondsElapsed > 2 then
+      secondsElapsed = nil
+      computerMove()
+    end
+  end
+
   world:update(dt)
   lurker.update()
 end
@@ -313,7 +322,7 @@ function love.mousepressed(x, y, button)
     local data = boxData[box]
     if data.alive and insideBox(x, y, box) then
       removeBox(box)
-      computerMove()
+      secondsElapsed = 0
       break
     end
   end
