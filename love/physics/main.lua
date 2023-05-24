@@ -332,6 +332,11 @@ function love.draw()
   end
 
   showFPS()
+
+  -- Indicate the cursor position.
+  --[[ local x, y = love.mouse.getPosition()
+  g.setColor(colors.yellow)
+  g.circle("fill", x, y, 10) ]]
 end
 
 function love.mousepressed(x, y, button)
