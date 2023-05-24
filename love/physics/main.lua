@@ -5,7 +5,7 @@ local love = require "love"
 local lurker = require "lurker"
 local nim = require "nim"
 require "point-within-shape"
-local util = require "util"
+require "util"
 
 local g = love.graphics
 -- From the docs, "This module is essentially just a binding to Box2D."
@@ -26,7 +26,13 @@ local wallWidth = 6
 local ceiling, collisionSound, font, gameResult, monkey
 local newGameButton, secondsElapsed, windowWidth, windowHeight
 
--- lurker.postswap = restart
+local keyMap = {
+  left = function() dec(monkeyPosition, "x") end,
+  right = function() inc(monkeyPosition, "x") end,
+  up = function() dec(monkeyPosition, "y") end,
+  down = function() inc(monkeyPosition, "y") end
+}
+
 lurker.postswap = restart
 
 -- ----------------------------------------------------------------------------
@@ -289,23 +295,13 @@ function love.update(dt)
   world:update(dt)
   lurker.update()
 
-  if love.keyboard.isDown("left") then
-    monkeyPosition.x = monkeyPosition.x - 1
-  end
-  if love.keyboard.isDown("right") then
-    monkeyPosition.x = monkeyPosition.x + 1
-  end
-  if love.keyboard.isDown("up") then
-    monkeyPosition.y = monkeyPosition.y - 1
-  end
-  if love.keyboard.isDown("down") then
-    monkeyPosition.y = monkeyPosition.y + 1
+  -- Process keys being held down.
+  for key, fn in pairs(keyMap) do
+    if love.keyboard.isDown(key) then fn() end
   end
 end
 
 function love.draw()
-  g.draw(monkey, monkeyPosition.x, monkeyPosition.y)
-
   -- Draw the walls.
   g.setColor(colors.purple)
   for _, wall in ipairs(walls) do
@@ -344,6 +340,8 @@ function love.draw()
   end
 
   showFPS()
+
+  g.draw(monkey, monkeyPosition.x, monkeyPosition.y)
 
   -- Indicate the cursor position.
   --[[ local x, y = love.mouse.getPosition()

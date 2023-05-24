@@ -1,6 +1,4 @@
-local M = {}
-
-function debugString(value)
+local function debugString(value)
   if type(value) == 'table' then
     local s = '{ '
     for k, v in pairs(value) do
@@ -16,6 +14,6 @@ function dump(label, value)
   print(label .. ": " .. debugString(value))
 end
 
-return {
-  dump = dump
-}
+function dec(t, k, d) t[k] = t[k] - (d or 1) end
+
+function inc(t, k, d) t[k] = t[k] + (d or 1) end
