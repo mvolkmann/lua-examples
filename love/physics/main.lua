@@ -9,8 +9,6 @@ local util = require "util"
 
 local g = love.graphics
 -- From the docs, "This module is essentially just a binding to Box2D."
--- Also see breezefield (https://github.com/HDictus/breezefield)
--- which purports to be easier to use.
 local p = love.physics
 
 local boxes = {}
@@ -18,6 +16,7 @@ local boxSize = 50
 local boxData = {}
 local buttons = {}
 local fonts = {}
+local monkeyPosition = { x = 10, y = 30 }
 local pixelsPerMeter = 64
 local ropes = {}
 local walls = {}
@@ -289,10 +288,23 @@ function love.update(dt)
 
   world:update(dt)
   lurker.update()
+
+  if love.keyboard.isDown("left") then
+    monkeyPosition.x = monkeyPosition.x - 1
+  end
+  if love.keyboard.isDown("right") then
+    monkeyPosition.x = monkeyPosition.x + 1
+  end
+  if love.keyboard.isDown("up") then
+    monkeyPosition.y = monkeyPosition.y - 1
+  end
+  if love.keyboard.isDown("down") then
+    monkeyPosition.y = monkeyPosition.y + 1
+  end
 end
 
 function love.draw()
-  g.draw(monkey, 10, 30)
+  g.draw(monkey, monkeyPosition.x, monkeyPosition.y)
 
   -- Draw the walls.
   g.setColor(colors.purple)
