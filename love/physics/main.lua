@@ -17,15 +17,15 @@ local boxes = {}
 local boxSize = 50
 local boxData = {}
 local buttons = {}
+local fonts = {}
 local pixelsPerMeter = 64
-local ropeCount = 0
 local ropes = {}
 local walls = {}
 local wallWidth = 6
 
 -- These variables are set in love.load.
-local buttonFont, ceiling, collisionSound, gameResult, monkey, newGameButton
-local secondsElapsed, windowWidth, windowHeight
+local ceiling, collisionSound, font, gameResult, monkey
+local newGameButton, secondsElapsed, windowWidth, windowHeight
 
 -- lurker.postswap = restart
 lurker.postswap = restart
@@ -202,12 +202,19 @@ function restart()
   love.event.quit "restart"
 end
 
+function showFPS()
+  g.setColor(colors.white)
+  g.setFont(fonts.default)
+  g.print("FPS: " .. love.timer.getFPS(), 10, 5)
+end
+
 -- ----------------------------------------------------------------------------
 
 function love.load()
   math.randomseed(os.time())
 
-  collisionSound = love.audio.newSource("sounds/collision.mp3", "stream")
+  -- collisionSound = love.audio.newSource("sounds/collision.mp3", "stream")
+  collisionSound = love.audio.newSource("sounds/monkey.mp3", "stream")
   monkey = g.newImage('images/monkey.png')
 
   -- Configure gravity.
@@ -250,10 +257,11 @@ function love.load()
 
   walls = { ceiling, leftWall, floor, rightWall }
 
-  buttonFont = g.newFont(30)
+  fonts.default = g.newFont("Pangolin-Regular.ttf", 18)
+  fonts.button = g.newFont("Pangolin-Regular.ttf", 30)
   buttons = {}
   newGameButton = Button.new({
-    font = buttonFont,
+    font = fonts.button,
     text = "New Game",
     x = 110,
     y = 100,
@@ -284,7 +292,7 @@ function love.update(dt)
 end
 
 function love.draw()
-  g.draw(monkey, 100, 100)
+  g.draw(monkey, 10, 30)
 
   -- Draw the walls.
   g.setColor(colors.purple)
@@ -314,13 +322,16 @@ function love.draw()
 
   if gameResult then
     g.setColor(colors.white)
-    g.print(gameResult, 50, 35)
+    g.setFont(fonts.button)
+    g.print(gameResult, 70, 35)
     -- Draw all the buttons.
-    g.setFont(buttonFont)
+    g.setFont(fonts.button)
     for _, button in ipairs(buttons) do
       button:draw()
     end
   end
+
+  showFPS()
 end
 
 function love.mousepressed(x, y, button)
