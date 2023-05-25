@@ -13,4 +13,4 @@ app.use(express.static(
 ));
 
 const PORT = 1919;
-app.listen(PORT, () => console.log('ready'));
+app.listen(PORT, () => console.log('browse localhost:' + PORT));
