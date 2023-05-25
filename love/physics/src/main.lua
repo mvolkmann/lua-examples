@@ -7,24 +7,34 @@ local nim = require "nim"
 require "point-within-shape"
 require "util"
 
+-- Variables that are set once and never change
+-- can be set at the top level, outside of the "love.load" function.
+-- Variables that need to be reset when a new game is started
+-- should be set in the "love.load" function.
+
+math.randomseed(os.time())
+
 local g = love.graphics
--- From the docs, "This module is essentially just a binding to Box2D."
 local p = love.physics
 
-local boxes = {}
 local boxSize = 50
-local boxData = {}
-local buttons = {}
-local fonts = {}
-local monkeyPosition = { x = 10, y = 30 }
 local pixelsPerMeter = 64
-local ropes = {}
-local walls = {}
 local wallWidth = 6
 
+local fonts = {
+  default = g.newFont("Pangolin-Regular.ttf", 18),
+  button = g.newFont("Pangolin-Regular.ttf", 30)
+}
+
+local monkey = g.newImage('images/monkey.png')
+
+local windowWidth, windowHeight = g.getDimensions()
+
+local collisionSound = love.audio.newSource("sounds/monkey.mp3", "stream")
+
 -- These variables are set in love.load.
-local ceiling, collisionSound, gameResult, monkey
-local newGameButton, secondsElapsed, windowWidth, windowHeight
+local boxData, boxes, buttons, ceiling, gameResult, newGameButton
+local ropes, secondsElapsed, walls, world
 
 local keyMap = {
   left = function() dec(monkeyPosition, "x") end,
@@ -33,9 +43,18 @@ local keyMap = {
   down = function() inc(monkeyPosition, "y") end
 }
 
--- lurker.postswap = restart
+-- lurker.postswap = love.load
 
 -- ----------------------------------------------------------------------------
+
+function beginContact()
+  -- We need to copy the sound in order for multiple copies
+  -- to overlap playing at the same time.
+  -- local clone = collisionSound:clone()
+  -- clone:play()
+
+  collisionSound:play()
+end
 
 function computerMove()
   -- Get the number of boxes remaining in each column.
@@ -80,13 +99,6 @@ function computerMove()
   if box then removeBox(box) end
 end
 
-function beginContact()
-  -- We need to copy the sound in order for multiple copies
-  -- to overlap playing at the same time.
-  -- local clone = collisionSound:clone()
-  -- clone:play()
-end
-
 function createBox(size, centerX, centerY)
   local box = {
     centerX = centerX,
@@ -127,6 +139,52 @@ function createRope(from, to, x1, y1, x2, y2)
 
   -- Use the "to" box as the key in the ropes table.
   ropes[to] = rope
+end
+
+function createWorld()
+  -- Configure gravity.
+  p.setMeter(pixelsPerMeter)
+  local xGravity = 0
+  local yGravity = 9.81 * pixelsPerMeter
+  local world = p.newWorld(xGravity, yGravity)
+
+  world:setCallbacks(beginContact)
+
+  local ceilingCenterX = windowWidth / 2
+  local ceilingCenterY = 0
+
+  ceiling = {}
+  ceiling.body = p.newBody(world, ceilingCenterX, ceilingCenterY, "static")
+  ceiling.shape = p.newRectangleShape(windowWidth, 0)
+  ceiling.fixture = p.newFixture(ceiling.body, ceiling.shape)
+
+  local floorHeight = 30
+  local floorCenterX = windowWidth / 2
+  local floorCenterY = windowHeight - floorHeight / 2
+  local wallCenterY = windowHeight / 2
+
+  local floor = {}
+  floor.body = p.newBody(world, floorCenterX, floorCenterY, "static")
+  floor.shape = p.newRectangleShape(windowWidth, floorHeight)
+  floor.fixture = p.newFixture(floor.body, floor.shape)
+
+  local leftWall = {}
+  leftWall.body = p.newBody(world, wallWidth / 2, wallCenterY, "static")
+  leftWall.shape = p.newRectangleShape(wallWidth, windowHeight)
+  leftWall.fixture = p.newFixture(leftWall.body, leftWall.shape)
+
+  local rightWall = {}
+  rightWall.body = p.newBody(
+    world,
+    windowWidth - wallWidth / 2,
+    wallCenterY, "static"
+  )
+  rightWall.shape = p.newRectangleShape(wallWidth, windowHeight)
+  rightWall.fixture = p.newFixture(rightWall.body, rightWall.shape)
+
+  local walls = { ceiling, leftWall, floor, rightWall }
+
+  return world, walls
 end
 
 function distanceBetweenPoints(x1, y1, x2, y2)
@@ -176,15 +234,6 @@ function insideBox(x, y, box)
   return PointWithinShape(shape, x, y)
 end
 
-function newGame()
-  boxData = {}
-  boxes = {}
-  buttons = {}
-  gameResult = nil
-  ropes = {}
-  secondsElapsed = nil
-end
-
 function removeBox(box)
   -- Remove the rope at the top of this box.
   local rope = ropes[box]
@@ -195,16 +244,11 @@ function removeBox(box)
   local data = boxData[box]
   local column = data.column
   local row = data.row
-  for _, data in pairs(boxData) do
-    if data.column == column and data.row >= row then
-      data.alive = false
+  for _, d in pairs(boxData) do
+    if d.column == column and d.row >= row then
+      d.alive = false
     end
   end
-end
-
-function restart()
-  newGame()
-  love.event.quit "restart"
 end
 
 function showFPS()
@@ -216,62 +260,16 @@ end
 -- ----------------------------------------------------------------------------
 
 function love.load()
-  math.randomseed(os.time())
-
-  -- collisionSound = love.audio.newSource("sounds/collision.mp3", "stream")
-  -- collisionSound = love.audio.newSource("sounds/monkey.mp3", "stream")
-  monkey = g.newImage('images/monkey.png')
-
-  -- Configure gravity.
-  p.setMeter(pixelsPerMeter)
-  local xGravity = 0
-  local yGravity = 9.81 * pixelsPerMeter
-  world = p.newWorld(xGravity, yGravity)
-
-  world:setCallbacks(beginContact)
-
-  windowWidth, windowHeight = g.getDimensions()
-
-  local ceilingCenterX = windowWidth / 2
-  local ceilingCenterY = 0
-
-  ceiling = {}
-  ceiling.body = p.newBody(world, ceilingCenterX, ceilingCenterY, "static")
-  ceiling.shape = p.newRectangleShape(windowWidth, 0)
-  ceiling.fixture = p.newFixture(ceiling.body, ceiling.shape)
-
-  local floorHeight = 30
-  local floorCenterX = windowWidth / 2
-  local floorCenterY = windowHeight - floorHeight / 2
-  local wallCenterY = windowHeight / 2
-
-  local floor = {}
-  floor.body = p.newBody(world, floorCenterX, floorCenterY, "static")
-  floor.shape = p.newRectangleShape(windowWidth, floorHeight)
-  floor.fixture = p.newFixture(floor.body, floor.shape)
-
-  local leftWall = {}
-  leftWall.body = p.newBody(world, wallWidth / 2, wallCenterY, "static")
-  leftWall.shape = p.newRectangleShape(wallWidth, windowHeight)
-  leftWall.fixture = p.newFixture(leftWall.body, leftWall.shape)
-
-  local rightWall = {}
-  rightWall.body = p.newBody(world, windowWidth - wallWidth / 2, wallCenterY, "static")
-  rightWall.shape = p.newRectangleShape(wallWidth, windowHeight)
-  rightWall.fixture = p.newFixture(rightWall.body, rightWall.shape)
-
-  walls = { ceiling, leftWall, floor, rightWall }
-
-  fonts.default = g.newFont("Pangolin-Regular.ttf", 18)
-  fonts.button = g.newFont("Pangolin-Regular.ttf", 30)
+  boxData = {}
+  boxes = {}
   buttons = {}
-  newGameButton = Button.new({
-    font = fonts.button,
-    text = "New Game",
-    x = 110,
-    y = 100,
-    onclick = restart
-  })
+  gameResult = nil
+  ropes = {}
+  secondsElapsed = nil
+
+  world, walls = createWorld()
+
+  monkeyPosition = { x = 10, y = 30 }
 
   local spacing = windowWidth / 4
   createColumn(1, 3, spacing)
@@ -279,6 +277,15 @@ function love.load()
   createColumn(3, 7, spacing * 3)
 
   gameResult = nil
+
+  -- This must be defined after "love.load" is defined.
+  newGameButton = Button.new({
+    font = fonts.button,
+    text = "New Game",
+    x = 110,
+    y = 100,
+    onclick = love.load
+  })
 end
 
 -- dt is "delta time" which is the seconds since the last call.
@@ -354,7 +361,8 @@ function love.mousepressed(x, y, button)
 
   -- Check for clicks on buttons.
   for _, b in ipairs(buttons) do
-    b:handleClick(x, y)
+    local clicked = b:handleClick(x, y)
+    if clicked then return end
   end
 
   -- Check for clicks on boxes.

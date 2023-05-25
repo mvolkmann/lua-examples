@@ -26,6 +26,7 @@ local mt = {
           y >= self.y and
           y <= self.y + self.height
       if clicked then self.onclick() end
+      return clicked
     end
   }
 }
