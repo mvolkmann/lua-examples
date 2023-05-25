@@ -7,6 +7,12 @@ local nim = require "nim"
 require "point-within-shape"
 require "util"
 
+local g = love.graphics
+local p = love.physics
+local pixelsPerMeter = 64
+local wallWidth = 6
+local windowWidth, windowHeight = g.getDimensions()
+
 -- Variables that are set once and never change
 -- can be set at the top level, outside of the "love.load" function.
 -- Variables that need to be reset when a new game is started
@@ -14,12 +20,7 @@ require "util"
 
 math.randomseed(os.time())
 
-local g = love.graphics
-local p = love.physics
-
 local boxSize = 50
-local pixelsPerMeter = 64
-local wallWidth = 6
 
 local fonts = {
   default = g.newFont("Pangolin-Regular.ttf", 18),
@@ -28,13 +29,11 @@ local fonts = {
 
 local monkey = g.newImage('images/monkey.png')
 
-local windowWidth, windowHeight = g.getDimensions()
-
 local collisionSound = love.audio.newSource("sounds/monkey.mp3", "stream")
 
 -- These variables are set in love.load.
 local boxData, boxes, buttons, ceiling, gameResult, newGameButton
-local ropes, secondsElapsed, walls, world
+local ropes, secondsElapsed
 
 local keyMap = {
   left = function() dec(monkeyPosition, "x") end,
