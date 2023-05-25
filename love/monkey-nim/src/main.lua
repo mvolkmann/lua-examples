@@ -14,6 +14,8 @@ require "util"
 
 math.randomseed(os.time())
 
+local backgroundImage = love.graphics.newImage("images/background.jpg")
+local backgroundSpeed = 20
 local boxSize = 50
 local collisionSound = love.audio.newSource("sounds/monkey.ogg", "static")
 local g = love.graphics
@@ -29,8 +31,8 @@ local fonts = {
 }
 
 -- These variables are set in love.load.
-local boxData, boxes, buttons, ceiling, gameResult, monkeyPosition
-local newGameButton, ropes, secondsElapsed
+local backgroundPosition, boxData, boxes, buttons, ceiling, gameResult
+local monkeyPosition, newGameButton, ropes, secondsElapsed
 
 local keyMap = {
   left = function() dec(monkeyPosition, "x") end,
@@ -256,6 +258,7 @@ end
 -- ----------------------------------------------------------------------------
 
 function love.load()
+  backgroundPosition = 0
   boxData = {}
   boxes = {}
   buttons = {}
@@ -287,6 +290,8 @@ end
 -- dt is "delta time" which is the seconds since the last call.
 -- This is typically much less than one second.
 function love.update(dt)
+  backgroundPosition = (backgroundPosition - backgroundSpeed * dt) % windowWidth
+
   if secondsElapsed then
     secondsElapsed = secondsElapsed + dt
     if secondsElapsed > 2 then
@@ -305,6 +310,10 @@ function love.update(dt)
 end
 
 function love.draw()
+  -- Draw the background image.
+  g.draw(backgroundImage, backgroundPosition, 0)
+  g.draw(backgroundImage, backgroundPosition - windowWidth, 0)
+
   -- Draw the walls.
   g.setColor(colors.purple)
   for _, wall in ipairs(walls) do
