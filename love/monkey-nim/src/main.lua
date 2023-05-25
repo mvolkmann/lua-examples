@@ -15,9 +15,9 @@ require "util"
 math.randomseed(os.time())
 
 local boxSize = 50
-local collisionSound = love.audio.newSource("sounds/monkey.mp3", "stream")
+local collisionSound = love.audio.newSource("sounds/monkey.ogg", "static")
 local g = love.graphics
-local monkey = g.newImage('images/monkey.png')
+local monkeyImage = g.newImage('images/monkey.png')
 local p = love.physics
 local pixelsPerMeter = 64
 local wallWidth = 6
@@ -344,7 +344,7 @@ function love.draw()
 
   showFPS()
 
-  g.draw(monkey, monkeyPosition.x, monkeyPosition.y)
+  g.draw(monkeyImage, monkeyPosition.x, monkeyPosition.y)
 
   -- Indicate the cursor position.
   --[[ local x, y = love.mouse.getPosition()

@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
-rm -f physics.love
+rm -f monkey-nim.love
 pushd src
-zip -r ../physics.love *
+zip -r ../monkey-nim.love *
 popd
-open physics.love
+open monkey-nim.love

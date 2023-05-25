@@ -2,4 +2,5 @@
 c-calls-lua/main
 *.o
 *.love
-nim-ios/
+love/monkey-nim-ios/
+
