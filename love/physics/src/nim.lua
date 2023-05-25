@@ -1,3 +1,4 @@
+local bitop = require "bitop"
 local fun = require "fun"
 
 local function isWinning(counts)
@@ -8,7 +9,7 @@ local function isWinning(counts)
     return total % 2 ~= 0 -- odd is winning
   end
   -- Exclusive-or all the row counts.
-  local score = fun.reduce(counts, fun.xor, 0)
+  local score = fun.reduce(counts, bitop.bxor, 0)
   return score == 0
 end
 

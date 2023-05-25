@@ -54,6 +54,6 @@ function M.tableSum(t)
   return M.reduce(t, M.sum)
 end
 
-function M.xor(n1, n2) return bit.bxor(n1, n2) end
+-- function M.xor(n1, n2) return bit.bxor(n1, n2) end
 
 return M

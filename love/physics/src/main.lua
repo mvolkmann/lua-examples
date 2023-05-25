@@ -23,7 +23,7 @@ local walls = {}
 local wallWidth = 6
 
 -- These variables are set in love.load.
-local ceiling, collisionSound, font, gameResult, monkey
+local ceiling, collisionSound, gameResult, monkey
 local newGameButton, secondsElapsed, windowWidth, windowHeight
 
 local keyMap = {
@@ -83,8 +83,8 @@ end
 function beginContact()
   -- We need to copy the sound in order for multiple copies
   -- to overlap playing at the same time.
-  local clone = collisionSound:clone()
-  clone:play()
+  -- local clone = collisionSound:clone()
+  -- clone:play()
 end
 
 function createBox(size, centerX, centerY)
@@ -219,7 +219,7 @@ function love.load()
   math.randomseed(os.time())
 
   -- collisionSound = love.audio.newSource("sounds/collision.mp3", "stream")
-  collisionSound = love.audio.newSource("sounds/monkey.mp3", "stream")
+  -- collisionSound = love.audio.newSource("sounds/monkey.mp3", "stream")
   monkey = g.newImage('images/monkey.png')
 
   -- Configure gravity.

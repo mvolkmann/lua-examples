@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+rm -f physics.love
+pushd src
+zip -r ../physics.love *
+popd
+open physics.love
