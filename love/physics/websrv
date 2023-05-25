@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+rm -rf web
+npx love.js src web
+pushd server
+node server.js
+popd
