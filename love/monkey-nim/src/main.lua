@@ -76,6 +76,8 @@ function beginContact()
 end
 
 function computerMove()
+  computerMoving = true
+
   -- Get the number of boxes remaining in each column.
   local counts = { 0, 0, 0 }
   for _, box in ipairs(boxes) do
@@ -303,9 +305,10 @@ function love.load()
   boxData = {}
   boxes = {}
   buttons = {}
-  computerMoving = false
   gameResult = nil
   ropes = {}
+
+  resetHand()
 
   world, walls = createWorld()
 
@@ -453,7 +456,6 @@ function love.mousereleased(x, y, button)
     local data = boxData[box]
     if data.alive and insideBox(x, y, box) then
       removeBox(box)
-      computerMoving = true
       computerMove()
       break
     end
