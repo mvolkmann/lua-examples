@@ -5,6 +5,7 @@ local love = require "love"
 -- local lurker = require "lurker"
 local nim = require "nim"
 require "point-within-shape"
+local tween = require "tween"
 require "util"
 
 -- Variables that are set once and never change
@@ -25,7 +26,6 @@ local bananaDy = bananaImage:getHeight() / 2
 local boxSize = 50
 local branchHeight = 90
 local collisionSound = love.audio.newSource("sounds/monkey.ogg", "static")
-local handImage = g.newImage('images/hand.png')
 local monkeyImage = g.newImage('images/monkey.png')
 local pixelsPerMeter = 64
 local wallWidth = 6
@@ -47,6 +47,20 @@ local keyMap = {
   up = function() dec(monkeyPosition, "y") end,
   down = function() inc(monkeyPosition, "y") end
 }
+
+-- The hand is used to animate computer moves.
+local hand = { image = g.newImage('images/hand.png') }
+hand.dx = -hand.image:getWidth() / 2
+hand.dy = -hand.image:getHeight() / 2
+local handTween
+
+function resetHand()
+  computerMoving = false
+  hand.x = (windowWidth - hand.image:getWidth()) / 2
+  hand.y = windowHeight - 130
+end
+
+resetHand()
 
 -- lurker.postswap = love.load
 
@@ -104,10 +118,22 @@ function computerMove()
     end
   end
 
-  if box then removeBox(box) end
+  if box then
+    local duration = 1
+    -- Move the hand to the selected box.
+    handTween = tween.new(
+      duration,
+      hand,
+      { x = box.centerX, y = box.centerY },
+      "inOutCubic"
+    )
 
-  -- Wait for the boxes to drop before enabling the next player move.
-  future(function() computerMoving = false end, 1)
+    -- Remove the box.
+    future(function() removeBox(box) end, duration + 1)
+
+    -- Wait for the boxes to drop before enabling the next player move.
+    future(resetHand, duration + 2)
+  end
 end
 
 function createBox(size, centerX, centerY)
@@ -315,6 +341,8 @@ end
 -- dt is "delta time" which is the seconds since the last call.
 -- This is typically much less than one second.
 function love.update(dt)
+  if handTween then handTween:update(dt) end
+
   processFutures()
 
   backgroundPosition = (backgroundPosition - backgroundSpeed * dt) % windowWidth
@@ -390,7 +418,11 @@ function love.draw()
 
   -- g.draw(monkeyImage, monkeyPosition.x, monkeyPosition.y)
 
-  if not computerMoving then
+  if computerMoving then
+    if not gameResult then
+      g.draw(hand.image, hand.x + hand.dx, hand.y + hand.dy)
+    end
+  else
     -- If the cursor is in the window ...
     local x, y = love.mouse.getPosition()
     if 0 < x and x < windowWidth - 1 and
@@ -422,7 +454,7 @@ function love.mousereleased(x, y, button)
     if data.alive and insideBox(x, y, box) then
       removeBox(box)
       computerMoving = true
-      future(computerMove, 2)
+      computerMove()
       break
     end
   end
