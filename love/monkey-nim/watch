@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+
+find src -type f | entr ./restart

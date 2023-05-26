@@ -9,4 +9,5 @@
 
 echo "running restart"
 pkill "love.app"
+while pgrep "love.app"; do sleep 1; done
 /Applications/love.app/Contents/MacOS/love src

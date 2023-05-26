@@ -32,8 +32,9 @@ local fonts = {
 }
 
 -- These variables are set in love.load.
-local backgroundPosition, boxData, boxes, buttons, ceiling, computerMoving
-local gameResult, monkeyPosition, newGameButton, ropes
+local backgroundPosition, boxData, boxes, buttons, ceiling
+local computerFirstButton, computerMoving, gameResult
+local monkeyPosition, playerFirstButton, ropes
 
 local keyMap = {
   left = function() dec(monkeyPosition, "x") end,
@@ -77,7 +78,7 @@ function computerMove()
     gameResult = "You won!"
   end
   if gameResult then
-    buttons = { newGameButton }
+    buttons = { playerFirstButton, computerFirstButton }
     return
   end
 
@@ -282,14 +283,22 @@ function love.load()
   createColumn(2, 5, spacing * 2)
   createColumn(3, 7, spacing * 3)
 
-  gameResult = nil
-
-  -- This must be defined after "love.load" is defined.
-  newGameButton = Button.new({
+  -- The buttons must be defined after "love.load" is defined.
+  computerFirstButton = Button.new({
     font = fonts.button,
-    text = "New Game",
-    x = 110,
-    y = 100,
+    text = "You go first",
+    x = 100,
+    y = 150,
+    onclick = function()
+      love.load()
+      computerMove()
+    end
+  })
+  playerFirstButton = Button.new({
+    font = fonts.button,
+    text = "Let me go first",
+    x = 100,
+    y = 230,
     onclick = love.load
   })
 
@@ -348,7 +357,8 @@ function love.draw()
   if gameResult then
     g.setColor(colors.white)
     g.setFont(fonts.button)
-    g.print(gameResult, 70, 35)
+    g.print(gameResult, 100, 100)
+
     -- Draw all the buttons.
     g.setFont(fonts.button)
     for _, button in ipairs(buttons) do
