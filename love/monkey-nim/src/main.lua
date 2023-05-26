@@ -302,7 +302,7 @@ end
 function showFPS()
   g.setColor(colors.white)
   g.setFont(fonts.default)
-  g.print("FPS:" .. love.timer.getFPS(), 10, windowHeight - 25)
+  g.print("FPS:" .. love.timer.getFPS(), 30, windowHeight - 25)
 end
 
 -- ----------------------------------------------------------------------------
