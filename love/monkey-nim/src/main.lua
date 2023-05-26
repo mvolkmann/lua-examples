@@ -32,8 +32,8 @@ local fonts = {
 }
 
 -- These variables are set in love.load.
-local backgroundPosition, boxData, boxes, buttons, ceiling, gameResult
-local monkeyPosition, newGameButton, ropes, secondsElapsed
+local backgroundPosition, boxData, boxes, buttons, ceiling, computerMoving
+local gameResult, monkeyPosition, newGameButton, ropes, secondsElapsed
 
 local keyMap = {
   left = function() dec(monkeyPosition, "x") end,
@@ -256,7 +256,7 @@ end
 function showFPS()
   g.setColor(colors.white)
   g.setFont(fonts.default)
-  g.print("FPS: " .. love.timer.getFPS(), 10, windowHeight - 25)
+  g.print("FPS:" .. love.timer.getFPS(), 10, windowHeight - 25)
 end
 
 -- ----------------------------------------------------------------------------
@@ -266,6 +266,7 @@ function love.load()
   boxData = {}
   boxes = {}
   buttons = {}
+  computerMoving = false
   gameResult = nil
   ropes = {}
   secondsElapsed = nil
@@ -294,13 +295,17 @@ end
 -- dt is "delta time" which is the seconds since the last call.
 -- This is typically much less than one second.
 function love.update(dt)
+  processFutures()
+
   backgroundPosition = (backgroundPosition - backgroundSpeed * dt) % windowWidth
 
   if secondsElapsed then
+    computerMoving = true
     secondsElapsed = secondsElapsed + dt
     if secondsElapsed > 2 then
       secondsElapsed = nil
       computerMove()
+      future(function() computerMoving = false end, 2)
     end
   end
 
@@ -360,13 +365,13 @@ function love.draw()
 
   -- g.draw(monkeyImage, monkeyPosition.x, monkeyPosition.y)
 
-  -- Indicate the cursor position.
-  local x, y = love.mouse.getPosition()
-  --[[ g.setColor(colors.yellow)
-  g.circle("fill", x, y, 10) ]]
-  local h = monkeyImage:getHeight()
-  local w = monkeyImage:getWidth()
-  g.draw(monkeyImage, x - w / 2, y - h / 2)
+  if not computerMoving then
+    -- Indicate the cursor position.
+    local x, y = love.mouse.getPosition()
+    local h = monkeyImage:getHeight()
+    local w = monkeyImage:getWidth()
+    g.draw(monkeyImage, x - w / 2, y - h / 2)
+  end
 end
 
 function love.mousepressed(x, y, button)

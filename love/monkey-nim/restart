@@ -1,5 +1,12 @@
 #!/usr/bin/env zsh
 
+# I want to automate rerunning this script
+# whenever a file in the src directory is modified by using
+#   find src -type f | entr ./restart
+# This does not work and I don't know why.
+# This script runs fine with only "pkill" or only the "love" command,
+# but not with both.
+
 echo "running restart"
-pkill love
+pkill "love.app"
 /Applications/love.app/Contents/MacOS/love src

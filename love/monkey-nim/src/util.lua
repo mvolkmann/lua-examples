@@ -17,3 +17,20 @@ end
 function dec(t, k, d) t[k] = t[k] - (d or 1) end
 
 function inc(t, k, d) t[k] = t[k] + (d or 1) end
+
+local futures = {}
+
+-- This schedules a function to run in the future.
+function future(fn, seconds)
+  futures[fn] = os.time() + seconds
+end
+
+-- Call this near the beginning of love.update.
+function processFutures()
+  for fn, time in pairs(futures) do
+    if time <= os.time() then
+      futures[fn] = nil
+      fn()
+    end
+  end
+end
