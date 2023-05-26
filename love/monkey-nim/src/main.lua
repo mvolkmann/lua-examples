@@ -28,7 +28,7 @@ local branchHeight = 90
 local collisionSound = love.audio.newSource("sounds/monkey.ogg", "static")
 local monkeyImage = g.newImage('images/monkey.png')
 local pixelsPerMeter = 64
-local wallWidth = 6
+local wallWidth = 0
 local windowWidth, windowHeight = g.getDimensions()
 
 local fonts = {
@@ -379,7 +379,7 @@ function love.draw()
   g.print("Don't take the last banana!", 26, branchHeight - 40)
 
   -- Draw the walls.
-  g.setColor(colors.purple)
+  g.setColor(colors.darkGreen)
   for _, wall in ipairs(walls) do
     love.graphics.polygon(
       "fill",
