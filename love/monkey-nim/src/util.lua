@@ -18,6 +18,24 @@ function dec(t, k, d) t[k] = t[k] - (d or 1) end
 
 function inc(t, k, d) t[k] = t[k] + (d or 1) end
 
+function getCenter(points)
+  local minX = points[1]
+  local minY = points[2]
+  local maxX = minX
+  local maxY = minY
+
+  for i = 3, #points, 2 do
+    local x = points[i]
+    local y = points[i + 1]
+    if x < minX then minX = x end
+    if x > maxX then maxX = x end
+    if y < minY then minY = y end
+    if y > maxY then maxY = y end
+  end
+
+  return (minX + maxX) / 2, (minY + maxY) / 2
+end
+
 local futures = {}
 
 -- This schedules a function to run in the future.

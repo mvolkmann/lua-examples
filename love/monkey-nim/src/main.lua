@@ -20,6 +20,10 @@ local boxSize = 50
 local collisionSound = love.audio.newSource("sounds/monkey.ogg", "static")
 local g = love.graphics
 local bananaImage = g.newImage('images/banana.png')
+local bananaDx = bananaImage:getWidth() / 2
+local bananaDy = bananaImage:getHeight() / 2
+local branchHeight = 50
+local handImage = g.newImage('images/hand.png')
 local monkeyImage = g.newImage('images/monkey.png')
 local p = love.physics
 local pixelsPerMeter = 64
@@ -109,7 +113,8 @@ function createBox(size, centerX, centerY)
   local box = {
     centerX = centerX,
     centerY = centerY,
-    color = randomColor(),
+    -- color = randomColor(0.5),
+    color = colors.brown,
     size = size
   }
   box.body = p.newBody(world, centerX, centerY, "dynamic")
@@ -124,12 +129,13 @@ function createColumn(column, count, x)
   local halfSize = boxSize / 2
   local lastShape = ceiling
   local lastX = x
-  local lastY = 0
+  local lastY = branchHeight
   for row = 1, count do
     local boxX = x + math.random(-halfSize, halfSize)
     local box = createBox(boxSize, boxX, lastY + boxSize)
     boxData[box] = { column = column, row = row, alive = true }
 
+    local ropeEndY = box.centerY - halfSize
     local ropeEndY = box.centerY - halfSize
     createRope(lastShape, box, lastX, lastY, boxX, ropeEndY)
 
@@ -327,6 +333,13 @@ function love.draw()
   g.draw(backgroundImage, backgroundPosition, 0)
   g.draw(backgroundImage, backgroundPosition - windowWidth, 0)
 
+  -- Draw the branch across the top.
+  g.setColor(colors.brown)
+  g.rectangle("fill", 0, 0, windowWidth, branchHeight)
+  g.setColor(colors.white)
+  g.setFont(fonts.button)
+  g.print("Don't take the last banana!", 30, 70)
+
   -- Draw the walls.
   g.setColor(colors.purple)
   for _, wall in ipairs(walls) do
@@ -339,19 +352,26 @@ function love.draw()
   end
 
   -- Draw all the ropes.
-  g.setLineWidth(5)
+  g.setLineWidth(8)
   g.setColor(colors.brown)
   for _, rope in pairs(ropes) do
     g.line(rope:getAnchors())
   end
 
   -- Draw all the boxes.
+  g.setLineWidth(2)
   for _, b in ipairs(boxes) do
     g.setColor(b.color or colors.white)
+
     -- We must draw a polygon, not a rectangle, in order to
     -- allow the boxes to rotate when they collide.
-    g.polygon("fill", getShapePoints(b))
-    -- TODO: Draw bananaImage here!
+    local points = { getShapePoints(b) }
+    g.polygon("line", unpack(points))
+
+    local centerX, centerY = getCenter(points)
+    g.setColor(colors.white)
+    -- g.circle("fill", centerX, centerY, 3)
+    g.draw(bananaImage, centerX - bananaDx, centerY - bananaDy)
   end
 
   if gameResult then
@@ -371,11 +391,15 @@ function love.draw()
   -- g.draw(monkeyImage, monkeyPosition.x, monkeyPosition.y)
 
   if not computerMoving then
-    -- Indicate the cursor position.
+    -- If the cursor is in the window ...
     local x, y = love.mouse.getPosition()
-    local h = monkeyImage:getHeight()
-    local w = monkeyImage:getWidth()
-    g.draw(monkeyImage, x - w / 2, y - h / 2)
+    if 0 < x and x < windowWidth - 1 and
+        0 < y and y < windowHeight - 1 then
+      -- Draw a monkey at the cursor position.
+      local h = monkeyImage:getHeight()
+      local w = monkeyImage:getWidth()
+      g.draw(monkeyImage, x - w / 2, y - h / 2)
+    end
   end
 end
 

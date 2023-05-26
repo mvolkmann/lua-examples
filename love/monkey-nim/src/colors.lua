@@ -1,10 +1,11 @@
-function randomColor()
+function randomColor(opacity)
   local r = math.random()
   local g = math.random()
   local b = math.random()
+  local o = opacity or 1
   local total = r + g + b
   -- This makes sure the color isn't too dark.
-  return total >= 1 and { r, g, b } or randomColor()
+  return total >= 1 and { r, g, b, o } or randomColor()
 end
 
 local function rgb(red, green, blue)
