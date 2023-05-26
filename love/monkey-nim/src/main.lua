@@ -19,6 +19,7 @@ local backgroundSpeed = 20
 local boxSize = 50
 local collisionSound = love.audio.newSource("sounds/monkey.ogg", "static")
 local g = love.graphics
+local bananaImage = g.newImage('images/banana.png')
 local monkeyImage = g.newImage('images/monkey.png')
 local p = love.physics
 local pixelsPerMeter = 64
@@ -40,6 +41,9 @@ local keyMap = {
   up = function() dec(monkeyPosition, "y") end,
   down = function() inc(monkeyPosition, "y") end
 }
+
+-- Hide the mouse cursor.
+love.mouse.setVisible(false)
 
 -- lurker.postswap = love.load
 
@@ -252,7 +256,7 @@ end
 function showFPS()
   g.setColor(colors.white)
   g.setFont(fonts.default)
-  g.print("FPS: " .. love.timer.getFPS(), 10, 5)
+  g.print("FPS: " .. love.timer.getFPS(), 10, windowHeight - 25)
 end
 
 -- ----------------------------------------------------------------------------
@@ -268,7 +272,7 @@ function love.load()
 
   world, walls = createWorld()
 
-  monkeyPosition = { x = 10, y = 30 }
+  monkeyPosition = { x = 10, y = 300 }
 
   local spacing = windowWidth / 4
   createColumn(1, 3, spacing)
@@ -338,6 +342,7 @@ function love.draw()
     -- We must draw a polygon, not a rectangle, in order to
     -- allow the boxes to rotate when they collide.
     g.polygon("fill", getShapePoints(b))
+    -- TODO: Draw bananaImage here!
   end
 
   if gameResult then
@@ -353,12 +358,15 @@ function love.draw()
 
   showFPS()
 
-  g.draw(monkeyImage, monkeyPosition.x, monkeyPosition.y)
+  -- g.draw(monkeyImage, monkeyPosition.x, monkeyPosition.y)
 
   -- Indicate the cursor position.
-  --[[ local x, y = love.mouse.getPosition()
-  g.setColor(colors.yellow)
+  local x, y = love.mouse.getPosition()
+  --[[ g.setColor(colors.yellow)
   g.circle("fill", x, y, 10) ]]
+  local h = monkeyImage:getHeight()
+  local w = monkeyImage:getWidth()
+  g.draw(monkeyImage, x - w / 2, y - h / 2)
 end
 
 function love.mousepressed(x, y, button)
