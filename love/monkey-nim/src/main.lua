@@ -33,7 +33,7 @@ local fonts = {
 
 -- These variables are set in love.load.
 local backgroundPosition, boxData, boxes, buttons, ceiling, computerMoving
-local gameResult, monkeyPosition, newGameButton, ropes, secondsElapsed
+local gameResult, monkeyPosition, newGameButton, ropes
 
 local keyMap = {
   left = function() dec(monkeyPosition, "x") end,
@@ -41,9 +41,6 @@ local keyMap = {
   up = function() dec(monkeyPosition, "y") end,
   down = function() inc(monkeyPosition, "y") end
 }
-
--- Hide the mouse cursor.
-love.mouse.setVisible(false)
 
 -- lurker.postswap = love.load
 
@@ -84,6 +81,9 @@ function computerMove()
     return
   end
 
+  -- Conditionally show the mouse cursor.
+  love.mouse.setVisible(not gameResult)
+
   -- Determine the best move.
   local column, n = nim.getMove(counts)
   local row = counts[column] - n + 1
@@ -99,6 +99,9 @@ function computerMove()
   end
 
   if box then removeBox(box) end
+
+  -- Wait for the boxes to drop before enabling the next player move.
+  future(function() computerMoving = false end, 1)
 end
 
 function createBox(size, centerX, centerY)
@@ -269,7 +272,6 @@ function love.load()
   computerMoving = false
   gameResult = nil
   ropes = {}
-  secondsElapsed = nil
 
   world, walls = createWorld()
 
@@ -290,6 +292,9 @@ function love.load()
     y = 100,
     onclick = love.load
   })
+
+  -- Hide the mouse cursor.
+  love.mouse.setVisible(false)
 end
 
 -- dt is "delta time" which is the seconds since the last call.
@@ -298,16 +303,6 @@ function love.update(dt)
   processFutures()
 
   backgroundPosition = (backgroundPosition - backgroundSpeed * dt) % windowWidth
-
-  if secondsElapsed then
-    computerMoving = true
-    secondsElapsed = secondsElapsed + dt
-    if secondsElapsed > 2 then
-      secondsElapsed = nil
-      computerMove()
-      future(function() computerMoving = false end, 2)
-    end
-  end
 
   world:update(dt)
   -- lurker.update()
@@ -388,7 +383,8 @@ function love.mousepressed(x, y, button)
     local data = boxData[box]
     if data.alive and insideBox(x, y, box) then
       removeBox(box)
-      secondsElapsed = 0
+      computerMoving = true
+      future(computerMove, 2)
       break
     end
   end
