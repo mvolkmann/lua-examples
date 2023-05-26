@@ -89,17 +89,17 @@ function computerMove()
 
   local remaining = fun.tableSum(counts)
   if remaining == 0 then
-    gameResult = "You lost!"
+    gameOver("You lost!")
+    return
   elseif remaining == 1 then
     local box = fun.find(boxes, function(box)
       local data = boxData[box]
       return data.alive
     end)
-    if box then removeBox(box) end
-    gameResult = "You won!"
-  end
-  if gameResult then
-    buttons = { computerFirstButton, playerFirstButton }
+    if box then
+      computerRemoveBox(box)
+      future(function() gameOver("You won!") end, 3)
+    end
     return
   end
 
@@ -120,22 +120,24 @@ function computerMove()
     end
   end
 
-  if box then
-    local duration = 1
-    -- Move the hand to the selected box.
-    handTween = tween.new(
-      duration,
-      hand,
-      { x = box.centerX, y = box.centerY },
-      "inOutCubic"
-    )
+  if box then computerRemoveBox(box) end
+end
 
-    -- Remove the box.
-    future(function() removeBox(box) end, duration + 1)
+function computerRemoveBox(box)
+  local duration = 1
+  -- Move the hand to the selected box.
+  handTween = tween.new(
+    duration,
+    hand,
+    { x = box.centerX, y = box.centerY },
+    "inOutCubic"
+  )
 
-    -- Wait for the boxes to drop before enabling the next player move.
-    future(resetHand, duration + 2)
-  end
+  -- Remove the box.
+  future(function() removeBox(box) end, duration + 1)
+
+  -- Wait for the boxes to drop before enabling the next player move.
+  future(resetHand, 2)
 end
 
 function createBox(size, centerX, centerY)
@@ -262,6 +264,11 @@ function distanceToRope(x, y, rope)
   return math.sqrt(dx ^ 2 + dy ^ 2)
 end
 
+function gameOver(result)
+  gameResult = result
+  buttons = { computerFirstButton, playerFirstButton }
+end
+
 function getShapePoints(s)
   return s.body:getWorldPoints(s.shape:getPoints())
 end
@@ -279,7 +286,7 @@ function removeBox(box)
   -- Remove the rope at the top of this box.
   local rope = ropes[box]
   ropes[box] = nil
-  rope:destroy()
+  if rope then rope:destroy() end
 
   -- Mark this box and all those below as no longer alive.
   local data = boxData[box]
