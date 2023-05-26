@@ -14,18 +14,19 @@ require "util"
 
 math.randomseed(os.time())
 
+local g = love.graphics
+local p = love.physics
+
 local backgroundImage = love.graphics.newImage("images/background.jpg")
 local backgroundSpeed = 20
-local boxSize = 50
-local collisionSound = love.audio.newSource("sounds/monkey.ogg", "static")
-local g = love.graphics
 local bananaImage = g.newImage('images/banana.png')
 local bananaDx = bananaImage:getWidth() / 2
 local bananaDy = bananaImage:getHeight() / 2
-local branchHeight = 50
+local boxSize = 50
+local branchHeight = 90
+local collisionSound = love.audio.newSource("sounds/monkey.ogg", "static")
 local handImage = g.newImage('images/hand.png')
 local monkeyImage = g.newImage('images/monkey.png')
-local p = love.physics
 local pixelsPerMeter = 64
 local wallWidth = 6
 local windowWidth, windowHeight = g.getDimensions()
@@ -72,7 +73,7 @@ function computerMove()
 
   local remaining = fun.tableSum(counts)
   if remaining == 0 then
-    gameResult = "The computer won."
+    gameResult = "You lost!"
   elseif remaining == 1 then
     local box = fun.find(boxes, function(box)
       local data = boxData[box]
@@ -82,7 +83,7 @@ function computerMove()
     gameResult = "You won!"
   end
   if gameResult then
-    buttons = { playerFirstButton, computerFirstButton }
+    buttons = { computerFirstButton, playerFirstButton }
     return
   end
 
@@ -284,17 +285,16 @@ function love.load()
 
   monkeyPosition = { x = 10, y = 300 }
 
-  local spacing = windowWidth / 4
-  createColumn(1, 3, spacing)
-  createColumn(2, 5, spacing * 2)
-  createColumn(3, 7, spacing * 3)
+  createColumn(1, 3, windowWidth * 0.2)
+  createColumn(2, 5, windowWidth * 0.5)
+  createColumn(3, 7, windowWidth * 0.8)
 
   -- The buttons must be defined after "love.load" is defined.
   computerFirstButton = Button.new({
     font = fonts.button,
     text = "You go first",
     x = 100,
-    y = 150,
+    y = 230,
     onclick = function()
       love.load()
       computerMove()
@@ -304,7 +304,7 @@ function love.load()
     font = fonts.button,
     text = "Let me go first",
     x = 100,
-    y = 230,
+    y = 150,
     onclick = love.load
   })
 
@@ -338,7 +338,7 @@ function love.draw()
   g.rectangle("fill", 0, 0, windowWidth, branchHeight)
   g.setColor(colors.white)
   g.setFont(fonts.button)
-  g.print("Don't take the last banana!", 30, 70)
+  g.print("Don't take the last banana!", 26, branchHeight - 40)
 
   -- Draw the walls.
   g.setColor(colors.purple)
@@ -411,6 +411,10 @@ function love.mousepressed(x, y, button)
     local clicked = b:handleClick(x, y)
     if clicked then return end
   end
+end
+
+function love.mousereleased(x, y, button)
+  if button ~= 1 then return end -- check for left mouse button
 
   -- Check for clicks on boxes.
   for _, box in ipairs(boxes) do
