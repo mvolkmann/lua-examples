@@ -60,8 +60,6 @@ function resetHand()
   hand.y = windowHeight - 130
 end
 
-resetHand()
-
 -- lurker.postswap = love.load
 
 -- ----------------------------------------------------------------------------
@@ -98,7 +96,7 @@ function computerMove()
     end)
     if box then
       computerRemoveBox(box)
-      future(function() gameOver("You won!") end, 3)
+      later(function() gameOver("You won!") end, 3)
     end
     return
   end
@@ -134,10 +132,10 @@ function computerRemoveBox(box)
   )
 
   -- Remove the box.
-  future(function() removeBox(box) end, duration + 1)
+  later(function() removeBox(box) end, duration + 1)
 
   -- Wait for the boxes to drop before enabling the next player move.
-  future(resetHand, 2)
+  later(resetHand, 2)
 end
 
 function createBox(size, centerX, centerY)
@@ -353,7 +351,7 @@ end
 function love.update(dt)
   if handTween then handTween:update(dt) end
 
-  processFutures()
+  processLaters()
 
   backgroundPosition = (backgroundPosition - backgroundSpeed * dt) % windowWidth
 
