@@ -1,5 +1,6 @@
 local colors = require "colors"
 local fonts = require "fonts"
+local HStack = require "hstack"
 require "layout"
 local love = require "love"
 local Spacer = require "spacer"
@@ -10,7 +11,7 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local spacer, text1, text2, text3
+local hstack
 
 local function showFPS()
   g.setColor(colors.white)
@@ -20,10 +21,15 @@ end
 
 function love.load()
   local debug = true
-  spacer = Spacer.new()
-  text1 = Text.new("First Text Widget", { debug = debug, font = fonts.default18 })
-  text2 = Text.new("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
-  text3 = Text.new("Third Text Widget", { debug = debug, font = fonts.default18 })
+  local spacer = Spacer.new()
+  local text1 = Text.new("First Text Widget", { debug = debug, font = fonts.default18 })
+  local text2 = Text.new("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
+  local text3 = Text.new("Third Text Widget", { debug = debug, font = fonts.default18 })
+
+  hstack = HStack.new(
+    { align = "bottom", gap = 20 },
+    text1, spacer, text2, text3
+  )
 end
 
 function love.update(dt)
@@ -35,11 +41,11 @@ function love.draw()
   g.print("Hello, World!", 0, 0)
 
   g.setColor(colors.white)
-  hstack(
-    { align = "bottom", gap = 20 },
-    text1, spacer, text2, text3
-    text1, text2, text3
-  )
+  hstack:draw()
 
   showFPS()
+end
+
+function love.resize()
+  hstack.computed = false
 end
