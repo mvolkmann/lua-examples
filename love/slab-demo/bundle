@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+rm -f slab-demo.love
+pushd src
+zip -r ../slab-demo.love *
+popd
