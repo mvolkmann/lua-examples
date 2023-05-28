@@ -7,11 +7,11 @@ local function isSpacerWithoutSize(widget)
 end
 
 function hstack(options, ...)
-  local widgets = { ... }
   local align = options.align or "center"
   local gap = options.gap or 0
   local x = options.x or 0
   local y = options.y or 100
+  local widgets = { ... }
 
   -- Get the height of the tallest widget.
   local maxHeight = fun.reduce(
