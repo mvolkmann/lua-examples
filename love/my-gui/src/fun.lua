@@ -1,8 +1,8 @@
 local M = {}
 
 function M.every(t, predicate)
-  for _, v in ipairs(t) do
-    if not predicate(v) then return false end
+  for i, v in ipairs(t) do
+    if not predicate(v, i) then return false end
   end
   return true
 end
@@ -10,8 +10,8 @@ end
 -- This returns all table items that matches.
 function M.filter(t, fn)
   local result = {}
-  for _, v in ipairs(t) do
-    if fn(v) then
+  for i, v in ipairs(t) do
+    if fn(v, i) then
       table.insert(result, v)
     end
   end
@@ -28,22 +28,22 @@ end
 function M.map(t, fn)
   local result = {}
   for i, v in ipairs(t) do
-    result[i] = fn(v)
+    result[i] = fn(v, i)
   end
   return result
 end
 
 function M.reduce(t, fn, initial)
   local acc = initial or 0
-  for _, v in ipairs(t) do
-    acc = fn(acc, v)
+  for i, v in ipairs(t) do
+    acc = fn(acc, v, i)
   end
   return acc
 end
 
-function M.some(t, fn)
-  for _, v in ipairs(t) do
-    if fn(v) then return true end
+function M.some(t, predicate)
+  for i, v in ipairs(t) do
+    if predicate(v, i) then return true end
   end
   return false
 end

@@ -10,7 +10,7 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local spacer, text1, text2
+local spacer, text1, text2, text3
 
 local function showFPS()
   g.setColor(colors.white)
@@ -36,9 +36,9 @@ function love.draw()
 
   g.setColor(colors.white)
   hstack(
-  -- { align = "bottom", gap = 0 },
-    { gap = 30 },
+    { align = "bottom", gap = 20 },
     text1, spacer, text2, text3
+    text1, text2, text3
   )
 
   showFPS()
