@@ -2,36 +2,37 @@ local fun = require "fun"
 local love = require "love"
 local g = love.graphics
 
+local function isSpacerWithoutSize(widget)
+  return widget.kind == "spacer" and not widget.size
+end
+
 function hstack(options, ...)
   local widgets = { ... }
   local gap = options.gap or 0
   local x = options.x or 0
   local y = options.y or 100
 
-  -- Count Spacer widgets with a size of zero.
+  -- Count Spacer widgets with no size.
   local count = fun.reduce(
     widgets,
     function(acc, w)
-      return w.kind == "spacer" and acc + 1 or acc
+      return isSpacerWithoutSize(w) and acc + 1 or acc
     end
   )
-  print("count =", count)
+
   if count > 0 then
-    -- Get the width of the all other widgets.
+    -- Get the total width of the all other widgets.
     local widgetsWidth = fun.reduce(
       widgets,
       function(acc, w)
-        return w.kind ~= "spacer" and acc + w.width or acc
+        return isSpacerWithoutSize(w) and acc or acc + w.width
       end
     )
-    print("widgetsWidth =", widgetsWidth)
 
     local availableWidth = g.getWidth()
-    print("availableWidth =", availableWidth)
 
     -- Compute the size of each zero width Spacer.
     spacerWidth = (availableWidth - widgetsWidth) / count
-    print("spacerWidth =", spacerWidth)
   end
 
   for _, widget in ipairs(widgets) do

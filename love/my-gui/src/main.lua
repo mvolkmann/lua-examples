@@ -10,7 +10,7 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local text1, text2, widgets
+local text1, text2
 
 local function showFPS()
   g.setColor(colors.white)
@@ -19,9 +19,8 @@ local function showFPS()
 end
 
 function love.load()
-  text1 = Text.new("Text #1")
-  text2 = Text.new("Text #2")
-  widgets = { text1, text2 }
+  text1 = Text.new("Text #1", { font = fonts.default18 })
+  text2 = Text.new("Text #2", { font = fonts.default18 })
 end
 
 function love.update(dt)
@@ -33,7 +32,6 @@ function love.draw()
   g.print("Hello, World!", 0, 0)
 
   g.setColor(colors.white)
-  g.setFont(fonts.default18)
   hstack({ gap = 0 }, text1, Spacer.new(), text2)
 
   showFPS()

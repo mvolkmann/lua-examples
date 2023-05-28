@@ -13,7 +13,9 @@ local mt = {
     draw = function(self)
       g.setColor(self.color)
       if self.x and self.y then
+        g.setFont(self.font)
         g.print(self.text, self.x + padding, self.y + padding)
+        g.rectangle("line", self.x, self.y, self.width, self.height)
       end
     end
   }
