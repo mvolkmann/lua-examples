@@ -1,6 +1,8 @@
 local colors = require "colors"
 local fonts = require "fonts"
+require "layout"
 local love = require "love"
+local Spacer = require "spacer"
 local Text = require "text"
 require "util"
 
@@ -8,7 +10,7 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local widgets
+local text1, text2, widgets
 
 local function showFPS()
   g.setColor(colors.white)
@@ -17,11 +19,9 @@ local function showFPS()
 end
 
 function love.load()
-  widgets = {
-    Text.new("Text #1", { x = 200, y = 200 }),
-    Text.new("Text #2")
-  }
-  dump("widgets length", #widgets)
+  text1 = Text.new("Text #1")
+  text2 = Text.new("Text #2")
+  widgets = { text1, text2 }
 end
 
 function love.update(dt)
@@ -34,9 +34,7 @@ function love.draw()
 
   g.setColor(colors.white)
   g.setFont(fonts.default18)
-  for _, widget in ipairs(widgets) do
-    widget:draw()
-  end
+  hstack({ gap = 0 }, text1, Spacer.new(), text2)
 
   showFPS()
 end

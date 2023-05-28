@@ -5,13 +5,12 @@ require "util"
 local M = {}
 
 local g = love.graphics
-local padding = 10
+local padding = 0
 
 local mt = {
   __index = {
     color = colors.white,
     draw = function(self)
-      dump("draw: self =", self)
       g.setColor(self.color)
       if self.x and self.y then
         g.print(self.text, self.x + padding, self.y + padding)
@@ -28,21 +27,20 @@ function M.new(text, options)
     error("Text requires text")
   end
 
-  options = options or {}
-  options.text = text
+  instance = options or {}
+  instance.text = text
 
-  local font = options.font or g.getFont()
-  options.font = font
+  local font = instance.font or g.getFont()
+  instance.font = font
 
   local textWidth = font:getWidth(text)
   local textHeight = font:getHeight()
-  options.width = textWidth + padding * 2
-  options.height = textHeight + padding * 2
-  dump("options", options)
+  instance.width = textWidth + padding * 2
+  instance.height = textHeight + padding * 2
 
-  setmetatable(options, mt)
+  setmetatable(instance, mt)
 
-  return options
+  return instance
 end
 
 return M
