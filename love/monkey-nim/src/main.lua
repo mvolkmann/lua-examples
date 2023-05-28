@@ -135,7 +135,7 @@ function computerRemoveBox(box)
   later(function() removeBox(box) end, duration + 1)
 
   -- Wait for the boxes to drop before enabling the next player move.
-  later(resetHand, 2)
+  later(resetHand, duration + 1)
 end
 
 function createBox(size, centerX, centerY)
