@@ -19,10 +19,11 @@ local function showFPS()
 end
 
 function love.load()
+  local debug = true
   spacer = Spacer.new()
-  text1 = Text.new("Text #1", { font = fonts.default18 })
-  text2 = Text.new("Text #2", { font = fonts.default18 })
-  text3 = Text.new("Text #2", { font = fonts.default30 })
+  text1 = Text.new("First Text Widget", { debug = debug, font = fonts.default18 })
+  text2 = Text.new("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
+  text3 = Text.new("Third Text Widget", { debug = debug, font = fonts.default18 })
 end
 
 function love.update(dt)
@@ -35,8 +36,9 @@ function love.draw()
 
   g.setColor(colors.white)
   hstack(
-    { align = "center", gap = 0 },
-    text1, spacer, text2, spacer, text3
+  -- { align = "bottom", gap = 0 },
+    { gap = 30 },
+    text1, spacer, text2, text3
   )
 
   showFPS()

@@ -8,9 +8,19 @@ end
 
 function hstack(options, ...)
   local widgets = { ... }
+  local align = options.align or "center"
   local gap = options.gap or 0
   local x = options.x or 0
   local y = options.y or 100
+
+  -- Get the height of the tallest widget.
+  local maxHeight = fun.reduce(
+    widgets,
+    function(acc, w)
+      local h = w.height or 0
+      return h > acc and h or acc
+    end
+  )
 
   -- Count Spacer widgets with no size.
   local count = fun.reduce(
@@ -35,14 +45,23 @@ function hstack(options, ...)
     spacerWidth = (availableWidth - widgetsWidth) / count
   end
 
-  for _, widget in ipairs(widgets) do
-    if widget.kind == "spacer" then
-      x = x + (widget.size or spacerWidth)
+  for _, w in ipairs(widgets) do
+    if w.kind == "spacer" then
+      x = x + (w.size or spacerWidth)
     else
-      widget.x = x
-      widget.y = y
-      widget:draw()
-      x = x + gap + widget.width
+      w.x = x
+
+      if align == "top" then
+        w.y = y
+      elseif align == "bottom" then
+        w.y = y + maxHeight - w.height
+      else -- assume "center"
+        w.y = y + (maxHeight - w.height) / 2
+      end
+
+      w:draw()
+
+      x = x + gap + w.width
     end
   end
 end

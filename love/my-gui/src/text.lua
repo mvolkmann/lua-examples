@@ -15,7 +15,10 @@ local mt = {
       if self.x and self.y then
         g.setFont(self.font)
         g.print(self.text, self.x + padding, self.y + padding)
-        g.rectangle("line", self.x, self.y, self.width, self.height)
+        if self.debug then
+          g.setColor(colors.red)
+          g.rectangle("line", self.x, self.y, self.width, self.height)
+        end
       end
     end
   }
