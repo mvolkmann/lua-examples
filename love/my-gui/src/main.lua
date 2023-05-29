@@ -23,27 +23,22 @@ function love.load()
   local text2 = Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
   local text3 = Text("Third Text Widget", { debug = debug, font = fonts.default18 })
 
-  --[[ hstack = HStack(
-    { align = "bottom", spacing = 20 },
-    text1, Spacer(), text2, text3
-  ) ]]
-  --[[ vstack = VStack(
-    { align = "end", spacing = 20 },
-    text1, text2, text3, Spacer(), FPS()
-  ) ]]
   g.setFont(fonts.default30)
   vstack = VStack(
     {},
     HStack(
-      { spacing = 20 },
+      { align = "center", spacing = 20 },
+      Spacer(),
       Text("One"),
-      Text("Two"),
+      Text("Two", { debug = debug, font = fonts.default18 }),
       Text("Three")
     ),
     HStack(
       { spacing = 20 },
+      Spacer(),
       Text("Four"),
-      Text("Five")
+      Text("Five"),
+      Spacer()
     ),
     HStack(
       { spacing = 20 },
