@@ -25,7 +25,7 @@ function love.load()
     text1, Spacer(), text2, text3
   ) ]]
   vstack = VStack(
-    { spacing = 20 },
+    { align = "end", spacing = 20 },
     text1, text2, text3, Spacer(), FPS()
   )
 end

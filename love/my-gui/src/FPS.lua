@@ -8,7 +8,7 @@ local mt = {
   __index = {
     draw = function(self)
       g.setColor(colors.white)
-      g.setFont(fonts.default18)
+      g.setFont(self.font)
       g.print("FPS: " .. love.timer.getFPS(), self.x, self.y)
     end
   }
