@@ -10,18 +10,19 @@ local pprint = require "pprint"
 local Spacer = require "Spacer"
 local Text = require "Text"
 local VStack = require "VStack"
+local ZStack = require "ZStack"
 
 local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local buttons, hstack, vstack
+local buttons, hstack, vstack, zstack
 
 pprint.setup { show_all = true, wrap_array = true }
 
 function love.load()
   local debug = true
-  local logo1 = Image("images/love2d-heart.png", { height = 100 })
+  local logo1 = Image("images/love2d-heart.png", { height = 400 })
   local logo2 = Image("images/love2d-whale.png", { height = 100 })
   local text1 = Text("First Text Widget", { debug = debug, font = fonts.default18 })
   local text2 = Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
@@ -67,7 +68,12 @@ function love.load()
       logo2
     )
   )
-  -- pprint(vstack)
+
+  zstack = ZStack(
+    {},
+    logo1,
+    Text("LÖVE", { color = colors.black, font = fonts.default30 })
+  )
 end
 
 function love.update(dt)
@@ -79,7 +85,8 @@ function love.draw()
   g.print("Hello, World!", 0, 0) ]]
   g.setColor(colors.white)
   -- hstack:draw()
-  vstack:draw()
+  -- vstack:draw()
+  zstack:draw()
 end
 
 function love.mousepressed(x, y, button)
