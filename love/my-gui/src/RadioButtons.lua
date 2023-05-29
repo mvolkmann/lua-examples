@@ -37,16 +37,13 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
+      local font = self.font
       local spacing = circleRadius
-      local circleCenterY = y + circleRadius
-      local circleRadiusSquared = circleRadius ^ 2
 
       for _, choice in ipairs(self.choices) do
-        local circleCenterX = x + circleRadius
-        local distanceSquared =
-            (circleCenterX - clickX) ^ 2 +
-            (circleCenterY - clickY) ^ 2
-        if distanceSquared <= circleRadiusSquared then
+        local choiceWidth = size + spacing + font:getWidth(choice.label)
+        if x <= clickX and clickX <= x + choiceWidth and
+            y <= clickY and clickY <= y + size then
           local value = choice.value
           local t = self.table
           local p = self.property
