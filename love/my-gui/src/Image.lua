@@ -5,8 +5,6 @@ local mt = {
   __index = {
     draw = function(self, parentX, parentY)
       if self.x and self.y then
-        parentX = parentX or 0
-        parentY = parentY or 0
         local rotation = 0
         g.draw(
           self.image,

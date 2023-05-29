@@ -29,10 +29,8 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
-      local clicked = clickX >= x and
-          clickX <= x + width and
-          clickY >= y and
-          clickY <= y + size
+      local clicked = clickX >= x and clickX <= x + width and
+          clickY >= y and clickY <= y + size
       if clicked then
         local t = self.table
         local p = self.property

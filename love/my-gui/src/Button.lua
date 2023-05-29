@@ -24,10 +24,8 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
-      local clicked = clickX >= x and
-          clickX <= x + self.width and
-          clickY >= y and
-          clickY <= y + self.height
+      local clicked = x <= clickX and clickX <= x + self.width and
+          y <= clickY and clickY <= y + self.height
       if clicked then self.onClick() end
       return clicked
     end

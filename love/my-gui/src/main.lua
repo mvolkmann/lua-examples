@@ -5,6 +5,7 @@ local fonts = require "fonts"
 local FPS = require "FPS"
 local HStack = require "HStack"
 local Image = require "Image"
+local Input = require "Input"
 require "layout"
 local love = require "love"
 local pprint = require "pprint"
@@ -22,7 +23,7 @@ local windowWidth, windowHeight = g.getDimensions()
 
 local clickables, hstack, vstack
 
-local state = {}
+local state = { firstName = "Mark" }
 
 pprint.setup { show_all = true, wrap_array = true }
 
@@ -51,10 +52,11 @@ function love.load()
     end
   })
 
-  local toggle = Toggle(state, "hungry", {
+  local input = Input(state, "firstName", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
-    end
+    end,
+    width = 200
   })
 
   local radioButtons = RadioButtons(
@@ -91,7 +93,13 @@ function love.load()
     }
   )
 
-  clickables = { button, checkbox, radioButtons, select, toggle }
+  local toggle = Toggle(state, "hungry", {
+    onChange = function(t, p, v)
+      print("got change to " .. p, v, t[p])
+    end
+  })
+
+  clickables = { button, checkbox, input, radioButtons, select, toggle }
 
   g.setFont(fonts.default30)
 
@@ -120,13 +128,13 @@ function love.load()
     ),
     HStack(
       {},
-      Spacer(),
       ZStack(
         { align = "center" },
         logo1,
         Text("LÖVE", { color = colors.black, font = fonts.default30 })
       ),
-      Spacer()
+      Spacer(),
+      input
     ),
     HStack(
       { spacing = 20 },
@@ -153,6 +161,30 @@ function love.draw()
   g.setColor(colors.white)
   -- hstack:draw()
   vstack:draw()
+end
+
+function love.keypressed(key)
+  -- These global variables are set in Input.lua.
+  local t = _G.inputTable
+  local p = _G.inputProperty
+  local c = _G.inputCursor
+  if not t or not p then return end
+
+  print("key =", key)
+
+  if key == "backspace" then
+    local value = t[p]
+    t[p] = value:sub(1, -2)
+    return
+  end
+
+  if key == "space" then key = " " end
+
+  -- Only process printable ASCII characters.
+  if #key == 1 then
+    local value = t[p]
+    t[p] = value .. key
+  end
 end
 
 function love.mousepressed(x, y, button)
