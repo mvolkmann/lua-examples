@@ -1,5 +1,3 @@
-local M = {}
-
 local fun = require "fun"
 local g = love.graphics
 
@@ -114,7 +112,7 @@ local mt = {
 -- The supported options are:
 -- align: "top", "center", or "bottom"
 -- spacing: positive integer to add space between non-spacer children
-function M.new(options, ...)
+function HStack(options, ...)
   local t = type(options)
   assert(t == "table" or t == "nil", "HStack options must be a table.")
 
@@ -128,4 +126,4 @@ function M.new(options, ...)
   return instance
 end
 
-return M
+return HStack

@@ -1,8 +1,6 @@
 local colors = require "colors"
 local love = require "love"
 
-local M = {}
-
 local g = love.graphics
 local padding = 10
 
@@ -31,7 +29,7 @@ local mt = {
   }
 }
 
-function M.new(opt)
+function Button(opt)
   if not opt.text then
     error("Button requires text")
   end
@@ -51,4 +49,4 @@ function M.new(opt)
   return opt
 end
 
-return M
+return Button

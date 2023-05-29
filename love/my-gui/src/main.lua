@@ -21,14 +21,13 @@ end
 
 function love.load()
   local debug = true
-  local spacer = Spacer.new()
-  local text1 = Text.new("First Text Widget", { debug = debug, font = fonts.default18 })
-  local text2 = Text.new("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
-  local text3 = Text.new("Third Text Widget", { debug = debug, font = fonts.default18 })
+  local text1 = Text("First Text Widget", { debug = debug, font = fonts.default18 })
+  local text2 = Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
+  local text3 = Text("Third Text Widget", { debug = debug, font = fonts.default18 })
 
-  hstack = HStack.new(
+  hstack = HStack(
     { align = "bottom", spacing = 20 },
-    text1, spacer, text2, text3
+    text1, Spacer(), text2, text3
   )
 end
 

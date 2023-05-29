@@ -2,8 +2,6 @@ local colors = require "colors"
 local love = require "love"
 require "util"
 
-local M = {}
-
 local g = love.graphics
 local padding = 0
 
@@ -24,7 +22,7 @@ local mt = {
   }
 }
 
-function M.new(text, options)
+function Text(text, options)
   local t = type(options)
   assert(t == "table" or t == "nil", "Text options must be a table.")
 
@@ -48,4 +46,4 @@ function M.new(text, options)
   return instance
 end
 
-return M
+return Text
