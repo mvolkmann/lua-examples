@@ -3,10 +3,8 @@ local love = require "love"
 
 local g = love.graphics
 
-local padding = 2
 local size = 24
 local circleRadius = size / 2
-local width = size * 1.8
 
 local mt = {
   __index = {
@@ -23,18 +21,31 @@ local mt = {
       local dy = (size - height) / 2
 
       local spacing = circleRadius
-      local circleCenterY = y + circleRadius
       local selectedValue = self.table[self.property]
 
-      for _, choice in ipairs(self.choices) do
+      if self.vertical then
         local circleCenterX = x + circleRadius
-        g.circle("line", circleCenterX, circleCenterY, circleRadius)
-        if choice.value == selectedValue then
-          g.circle("fill", circleCenterX, circleCenterY, circleRadius - 2)
+        for _, choice in ipairs(self.choices) do
+          local circleCenterY = y + circleRadius
+          g.circle("line", circleCenterX, circleCenterY, circleRadius)
+          if choice.value == selectedValue then
+            g.circle("fill", circleCenterX, circleCenterY, circleRadius - 2)
+          end
+          g.print(choice.label, x + size + spacing, y + dy)
+          y = y + size + spacing
         end
-        x = x + size + spacing
-        g.print(choice.label, x, y + dy)
-        x = x + self.font:getWidth(choice.label) + spacing * 2
+      else
+        local circleCenterY = y + circleRadius
+        for _, choice in ipairs(self.choices) do
+          local circleCenterX = x + circleRadius
+          g.circle("line", circleCenterX, circleCenterY, circleRadius)
+          if choice.value == selectedValue then
+            g.circle("fill", circleCenterX, circleCenterY, circleRadius - 2)
+          end
+          x = x + size + spacing
+          g.print(choice.label, x, y + dy)
+          x = x + font:getWidth(choice.label) + spacing * 2
+        end
       end
     end,
     handleClick = function(self, clickX, clickY)
@@ -43,19 +54,35 @@ local mt = {
       local font = self.font
       local spacing = circleRadius
 
-      for _, choice in ipairs(self.choices) do
-        local choiceWidth = size + spacing + font:getWidth(choice.label)
-        if x <= clickX and clickX <= x + choiceWidth and
-            y <= clickY and clickY <= y + size then
-          local value = choice.value
-          local t = self.table
-          local p = self.property
-          t[p] = value
-          self.onChange(t, p, value)
-          return true -- captured click
+      if self.vertical then
+        for _, choice in ipairs(self.choices) do
+          local choiceWidth = size + spacing + font:getWidth(choice.label)
+          if x <= clickX and clickX <= x + choiceWidth and
+              y <= clickY and clickY <= y + size then
+            local value = choice.value
+            local t = self.table
+            local p = self.property
+            t[p] = value
+            self.onChange(t, p, value)
+            return true -- captured click
+          end
+          y = y + size + spacing
         end
-        x = x + size + spacing
-        x = x + self.font:getWidth(choice.label) + spacing * 2
+      else
+        for _, choice in ipairs(self.choices) do
+          local choiceWidth = size + spacing + font:getWidth(choice.label)
+          if x <= clickX and clickX <= x + choiceWidth and
+              y <= clickY and clickY <= y + size then
+            local value = choice.value
+            local t = self.table
+            local p = self.property
+            t[p] = value
+            self.onChange(t, p, value)
+            return true -- captured click
+          end
+          x = x + size + spacing
+          x = x + font:getWidth(choice.label) + spacing * 2
+        end
       end
 
       return false -- did not capture click
@@ -70,6 +97,7 @@ local mt = {
 -- color: defaults to white
 -- font: font used for choice labels
 -- onChange: function called when button is clicked
+-- vertical: boolean; defaults to false
 function RadioButtons(choices, table, property, options)
   local t = type(choices)
   assert(t == "table", "RadioButtons choices must be a table.")
@@ -89,13 +117,25 @@ function RadioButtons(choices, table, property, options)
   instance.table = table
   instance.property = property
 
-  local height = font:getHeight()
+  local fontHeight = font:getHeight()
+  local height = 0
   local width = 0
-  for _, choice in ipairs(choices) do
-    -- using height for spacing
-    width = width + size + height + font:getWidth(choice.label) + height * 2
+
+  local spacing = circleRadius
+  if instance.vertical then
+    height = #choices * (size + spacing) - spacing
+    for _, choice in ipairs(choices) do
+      local w = size + spacing + font:getWidth(choice.label)
+      if w > width then width = w end
+    end
+  else
+    local height = fontHeight
+    local width = 0
+    for _, choice in ipairs(choices) do
+      width = width + size + spacing + font:getWidth(choice.label) + spacing * 2
+    end
+    width = width - spacing * 2
   end
-  width = width - height * 2
 
   instance.width = width
   instance.height = size

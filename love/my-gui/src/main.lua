@@ -68,7 +68,8 @@ function love.load()
       -- font = fonts.default30,
       onChange = function(t, p, v)
         print("got change to " .. p, v, t[p])
-      end
+      end,
+      vertical = true
     }
   )
 
