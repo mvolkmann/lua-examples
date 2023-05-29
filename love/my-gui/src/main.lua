@@ -1,10 +1,10 @@
 local colors = require "colors"
 local fonts = require "fonts"
-local HStack = require "hstack"
+local HStack = require "HStack"
 require "layout"
 local love = require "love"
-local Spacer = require "spacer"
-local Text = require "text"
+local Spacer = require "Spacer"
+local Text = require "Text"
 require "util"
 
 local g = love.graphics
