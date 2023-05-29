@@ -14,8 +14,8 @@ local mt = {
   }
 }
 
-function FPS()
-  local font = g.getFont()
+function FPS(options)
+  local font = options.font or g.getFont()
   local text = "FPS:" .. love.timer.getFPS()
   local instance = {
     font = font,

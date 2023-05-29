@@ -22,7 +22,7 @@ local mt = {
       local spacing = self.height
       local circleCenterY = y + halfSize
       local circleRadius = halfSize
-      for _, choice in ipairs(choices) do
+      for _, choice in ipairs(self.choices) do
         local circleCenterX = x + halfSize
         g.circle("line", circleCenterY, circleCenterY, circleRadius)
         x = x + size + spacing
@@ -66,7 +66,7 @@ local mt = {
 -- onChange: function called when button is clicked
 function RadioButtons(choices, table, property, options)
   local t = type(choices)
-  assert(t == "table", "Toggle choices must be a table.")
+  assert(t == "table", "RadioButtons choices must be a table.")
 
   options = options or {}
   local t = type(options)
@@ -75,7 +75,8 @@ function RadioButtons(choices, table, property, options)
   local font = options.font or g.getFont()
 
   local instance = options
-  instance.kind = "Toggle"
+  instance.kind = "RadioButtons"
+  instance.choices = choices
   instance.color = instance.color or colors.white
   instance.font = font
 
