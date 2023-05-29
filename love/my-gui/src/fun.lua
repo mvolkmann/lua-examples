@@ -1,5 +1,16 @@
 local M = {}
 
+-- Returns the number of table values that conform to a predicate.
+function M.count(t, predicate)
+  local c = 0
+  for i, v in ipairs(t) do
+    if predicate(v, i) then c = c + 1 end
+  end
+  return c
+end
+
+-- Returns a boolean indicating whether
+-- every item in a table matches a predicate.
 function M.every(t, predicate)
   for i, v in ipairs(t) do
     if not predicate(v, i) then return false end
@@ -7,21 +18,21 @@ function M.every(t, predicate)
   return true
 end
 
--- This returns all table items that matches.
-function M.filter(t, fn)
+-- Returns a new table containing all table items that match a predicate.
+function M.filter(t, predicate)
   local result = {}
   for i, v in ipairs(t) do
-    if fn(v, i) then
+    if predicate(v, i) then
       table.insert(result, v)
     end
   end
   return result
 end
 
--- This returns the first table item that matches.
-function M.find(t, fn)
+-- Returns the first table item that matches a predicate.
+function M.find(t, predicate)
   for _, v in ipairs(t) do
-    if fn(v) then return v end
+    if predicate(v) then return v end
   end
 end
 
@@ -29,6 +40,28 @@ function M.map(t, fn)
   local result = {}
   for i, v in ipairs(t) do
     result[i] = fn(v, i)
+  end
+  return result
+end
+
+-- Returns the maximum value returned by a function
+-- that is passed each table item.
+function M.max(t, fn)
+  local result
+  for i, v in ipairs(t) do
+    local computed = fn(v, i)
+    if not result or computed > result then result = computed end
+  end
+  return result
+end
+
+-- Returns the minimum value returned by a function
+-- that is passed each table item.
+function M.min(t, fn)
+  local result
+  for i, v in ipairs(t) do
+    local computed = fn(v, i)
+    if not result or computed < result then result = computed end
   end
   return result
 end
@@ -41,6 +74,8 @@ function M.reduce(t, fn, initial)
   return acc
 end
 
+-- Returns a boolean indicating whether
+-- some item in a table matches a predicate.
 function M.some(t, predicate)
   for i, v in ipairs(t) do
     if predicate(v, i) then return true end
@@ -48,12 +83,23 @@ function M.some(t, predicate)
   return false
 end
 
-function M.sum(n1, n2) return n1 + n2 end
-
-function M.tableSum(t)
-  return M.reduce(t, M.sum)
+-- Returns the sum of the numbers in a table.
+function M.sum(t)
+  local result = 0
+  for _, v in ipairs(t) do
+    result = result + v
+  end
+  return result
 end
 
--- function M.xor(n1, n2) return bit.bxor(n1, n2) end
+-- Returns the sum of the values returned by
+-- a function that is passed each table item.
+function M.sumFn(t, fn)
+  local result = 0
+  for _, v in ipairs(t) do
+    result = result + fn(v)
+  end
+  return result
+end
 
 return M

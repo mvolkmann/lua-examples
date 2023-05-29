@@ -1,8 +1,6 @@
 local fun = require "fun"
 local g = love.graphics
 
-local padding = 0
-
 local function isSpacerWithoutSize(widget)
   return widget.kind == "spacer" and not widget.size
 end
@@ -17,29 +15,21 @@ local function compute(self)
   local y = self.y or 100
 
   -- Get height of tallest child.
-  local maxHeight = fun.reduce(
+  local maxHeight = fun.max(
     children,
-    function(acc, w)
-      local h = w.height or 0
-      return h > acc and h or acc
-    end
+    function(child) return child.height or 0 end
   )
 
   -- Count spacers with no size.
-  local spacerCount = fun.reduce(
-    children,
-    function(acc, w)
-      return isSpacerWithoutSize(w) and acc + 1 or acc
-    end
-  )
+  local spacerCount = fun.count(children, isSpacerWithoutSize)
 
   -- If there are any spacers with no size ...
   if spacerCount > 0 then
     -- Get the total width of the all other children.
-    local childrenWidth = fun.reduce(
+    local childrenWidth = fun.sumFn(
       children,
-      function(acc, w)
-        return isSpacerWithoutSize(w) and acc or acc + w.width
+      function(child)
+        return isSpacerWithoutSize(child) and 0 or child.width
       end
     )
 
