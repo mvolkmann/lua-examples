@@ -5,6 +5,10 @@ local g = love.graphics
 
 local padding = 4
 local size = 24
+local s2 = size * 0.2
+local s4 = size * 0.4
+local s6 = size * 0.6
+local s8 = size * 0.8
 local spacing = size * 0.4
 
 local mt = {
@@ -20,8 +24,9 @@ local mt = {
 
       local checked = self.table[self.property]
       if checked then
-        local s = size - padding * 2
-        g.rectangle("fill", x + padding, y + padding, s, s)
+        g.setLineWidth(4)
+        g.line(x + s2, y + s6, x + s4, y + s8, x + s8, y + s2)
+        g.setLineWidth(1)
       end
 
       g.setFont(self.font)
