@@ -5,8 +5,8 @@ local function isSpacerWithoutSize(widget)
   return widget.kind == "spacer" and not widget.size
 end
 
-local function compute(self)
-  print("HStack compute entered")
+local function layout(self)
+  print("HStack layout entered")
   local align = self.align or "center"
   local children = self.children
   local spacerWidth = 0
@@ -35,16 +35,12 @@ local function compute(self)
 
     -- Get the number of children that are not spacers
     -- and not preceded by a spacer.
-    local gapCount = fun.reduce(
+    local gapCount = fun.count(
       children,
-      function(acc, w, i)
-        if w.kind == "spacer" then return acc end
-        local prevW = children[i - 1]
-        if not prevW or prevW.kind == "spacer" then
-          return acc
-        else
-          return acc + 1
-        end
+      function(child, i)
+        if child.kind == "spacer" then return false end
+        local prevChild = children[i - 1]
+        return prevChild and prevChild.kind ~= "spacer"
       end
     )
 
@@ -57,39 +53,37 @@ local function compute(self)
     spacerWidth = (availableWidth - childrenWidth) / spacerCount
   end
 
-  for i, w in ipairs(children) do
-    if w.kind == "spacer" then
-      x = x + (w.size or spacerWidth)
+  -- Set the x and y properties of each non-spacer child.
+  for i, child in ipairs(children) do
+    if child.kind == "spacer" then
+      x = x + (child.size or spacerWidth)
     else
-      w.x = x
+      child.x = x
 
-      local prevW = children[i - 1]
-      if prevW and prevW.kind ~= "spacer" then
-        w.x = w.x + spacing
+      local prevChild = children[i - 1]
+      if prevChild and prevChild.kind ~= "spacer" then
+        child.x = child.x + spacing
       end
 
       if align == "top" then
-        w.y = y
+        child.y = y
       elseif align == "bottom" then
-        w.y = y + maxHeight - w.height
+        child.y = y + maxHeight - child.height
       else -- assume "center"
-        w.y = y + (maxHeight - w.height) / 2
+        child.y = y + (maxHeight - child.height) / 2
       end
 
-      x = w.x + w.width
+      x = child.x + child.width
     end
   end
 
-  self.computed = true
+  self.laidOut = true
 end
 
 local mt = {
   __index = {
-    computed = false,
+    laidOut = false,
     draw = function(self)
-      -- Can set this to false to trigger recomputing.
-      if not self.computed then compute(self) end
-
       for i, child in ipairs(self.children) do
         if child.kind ~= "spacer" then
           child:draw()
@@ -111,7 +105,7 @@ function HStack(options, ...)
 
   setmetatable(instance, mt)
 
-  compute(instance)
+  layout(instance)
 
   return instance
 end

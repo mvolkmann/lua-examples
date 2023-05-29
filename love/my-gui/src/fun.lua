@@ -84,6 +84,8 @@ function M.some(t, predicate)
 end
 
 -- Returns the sum of the numbers in a table.
+-- While this could be implemented using "reduce",
+-- this is a bit more efficient.
 function M.sum(t)
   local result = 0
   for _, v in ipairs(t) do
@@ -94,6 +96,8 @@ end
 
 -- Returns the sum of the values returned by
 -- a function that is passed each table item.
+-- While this could be implemented using "reduce",
+-- this is a bit more efficient.
 function M.sumFn(t, fn)
   local result = 0
   for _, v in ipairs(t) do
