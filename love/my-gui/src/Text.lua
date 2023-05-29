@@ -13,7 +13,10 @@ local mt = {
         g.setFont(self.font)
         parentX = parentX or 0
         parentY = parentY or 0
-        g.print(self.text, parentX + self.x + padding, parentY + self.y + padding)
+        local t = self.table
+        local p = self.property
+        local v = t and p and t[p] or self.text
+        g.print(v, parentX + self.x + padding, parentY + self.y + padding)
         if self.debug then
           g.setColor(colors.red)
           g.rectangle("line", parentX + self.x, parentY + self.y, self.width, self.height)
@@ -23,6 +26,13 @@ local mt = {
   }
 }
 
+-- Supported options are:
+-- font: font used for button label
+-- color: color of label and checkbox; defaults to white
+-- onChange: function called when button is clicked
+-- property: property name whose value should be displayed
+-- table: table containing the property above
+-- width: used when property and table are specified
 function Text(text, options)
   local t = type(options)
   assert(t == "table" or t == "nil", "Text options must be a table.")
@@ -40,7 +50,7 @@ function Text(text, options)
 
   instance.text = text
 
-  local textWidth = font:getWidth(text)
+  local textWidth = width or font:getWidth(text)
   local textHeight = font:getHeight()
   instance.width = textWidth + padding * 2
   instance.height = textHeight + padding * 2

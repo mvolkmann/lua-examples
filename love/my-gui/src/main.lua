@@ -59,6 +59,12 @@ function love.load()
     width = 200
   })
 
+  local firstNameText = Text("", {
+    table = state,
+    property = "firstName",
+    width = 100
+  })
+
   local radioButtons = RadioButtons(
     {
       { label = "Red",   value = "r" },
@@ -127,14 +133,15 @@ function love.load()
       Text("Nine")
     ),
     HStack(
-      {},
+      { spacing = 20 },
       ZStack(
         { align = "center" },
         logo1,
         Text("LÖVE", { color = colors.black, font = fonts.default30 })
       ),
-      Spacer(),
-      input
+      input,
+      firstNameText
+    -- VStack({}, input, firstNameText)
     ),
     HStack(
       { spacing = 20 },
@@ -170,20 +177,27 @@ function love.keypressed(key)
   local c = _G.inputCursor
   if not t or not p then return end
 
-  print("key =", key)
+  local value = t[p]
 
   if key == "backspace" then
-    local value = t[p]
-    t[p] = value:sub(1, -2)
-    return
-  end
+    if c > 0 then
+      t[p] = value:sub(1, c - 1) .. value:sub(c + 1, #value)
+      _G.inputCursor = c - 1
+    end
+  elseif key == "left" then
+    if c > 0 then _G.inputCursor = c - 1 end
+  elseif key == "right" then
+    if c < #value then _G.inputCursor = c + 1 end
+  else
+    if key == "space" then key = " " end
 
-  if key == "space" then key = " " end
-
-  -- Only process printable ASCII characters.
-  if #key == 1 then
-    local value = t[p]
-    t[p] = value .. key
+    -- Only process printable ASCII characters.
+    if #key == 1 then
+      local head = c == 0 and "" or value:sub(1, c)
+      local tail = value:sub(c + 1, #value)
+      t[p] = head .. key .. tail
+      _G.inputCursor = c + 1
+    end
   end
 end
 

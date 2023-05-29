@@ -1,8 +1,9 @@
 local colors = require "colors"
 local love = require "love"
 
+love.keyboard.setKeyRepeat(true)
 local g = love.graphics
-local padding = 2
+local padding = 4
 
 local mt = {
   __index = {
@@ -21,17 +22,17 @@ local mt = {
         g.setFont(font)
         local t = self.table
         local p = self.property
-        local v = t[p] or ""
         -- TODO: Need to truncate text if it is too long.
-        local x = parentX + self.x + padding
-        local y = parentY + self.y + padding
+        local v = t[p] or ""
+        x = x + padding
+        y = y + padding
         g.print(v, x, y)
 
         local c = _G.inputCursor
         if c then
           -- Draw vertical cursor line.
           local height = font:getHeight()
-          local cursorX = x + font:getWidth(v.sub(1, c))
+          local cursorX = x + font:getWidth(v:sub(1, c))
           g.line(cursorX, y, cursorX, y + height)
         end
       end
@@ -43,7 +44,6 @@ local mt = {
       local height = self.height
       local clicked = x <= clickX and clickX <= x + width and
           y <= clickY and clickY <= y + height
-      print("Input.handleClick: clicked =", clicked)
       if clicked then
         -- Enable keyboard.
         -- TODO: Is this needed? Maybe only on mobile devices.
