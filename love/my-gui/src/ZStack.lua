@@ -59,15 +59,17 @@ local function layout(self)
     end
   end
 
+  self.width = maxWidth
+  self.height = maxHeight
   self.laidOut = true
 end
 
 local mt = {
   __index = {
     laidOut = false,
-    draw = function(self)
-      for i, child in ipairs(self.children) do
-        child:draw(self.x, self.y)
+    draw = function(self, dx, dy)
+      for _, child in ipairs(self.children) do
+        child:draw(dx + self.x, dy + self.y)
       end
     end
   }
