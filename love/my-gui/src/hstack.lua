@@ -102,11 +102,8 @@ function HStack(options, ...)
 
   local instance = options
   instance.children = { ... }
-
   setmetatable(instance, mt)
-
   layout(instance)
-
   return instance
 end
 
