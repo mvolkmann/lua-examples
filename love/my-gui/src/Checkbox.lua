@@ -5,6 +5,7 @@ local g = love.graphics
 
 local padding = 4
 local size = 24
+local spacing = size * 0.4
 
 local mt = {
   __index = {
@@ -26,7 +27,12 @@ local mt = {
       g.setFont(self.font)
       local height = self.font:getHeight()
       local dy = (size - height) / 2
-      g.print(self.label, x + size * 1.4, y + dy)
+      g.print(self.label, x + size + spacing, y + dy)
+
+      if self.debug then
+        g.setColor(colors.red)
+        g.rectangle("line", x, y, self.width, self.height)
+      end
     end,
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
@@ -67,8 +73,8 @@ function Checkbox(label, table, property, options)
   instance.table = table
   instance.property = property
 
-  instance.width = font:getWidth(label)
-  instance.height = font:getHeight()
+  instance.width = size + spacing + font:getWidth(label)
+  instance.height = math.max(size, font:getHeight())
 
   setmetatable(instance, mt)
 
