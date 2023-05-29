@@ -96,7 +96,7 @@ local mt = {
 -- Supported options are:
 -- color: defaults to white
 -- font: font used for choice labels
--- onChange: function called when button is clicked
+-- onChange: function called when a choice is selected
 -- vertical: boolean; defaults to false
 function RadioButtons(choices, table, property, options)
   local t = type(choices)

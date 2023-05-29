@@ -9,6 +9,7 @@ require "layout"
 local love = require "love"
 local pprint = require "pprint"
 local RadioButtons = require "RadioButtons"
+local Select = require "Select"
 local Spacer = require "Spacer"
 local Text = require "Text"
 local Toggle = require "Toggle"
@@ -73,7 +74,24 @@ function love.load()
     }
   )
 
-  clickables = { button, checkbox, radioButtons, toggle }
+  local select = Select(
+    {
+      { label = "Red",   value = "r" },
+      { label = "Green", value = "g" },
+      { label = "Blue",  value = "b" }
+    },
+    state,
+    "color",
+    {
+      -- font = fonts.default30,
+      onChange = function(t, p, v)
+        print("got change to " .. p, v, t[p])
+      end,
+      vertical = true
+    }
+  )
+
+  clickables = { button, checkbox, radioButtons, select, toggle }
 
   g.setFont(fonts.default30)
 
@@ -117,7 +135,8 @@ function love.load()
     ),
     HStack(
       {},
-      radioButtons
+      radioButtons,
+      select
     ),
     Spacer(),
     FPS({ font = fonts.default12 })
