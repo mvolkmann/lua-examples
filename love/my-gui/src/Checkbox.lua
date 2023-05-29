@@ -29,8 +29,9 @@ local mt = {
         g.setLineWidth(1)
       end
 
-      g.setFont(self.font)
-      local height = self.font:getHeight()
+      local font = self.font
+      g.setFont(font)
+      local height = font:getHeight()
       local dy = (size - height) / 2
       g.print(self.label, x + size + spacing, y + dy)
 
@@ -42,8 +43,9 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
+      local labelWidth = self.font:getWidth(self.label)
       local clicked = clickX >= x and
-          clickX <= x + size and
+          clickX <= x + size + spacing + labelWidth and
           clickY >= y and
           clickY <= y + size
       if clicked then
