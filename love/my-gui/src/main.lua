@@ -1,3 +1,4 @@
+local Button = require "Button"
 local colors = require "colors"
 local fonts = require "fonts"
 local FPS = require "FPS"
@@ -13,7 +14,7 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local hstack, vstack
+local buttons, hstack, vstack
 
 pprint.setup { show_all = true, wrap_array = true }
 
@@ -22,6 +23,16 @@ function love.load()
   local text1 = Text("First Text Widget", { debug = debug, font = fonts.default18 })
   local text2 = Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
   local text3 = Text("Third Text Widget", { debug = debug, font = fonts.default18 })
+
+  local button = Button("Seven", {
+    buttonColor = colors.red,
+    font = fonts.default18,
+    labelColor = colors.yellow,
+    onClick = function()
+      print("got click")
+    end
+  })
+  buttons = { button }
 
   g.setFont(fonts.default30)
   vstack = VStack(
@@ -41,9 +52,9 @@ function love.load()
       Spacer()
     ),
     HStack(
-      { spacing = 20 },
+      { align = "center", spacing = 20 },
       Text("Six"),
-      Text("Seven"),
+      button,
       Text("Eight"),
       Text("Nine")
     )
@@ -61,6 +72,14 @@ function love.draw()
   g.setColor(colors.white)
   -- hstack:draw()
   vstack:draw()
+end
+
+function love.mousepressed(x, y, button)
+  if button ~= 1 then return end
+
+  for _, b in ipairs(buttons) do
+    b:handleClick(x, y)
+  end
 end
 
 function love.resize()
