@@ -10,6 +10,7 @@ local love = require "love"
 local pprint = require "pprint"
 local Spacer = require "Spacer"
 local Text = require "Text"
+local Toggle = require "Toggle"
 local VStack = require "VStack"
 local ZStack = require "ZStack"
 
@@ -48,7 +49,13 @@ function love.load()
     end
   })
 
-  clickables = { button, checkbox }
+  local toggle = Toggle(state, "hungry", {
+    onChange = function(t, p, v)
+      print("got change to " .. p, v, t[p])
+    end
+  })
+
+  clickables = { button, checkbox, toggle }
 
   g.setFont(fonts.default30)
 
@@ -86,8 +93,9 @@ function love.load()
       Spacer()
     ),
     HStack(
-      {},
-      checkbox
+      { spacing = 20 },
+      checkbox,
+      toggle
     )
   )
 end
