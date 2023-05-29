@@ -27,7 +27,7 @@ function love.load()
   local text3 = Text.new("Third Text Widget", { debug = debug, font = fonts.default18 })
 
   hstack = HStack.new(
-    { align = "bottom", gap = 20 },
+    { align = "bottom", spacing = 20 },
     text1, spacer, text2, text3
   )
 end

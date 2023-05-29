@@ -13,8 +13,8 @@ local function compute(self)
   print("HStack compute entered")
   local align = self.align or "center"
   local children = self.children
-  local gap = self.gap or 0
   local spacerWidth = 0
+  local spacing = self.spacing or 0
   local x = self.x or 0
   local y = self.y or 100
 
@@ -61,7 +61,7 @@ local function compute(self)
     )
 
     -- Account for requested gaps between children.
-    childrenWidth = childrenWidth + gap * gapCount
+    childrenWidth = childrenWidth + spacing * gapCount
 
     local availableWidth = g.getWidth()
 
@@ -77,7 +77,7 @@ local function compute(self)
 
       local prevW = children[i - 1]
       if prevW and prevW.kind ~= "spacer" then
-        w.x = w.x + gap
+        w.x = w.x + spacing
       end
 
       if align == "top" then
@@ -113,7 +113,7 @@ local mt = {
 
 -- The supported options are:
 -- align: "top", "center", or "bottom"
--- gap: positive integer to add space between non-spacer children
+-- spacing: positive integer to add space between non-spacer children
 function M.new(options, ...)
   local t = type(options)
   assert(t == "table" or t == "nil", "HStack options must be a table.")

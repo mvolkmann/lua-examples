@@ -24,9 +24,6 @@ local mt = {
   }
 }
 
--- The supported options are:
--- align: "top", "center", or "bottom"
--- gap: positive integer to add space between non-spacer widgets
 function M.new(text, options)
   local t = type(options)
   assert(t == "table" or t == "nil", "Text options must be a table.")
