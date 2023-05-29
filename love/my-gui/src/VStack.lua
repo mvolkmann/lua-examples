@@ -21,11 +21,9 @@ local function layout(self)
     children,
     function(child) return child.width or 0 end
   )
-  print("maxWidth =", maxWidth)
 
   -- Count spacers with no size.
   local spacerCount = fun.count(children, isSpacerWithoutSize)
-  print("spacerCount =", spacerCount)
 
   -- If there are any spacers with no size ...
   if spacerCount > 0 then
@@ -36,7 +34,6 @@ local function layout(self)
         return isSpacerWithoutSize(child) and 0 or child.height
       end
     )
-    print("childrenHeight =", childrenHeight)
 
     -- Get the number of children that are not spacers
     -- and not preceded by a spacer.
@@ -48,18 +45,14 @@ local function layout(self)
         return prevChild and prevChild.kind ~= "Spacer"
       end
     )
-    print("gapCount =", gapCount)
 
     -- Account for requested gaps between children.
     childrenHeight = childrenHeight + spacing * gapCount
-    print("childrenHeight =", childrenHeight)
 
     local availableHeight = g.getHeight()
-    print("availableHeight =", availableHeight)
 
     -- Compute the size of each zero width Spacer.
     spacerWidth = (availableHeight - childrenHeight) / spacerCount
-    print("spacerWidth =", spacerWidth)
   end
 
   -- Set the x and y properties of each non-spacer child.
@@ -74,7 +67,6 @@ local function layout(self)
         child.y = child.y + spacing
       end
 
-      print("align =", align)
       if align == "center" then
         child.x = x + (maxWidth - child.width) / 2
       elseif align == "end" then
@@ -86,9 +78,6 @@ local function layout(self)
       y = child.y + child.height
     end
   end
-
-  print("VStack children:")
-  pprint(children)
 
   self.laidOut = true
 end

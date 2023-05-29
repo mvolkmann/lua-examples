@@ -78,6 +78,9 @@ local function layout(self)
     end
   end
 
+  self.width = avaiableWidth
+  self.height = maxHeight
+
   self.laidOut = true
 end
 
@@ -87,7 +90,7 @@ local mt = {
     draw = function(self)
       for i, child in ipairs(self.children) do
         if child.kind ~= "Spacer" then
-          child:draw()
+          child:draw(self.x, self.y)
         end
       end
     end

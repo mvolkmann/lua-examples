@@ -4,6 +4,7 @@ local FPS = require "FPS"
 local HStack = require "HStack"
 require "layout"
 local love = require "love"
+local pprint = require "pprint"
 local Spacer = require "Spacer"
 local Text = require "Text"
 local VStack = require "VStack"
@@ -12,7 +13,9 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local hstack
+local hstack, vstack
+
+pprint.setup { show_all = true, wrap_array = true }
 
 function love.load()
   local debug = true
@@ -24,10 +27,33 @@ function love.load()
     { align = "bottom", spacing = 20 },
     text1, Spacer(), text2, text3
   ) ]]
-  vstack = VStack(
+  --[[ vstack = VStack(
     { align = "end", spacing = 20 },
     text1, text2, text3, Spacer(), FPS()
+  ) ]]
+  g.setFont(fonts.default30)
+  vstack = VStack(
+    {},
+    HStack(
+      { spacing = 20 },
+      Text("One"),
+      Text("Two"),
+      Text("Three")
+    ),
+    HStack(
+      { spacing = 20 },
+      Text("Four"),
+      Text("Five")
+    ),
+    HStack(
+      { spacing = 20 },
+      Text("Six"),
+      Text("Seven"),
+      Text("Eight"),
+      Text("Nine")
+    )
   )
+  -- pprint(vstack)
 end
 
 function love.update(dt)
