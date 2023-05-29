@@ -51,7 +51,7 @@ local mt = {
 function Toggle(table, property, options)
   options = options or {}
   local t = type(options)
-  assert(t == "table", "Checkbox options must be a table.")
+  assert(t == "table", "Toggle options must be a table.")
 
   local font = options.font or g.getFont()
 
