@@ -71,7 +71,7 @@ function love.load()
     }
   )
 
-  clickables = { button, checkbox, toggle }
+  clickables = { button, checkbox, radioButtons, toggle }
 
   g.setFont(fonts.default30)
 

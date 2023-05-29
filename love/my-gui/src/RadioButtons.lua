@@ -5,7 +5,7 @@ local g = love.graphics
 
 local padding = 2
 local size = 24
-local halfSize = size / 2
+local circleRadius = size / 2
 local width = size * 1.8
 
 local mt = {
@@ -19,26 +19,30 @@ local mt = {
       g.setColor(self.color)
       g.setFont(self.font)
 
-      local spacing = self.height
-      local circleCenterY = y + halfSize
-      local circleRadius = halfSize
+      local spacing = circleRadius
+      local circleCenterY = y + circleRadius
+      local selectedValue = self.table[self.property]
+
       for _, choice in ipairs(self.choices) do
-        local circleCenterX = x + halfSize
-        g.circle("line", circleCenterY, circleCenterY, circleRadius)
+        local circleCenterX = x + circleRadius
+        g.circle("line", circleCenterX, circleCenterY, circleRadius)
+        if choice.value == selectedValue then
+          g.circle("fill", circleCenterX, circleCenterY, circleRadius - 2)
+        end
         x = x + size + spacing
         g.print(choice.label, x, y)
-        x = x + spacing * 2
+        x = x + self.font:getWidth(choice.label) + spacing * 2
       end
     end,
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
-      local spacing = self.height
-      local circleCenterY = y + halfSize
-      local circleRadiusSquared = halfSize ^ 2
+      local spacing = circleRadius
+      local circleCenterY = y + circleRadius
+      local circleRadiusSquared = circleRadius ^ 2
 
       for _, choice in ipairs(self.choices) do
-        local circleCenterX = x + halfSize
+        local circleCenterX = x + circleRadius
         local distanceSquared =
             (circleCenterX - clickX) ^ 2 +
             (circleCenterY - clickY) ^ 2
@@ -50,7 +54,8 @@ local mt = {
           self.onChange(t, p, value)
           return true -- captured click
         end
-        x = x + spacing * 2
+        x = x + size + spacing
+        x = x + self.font:getWidth(choice.label) + spacing * 2
       end
 
       return false -- did not capture click
