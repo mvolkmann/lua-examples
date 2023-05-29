@@ -65,6 +65,7 @@ function love.load()
     state,
     "color",
     {
+      -- font = fonts.default30,
       onChange = function(t, p, v)
         print("got change to " .. p, v, t[p])
       end

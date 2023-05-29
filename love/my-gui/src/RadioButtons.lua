@@ -17,7 +17,10 @@ local mt = {
       self.actualY = y
 
       g.setColor(self.color)
-      g.setFont(self.font)
+      local font = self.font
+      g.setFont(font)
+      local height = font:getHeight()
+      local dy = (size - height) / 2
 
       local spacing = circleRadius
       local circleCenterY = y + circleRadius
@@ -30,7 +33,7 @@ local mt = {
           g.circle("fill", circleCenterX, circleCenterY, circleRadius - 2)
         end
         x = x + size + spacing
-        g.print(choice.label, x, y)
+        g.print(choice.label, x, y + dy)
         x = x + self.font:getWidth(choice.label) + spacing * 2
       end
     end,
@@ -65,6 +68,7 @@ local mt = {
 --
 -- Supported options are:
 -- color: defaults to white
+-- font: font used for choice labels
 -- onChange: function called when button is clicked
 function RadioButtons(choices, table, property, options)
   local t = type(choices)
