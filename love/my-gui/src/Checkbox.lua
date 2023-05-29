@@ -24,7 +24,9 @@ local mt = {
       end
 
       g.setFont(self.font)
-      g.print(self.label, x + size * 1.2, y)
+      local height = self.font:getHeight()
+      local dy = (size - height) / 2
+      g.print(self.label, x + size * 1.4, y + dy)
     end,
     handleClick = function(self, clickX, clickY)
       local x = self.actualX

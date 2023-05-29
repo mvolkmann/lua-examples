@@ -31,6 +31,8 @@ function love.load()
   local text2 = Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
   local text3 = Text("Third Text Widget", { debug = debug, font = fonts.default18 })
 
+  g.setFont(fonts.default18)
+
   local button = Button("Seven", {
     buttonColor = colors.red,
     font = fonts.default18,
@@ -39,14 +41,17 @@ function love.load()
       print("got click")
     end
   })
+
   local checkbox = Checkbox("Hungry?", state, "hungry", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end
   })
+
   clickables = { button, checkbox }
 
   g.setFont(fonts.default30)
+
   vstack = VStack(
     { spacing = 20 },
     HStack(
