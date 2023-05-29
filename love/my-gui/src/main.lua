@@ -3,6 +3,7 @@ local colors = require "colors"
 local fonts = require "fonts"
 local FPS = require "FPS"
 local HStack = require "HStack"
+local Image = require "Image"
 require "layout"
 local love = require "love"
 local pprint = require "pprint"
@@ -20,6 +21,8 @@ pprint.setup { show_all = true, wrap_array = true }
 
 function love.load()
   local debug = true
+  local logo1 = Image("images/love2d-heart.png", { height = 100 })
+  local logo2 = Image("images/love2d-whale.png", { height = 100 })
   local text1 = Text("First Text Widget", { debug = debug, font = fonts.default18 })
   local text2 = Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
   local text3 = Text("Third Text Widget", { debug = debug, font = fonts.default18 })
@@ -36,7 +39,7 @@ function love.load()
 
   g.setFont(fonts.default30)
   vstack = VStack(
-    {},
+    { spacing = 20 },
     HStack(
       { align = "center", spacing = 20 },
       Spacer(),
@@ -57,6 +60,11 @@ function love.load()
       button,
       Text("Eight"),
       Text("Nine")
+    ),
+    HStack(
+      { spacing = 20 },
+      logo1,
+      logo2
     )
   )
   -- pprint(vstack)
