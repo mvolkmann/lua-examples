@@ -15,8 +15,8 @@ local mt = {
         self.width, self.height,
         cornerRadius, cornerRadius
       )
-      g.setColor(self.textColor)
-      g.print(self.text, self.x + padding, self.y + padding)
+      g.setColor(self.labelColor)
+      g.print(self.label, self.x + padding, self.y + padding)
     end,
     handleClick = function(self, x, y)
       local clicked = x >= self.x and
@@ -29,24 +29,29 @@ local mt = {
   }
 }
 
-function Button(opt)
-  if not opt.text then
-    error("Button requires text")
+function Button(options)
+  local t = type(options)
+  assert(t == "table", "Button options must be a table.")
+
+  if not options.label then
+    error("Button requires label")
   end
 
-  local font = opt.font or g.getFont()
-  opt.font = font
-  local textWidth = font:getWidth(opt.text)
-  local textHeight = font:getHeight()
-  opt.width = textWidth + padding * 2
-  opt.height = textHeight + padding * 2
+  local font = options.font or g.getFont()
+  local labelWidth = font:getWidth(options.label)
+  local labelHeight = font:getHeight()
 
-  opt.textColor = opt.textColor or colors.black
-  opt.buttonColor = opt.buttonColor or colors.white
+  local instance = options
+  instance.kind = "Button"
+  instance.font = font
+  instance.width = labelWidth + padding * 2
+  instance.height = labelHeight + padding * 2
+  instance.labelColor = instance.labelColor or colors.black
+  instance.buttonColor = instance.buttonColor or colors.white
 
-  setmetatable(opt, mt)
+  setmetatable(instance, mt)
 
-  return opt
+  return instance
 end
 
 return Button

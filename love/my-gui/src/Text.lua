@@ -1,6 +1,5 @@
 local colors = require "colors"
 local love = require "love"
-require "util"
 
 local g = love.graphics
 local padding = 0
@@ -30,11 +29,14 @@ function Text(text, options)
     error("Text requires text")
   end
 
-  instance = options or {}
-  instance.text = text
+  local instance = options or {}
+
+  instance.kind = "Text"
 
   local font = instance.font or g.getFont()
   instance.font = font
+
+  instance.text = text
 
   local textWidth = font:getWidth(text)
   local textHeight = font:getHeight()

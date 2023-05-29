@@ -1,13 +1,14 @@
 local fun = require "fun"
 local love = require "love"
 local g = love.graphics
+local pprint = require "pprint"
 
 local function isSpacerWithoutSize(child)
   return child.kind == "Spacer" and not child.size
 end
 
 local function layout(self)
-  print("HStack layout entered")
+  print("VStack layout entered")
   local align = self.align or "start"
   local children = self.children
   local spacerWidth = 0
@@ -15,24 +16,27 @@ local function layout(self)
   local x = self.x or 0
   local y = self.y or 0
 
-  -- Get height of tallest child.
-  local maxHeight = fun.max(
+  -- Get width of widest child.
+  local maxWidth = fun.max(
     children,
-    function(child) return child.height or 0 end
+    function(child) return child.width or 0 end
   )
+  print("maxWidth =", maxWidth)
 
   -- Count spacers with no size.
   local spacerCount = fun.count(children, isSpacerWithoutSize)
+  print("spacerCount =", spacerCount)
 
   -- If there are any spacers with no size ...
   if spacerCount > 0 then
-    -- Get the total width of the all other children.
-    local childrenWidth = fun.sumFn(
+    -- Get the total height of the all other children.
+    local childrenHeight = fun.sumFn(
       children,
       function(child)
-        return isSpacerWithoutSize(child) and 0 or child.width
+        return isSpacerWithoutSize(child) and 0 or child.height
       end
     )
+    print("childrenHeight =", childrenHeight)
 
     -- Get the number of children that are not spacers
     -- and not preceded by a spacer.
@@ -44,39 +48,47 @@ local function layout(self)
         return prevChild and prevChild.kind ~= "Spacer"
       end
     )
+    print("gapCount =", gapCount)
 
     -- Account for requested gaps between children.
-    childrenWidth = childrenWidth + spacing * gapCount
+    childrenHeight = childrenHeight + spacing * gapCount
+    print("childrenHeight =", childrenHeight)
 
-    local availableWidth = g.getWidth()
+    local availableHeight = g.getHeight()
+    print("availableHeight =", availableHeight)
 
     -- Compute the size of each zero width Spacer.
-    spacerWidth = (availableWidth - childrenWidth) / spacerCount
+    spacerWidth = (availableHeight - childrenHeight) / spacerCount
+    print("spacerWidth =", spacerWidth)
   end
 
   -- Set the x and y properties of each non-spacer child.
   for i, child in ipairs(children) do
     if child.kind == "Spacer" then
-      x = x + (child.size or spacerWidth)
+      y = y + (child.size or spacerWidth)
     else
-      child.x = x
+      child.y = y
 
       local prevChild = children[i - 1]
       if prevChild and prevChild.kind ~= "Spacer" then
-        child.x = child.x + spacing
+        child.y = child.y + spacing
       end
 
+      print("align =", align)
       if align == "center" then
-        child.y = y + (maxHeight - child.height) / 2
-      elseif align == "bottom" then
-        child.y = y + maxHeight - child.height
-      else -- assume "top"
-        child.y = y
+        child.x = x + (maxWidth - child.width) / 2
+      elseif align == "end" then
+        child.x = x + maxWidth - child.width
+      else -- assume "start"
+        child.x = x
       end
 
-      x = child.x + child.width
+      y = child.y + child.height
     end
   end
+
+  print("VStack children:")
+  pprint(children)
 
   self.laidOut = true
 end
@@ -95,18 +107,18 @@ local mt = {
 }
 
 -- The supported options are:
--- align: "top", "center", or "bottom"
+-- align: "start", "center", or "end"
 -- spacing: positive integer to add space between non-spacer children
-function HStack(options, ...)
+function VStack(options, ...)
   local t = type(options)
-  assert(t == "table" or t == "nil", "HStack options must be a table.")
+  assert(t == "table" or t == "nil", "VStack options must be a table.")
 
   local instance = options
-  instance.kind = "HStack"
+  instance.kind = "VStack"
   instance.children = { ... }
   setmetatable(instance, mt)
   layout(instance)
   return instance
 end
 
-return HStack
+return VStack
