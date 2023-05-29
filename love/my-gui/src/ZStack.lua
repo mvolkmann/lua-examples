@@ -67,9 +67,9 @@ end
 local mt = {
   __index = {
     laidOut = false,
-    draw = function(self, dx, dy)
+    draw = function(self, parentX, parentY)
       for _, child in ipairs(self.children) do
-        child:draw(dx + self.x, dy + self.y)
+        child:draw(parentX + self.x, parentY + self.y)
       end
     end
   }

@@ -3,15 +3,15 @@ local g = love.graphics
 
 local mt = {
   __index = {
-    draw = function(self, dx, dy)
+    draw = function(self, parentX, parentY)
       if self.x and self.y then
-        dx = dx or 0
-        dy = dy or 0
+        parentX = parentX or 0
+        parentY = parentY or 0
         local rotation = 0
         g.draw(
           self.image,
-          dx + self.x,
-          dy + self.y,
+          parentX + self.x,
+          parentY + self.y,
           rotation,
           self.scale,
           self.scale

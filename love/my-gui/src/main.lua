@@ -1,4 +1,5 @@
 local Button = require "Button"
+local Checkbox = require "Checkbox"
 local colors = require "colors"
 local fonts = require "fonts"
 local FPS = require "FPS"
@@ -16,7 +17,9 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local buttons, hstack, vstack, zstack
+local clickables, hstack, vstack
+
+local state = {}
 
 pprint.setup { show_all = true, wrap_array = true }
 
@@ -36,7 +39,12 @@ function love.load()
       print("got click")
     end
   })
-  buttons = { button }
+  local checkbox = Checkbox("Hungry?", state, "hungry", {
+    onChange = function(t, p, v)
+      print("got change to " .. p, v, t[p])
+    end
+  })
+  clickables = { button, checkbox }
 
   g.setFont(fonts.default30)
   vstack = VStack(
@@ -71,6 +79,10 @@ function love.load()
         Text("LÖVE", { color = colors.black, font = fonts.default30 })
       ),
       Spacer()
+    ),
+    HStack(
+      {},
+      checkbox
     )
   )
 end
@@ -90,7 +102,7 @@ end
 function love.mousepressed(x, y, button)
   if button ~= 1 then return end
 
-  for _, b in ipairs(buttons) do
+  for _, b in ipairs(clickables) do
     b:handleClick(x, y)
   end
 end

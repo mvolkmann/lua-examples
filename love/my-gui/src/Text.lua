@@ -7,16 +7,16 @@ local padding = 0
 local mt = {
   __index = {
     color = colors.white,
-    draw = function(self, dx, dy)
+    draw = function(self, parentX, parentY)
       g.setColor(self.color)
       if self.x and self.y then
         g.setFont(self.font)
-        dx = dx or 0
-        dy = dy or 0
-        g.print(self.text, dx + self.x + padding, dy + self.y + padding)
+        parentX = parentX or 0
+        parentY = parentY or 0
+        g.print(self.text, parentX + self.x + padding, parentY + self.y + padding)
         if self.debug then
           g.setColor(colors.red)
-          g.rectangle("line", dx + self.x, dy + self.y, self.width, self.height)
+          g.rectangle("line", parentX + self.x, parentY + self.y, self.width, self.height)
         end
       end
     end

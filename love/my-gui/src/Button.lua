@@ -6,11 +6,11 @@ local padding = 10
 
 local mt = {
   __index = {
-    draw = function(self, dx, dy)
+    draw = function(self, parentX, parentY)
       local cornerRadius = padding
       g.setColor(self.buttonColor)
-      local x = dx + self.x
-      local y = dy + self.y
+      local x = parentX + self.x
+      local y = parentY + self.y
       self.actualX = x
       self.actualY = y
       g.rectangle(
