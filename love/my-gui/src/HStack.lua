@@ -9,7 +9,6 @@ end
 local function layout(self)
   print("HStack layout entered")
   local align = self.align or "start"
-  print("HStack align =", align)
   local children = self.children
   local spacerWidth = 0
   local spacing = self.spacing or 0
@@ -50,7 +49,6 @@ local function layout(self)
     childrenWidth = childrenWidth + spacing * gapCount
 
     local availableWidth = g.getWidth()
-    print("availableWidth =", availableWidth)
 
     -- Compute the size of each zero width Spacer.
     spacerWidth = (availableWidth - childrenWidth) / spacerCount

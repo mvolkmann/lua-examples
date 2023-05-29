@@ -70,7 +70,7 @@ function love.load()
   )
 
   zstack = ZStack(
-    {},
+    { align = "center" },
     logo1,
     Text("LÖVE", { color = colors.black, font = fonts.default30 })
   )
