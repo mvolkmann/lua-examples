@@ -39,7 +39,10 @@ local mt = {
       local height = self:getHeight()
       local clicked = x <= clickX and clickX <= x + width and
           y <= clickY and clickY <= y + height
-      if clicked then self.onClick() end
+      if clicked then
+        focusedWidget = self
+        self.onClick()
+      end
       return clicked
     end
   }
