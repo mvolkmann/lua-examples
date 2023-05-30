@@ -8,6 +8,7 @@ local padding = 4
 local mt = {
   __index = {
     color = colors.white,
+
     draw = function(self, parentX, parentY)
       g.setColor(self.color)
       if self.x and self.y then
@@ -20,23 +21,40 @@ local mt = {
 
         local font = self.font
         g.setFont(font)
+
+        -- Get current value.
         local t = self.table
         local p = self.property
-        -- TODO: Need to truncate text if it is too long.
         local v = t[p] or ""
+
+        -- Find substring of value that fits in width.
+        local limit = self.width - padding * 2
+        local i = 1
+        local substr
+        local substrWidth
+        while true do
+          substr = v:sub(i, #v)
+          substrWidth = font:getWidth(substr)
+          if substrWidth <= limit then break end
+          i = i + 1
+        end
+        local truncated = i > 1
+
         x = x + padding
         y = y + padding
-        g.print(v, x, y)
+        g.print(substr, x, y)
 
         local c = _G.inputCursor
         if c then
           -- Draw vertical cursor line.
           local height = font:getHeight()
-          local cursorX = x + font:getWidth(v:sub(1, c))
+          local cursorPosition = math.min(c - i + 1, #substr)
+          local cursorX = x + font:getWidth(substr:sub(1, cursorPosition))
           g.line(cursorX, y, cursorX, y + height)
         end
       end
     end,
+
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY

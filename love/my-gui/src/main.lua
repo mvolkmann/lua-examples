@@ -57,7 +57,7 @@ function love.load()
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end,
-    width = 200
+    width = 100
   })
 
   local firstNameText = Text("", {
