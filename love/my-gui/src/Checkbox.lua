@@ -19,8 +19,11 @@ local mt = {
       self.actualX = x
       self.actualY = y
 
-      g.setColor(self.color)
+      local over = self:isOver(love.mouse.getPosition())
+      g.setColor(over and hoverColor or self.color)
       g.rectangle("line", x, y, size, size)
+
+      g.setColor(self.color)
 
       local checked = self.table[self.property]
       if checked then
@@ -50,13 +53,7 @@ local mt = {
     end,
 
     handleClick = function(self, clickX, clickY)
-      local x = self.actualX
-      local y = self.actualY
-      local labelWidth = self.font:getWidth(self.label)
-      local clicked = clickX >= x and
-          clickX <= x + size + spacing + labelWidth and
-          clickY >= y and
-          clickY <= y + size
+      local clicked = self:isOver(clickX, clickY)
       if clicked then
         focusedWidget = self
         local t = self.table
@@ -66,6 +63,16 @@ local mt = {
         self.onChange(t, p, not checked)
       end
       return clicked
+    end,
+
+    isOver = function(self, mouseX, mouseY)
+      local x = self.actualX
+      local y = self.actualY
+      local labelWidth = self.font:getWidth(self.label)
+      return mouseX >= x and
+          mouseX <= x + size + spacing + labelWidth and
+          mouseY >= y and
+          mouseY <= y + size
     end
   }
 }

@@ -15,7 +15,6 @@ local mt = {
       self.actualX = x
       self.actualY = y
 
-      g.setColor(self.color)
       local font = self.font
       g.setFont(font)
 
@@ -24,9 +23,13 @@ local mt = {
         return choice.value == selectedValue
       end)
 
+      local over = self:isOver(0, love.mouse.getPosition())
+      g.setColor(over and hoverColor or self.color)
       local width = self:getWidth()
       local height = self:getHeight()
       g.rectangle("line", x, y, width, height)
+
+      g.setColor(self.color)
       local value = selectedChoice and selectedChoice.label or "Select ..."
       g.print(value, x + padding, y + padding)
 
@@ -42,7 +45,7 @@ local mt = {
         triangleX + triangleSize / 2, triangleBottom
       )
 
-      if self.open then
+      if focusedWidget == self and self.open then
         local dy = fontHeight + padding * 2
         for _, choice in ipairs(self.choices) do
           y = y + dy
@@ -65,24 +68,18 @@ local mt = {
     end,
 
     handleClick = function(self, clickX, clickY)
-      local x = self.actualX
-      local y = self.actualY
-      local height = self:getHeight()
-      local width = self:getWidth()
-
-      if x <= clickX and clickX <= x + width and
-          y <= clickY and clickY <= y + height then
+      if self:isOver(0, clickX, clickY) then
         focusedWidget = self
         self.open = not self.open
         return
       end
 
       local fontHeight = self.font:getHeight()
+      local y = 0
       local dy = fontHeight + padding * 2
       for _, choice in ipairs(self.choices) do
         y = y + dy
-        if x <= clickX and clickX <= x + width and
-            y <= clickY and clickY <= y + height then
+        if self:isOver(y, clickX, clickY) then
           local value = choice.value
           local t = self.table
           local p = self.property
@@ -95,6 +92,15 @@ local mt = {
       end
 
       return false -- did not capture click
+    end,
+
+    isOver = function(self, y, mouseX, mouseY)
+      local x = self.actualX
+      y = self.actualY + y
+      local width = self:getWidth()
+      local height = self:getHeight()
+      return x <= mouseX and mouseX <= x + width and
+          y <= mouseY and mouseY <= y + height
     end
   }
 }

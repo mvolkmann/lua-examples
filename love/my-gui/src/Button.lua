@@ -8,15 +8,28 @@ local mt = {
   __index = {
     draw = function(self, parentX, parentY)
       local cornerRadius = padding
-      g.setColor(self.buttonColor)
       local x = parentX + self.x
       local y = parentY + self.y
       self.actualX = x
       self.actualY = y
-      g.rectangle(
-        "fill", x, y, self:getWidth(), self:getHeight(),
-        cornerRadius, cornerRadius
-      )
+
+      local width = self:getWidth()
+      local height = self:getHeight()
+
+      if self:isOver(love.mouse.getPosition()) then
+        local op = 3 -- outline padding
+        g.setColor(hoverColor)
+        g.rectangle(
+          "line",
+          x - op, y - op,
+          width + op * 2, height + op * 2,
+          cornerRadius, cornerRadius
+        )
+      end
+
+      g.setColor(self.buttonColor)
+      g.rectangle("fill", x, y, width, height, cornerRadius, cornerRadius)
+
       g.setColor(self.labelColor)
       g.setFont(self.font)
       g.print(self.label, x + padding, y + padding)
@@ -33,17 +46,21 @@ local mt = {
     end,
 
     handleClick = function(self, clickX, clickY)
-      local x = self.actualX
-      local y = self.actualY
-      local width = self:getWidth()
-      local height = self:getHeight()
-      local clicked = x <= clickX and clickX <= x + width and
-          y <= clickY and clickY <= y + height
+      local clicked = self:isOver(clickX, clickY)
       if clicked then
         focusedWidget = self
         self.onClick()
       end
       return clicked
+    end,
+
+    isOver = function(self, mouseX, mouseY)
+      local x = self.actualX
+      local y = self.actualY
+      local width = self:getWidth()
+      local height = self:getHeight()
+      return x <= mouseX and mouseX <= x + width and
+          y <= mouseY and mouseY <= y + height
     end
   }
 }

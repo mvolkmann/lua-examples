@@ -13,17 +13,15 @@ local mt = {
     color = colors.white,
 
     draw = function(self, parentX, parentY)
-      g.setColor(self.color)
       if self.x and self.y then
         local x = parentX + self.x
         local y = parentY + self.y
         self.actualX = x
         self.actualY = y
 
+        local over = self:isOver(love.mouse.getPosition())
+        g.setColor(over and hoverColor or self.color)
         g.rectangle("line", x, y, self:getWidth(), self:getHeight())
-
-        local font = self.font
-        g.setFont(font)
 
         -- Get current value.
         local t = self.table
@@ -31,6 +29,7 @@ local mt = {
         local v = t[p] or ""
 
         -- Find substring of value that fits in width.
+        local font = self.font
         local limit = self.width - padding * 2
         local i = 1
         local substr
@@ -45,6 +44,9 @@ local mt = {
 
         x = x + padding
         y = y + padding
+
+        g.setColor(self.color)
+        g.setFont(font)
         g.print(substr, x, y)
 
         if focusedWidget == self then
@@ -69,20 +71,17 @@ local mt = {
     end,
 
     handleClick = function(self, clickX, clickY)
-      local x = self.actualX
-      local y = self.actualY
-      if not x or not y then return false end
-
-      local width = self:getWidth()
-      local height = self:getHeight()
-      local clicked = x <= clickX and clickX <= x + width and
-          y <= clickY and clickY <= y + height
+      local clicked = self:isOver(clickX, clickY)
       if clicked then
         focusedWidget = self
 
         -- Enable keyboard.
         -- TODO: Is this needed? Maybe only on mobile devices.
-        love.keyboard.setTextInput(true, x, y, width, height)
+        love.keyboard.setTextInput(
+          true,
+          self.actualX, self.actualY,
+          self:getWidth(), self:getHeight()
+        )
 
         local t = self.table
         local p = self.property
@@ -92,6 +91,15 @@ local mt = {
         inputCursor = #v
       end
       return clicked
+    end,
+
+    isOver = function(self, mouseX, mouseY)
+      local x = self.actualX
+      local y = self.actualY
+      local width = self:getWidth()
+      local height = self:getHeight()
+      return x <= mouseX and mouseX <= x + width and
+          y <= mouseY and mouseY <= y + height
     end
   }
 }

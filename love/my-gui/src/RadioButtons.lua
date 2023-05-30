@@ -27,18 +27,30 @@ local mt = {
         local circleCenterX = x + circleRadius
         for _, choice in ipairs(self.choices) do
           local circleCenterY = y + circleRadius
+          local labelWidth = font:getWidth(choice.label)
+          local choiceWidth = size + spacing + labelWidth
+          local over = self:isOver(x, y, choiceWidth, love.mouse.getPosition())
+          g.setColor(over and hoverColor or self.color)
           g.circle("line", circleCenterX, circleCenterY, circleRadius)
+
+          g.setColor(self.color)
           if choice.value == selectedValue then
             g.circle("fill", circleCenterX, circleCenterY, circleRadius - 2)
           end
           g.print(choice.label, x + size + spacing, y + dy)
           y = y + size + spacing
         end
-      else
+      else -- horizontal
         local circleCenterY = y + circleRadius
         for _, choice in ipairs(self.choices) do
           local circleCenterX = x + circleRadius
+          local labelWidth = font:getWidth(choice.label)
+          local choiceWidth = size + spacing + labelWidth
+          local over = self:isOver(x, y, choiceWidth, love.mouse.getPosition())
+          g.setColor(over and hoverColor or self.color)
           g.circle("line", circleCenterX, circleCenterY, circleRadius)
+
+          g.setColor(self.color)
           if choice.value == selectedValue then
             g.circle("fill", circleCenterX, circleCenterY, circleRadius - 2)
           end
@@ -65,9 +77,9 @@ local mt = {
 
       if self.vertical then
         for _, choice in ipairs(self.choices) do
-          local choiceWidth = size + spacing + font:getWidth(choice.label)
-          if x <= clickX and clickX <= x + choiceWidth and
-              y <= clickY and clickY <= y + size then
+          local labelWidth = font:getWidth(choice.label)
+          local choiceWidth = size + spacing + labelWidth
+          if self:isOver(x, y, choiceWidth, clickX, clickY) then
             focusedWidget = self
             local value = choice.value
             local t = self.table
@@ -80,9 +92,9 @@ local mt = {
         end
       else -- horizontal
         for _, choice in ipairs(self.choices) do
-          local choiceWidth = size + spacing + font:getWidth(choice.label)
-          if x <= clickX and clickX <= x + choiceWidth and
-              y <= clickY and clickY <= y + size then
+          local labelWidth = font:getWidth(choice.label)
+          local choiceWidth = size + spacing + labelWidth
+          if self:isOver(x, y, choiceWidth, clickX, clickY) then
             focusedWidget = self
             local value = choice.value
             local t = self.table
@@ -92,11 +104,16 @@ local mt = {
             return true -- captured click
           end
           x = x + size + spacing
-          x = x + font:getWidth(choice.label) + spacing * 2
+          x = x + labelWidth + spacing * 2
         end
       end
 
       return false -- did not capture click
+    end,
+
+    isOver = function(self, x, y, width, mouseX, mouseY)
+      return x <= mouseX and mouseX <= x + width and
+          y <= mouseY and mouseY <= y + size
     end
   }
 }

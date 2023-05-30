@@ -1,6 +1,8 @@
+local colors = require "colors"
 require "string-extensions"
 
 focusedWidget = nil
+hoverColor = colors.green
 
 function isStack(widget)
   -- We don't want special processing for ZStacks.
