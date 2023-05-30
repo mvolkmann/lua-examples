@@ -45,7 +45,7 @@ local mt = {
         triangleX + triangleSize / 2, triangleBottom
       )
 
-      if focusedWidget == self and self.open then
+      if isFocused(self) and self.open then
         local dy = fontHeight + padding * 2
         for _, choice in ipairs(self.choices) do
           y = y + dy
@@ -69,7 +69,7 @@ local mt = {
 
     handleClick = function(self, clickX, clickY)
       if self:isOver(0, clickX, clickY) then
-        focusedWidget = self
+        setFocus(self)
         self.open = not self.open
         return
       end
@@ -101,6 +101,10 @@ local mt = {
       local height = self:getHeight()
       return x <= mouseX and mouseX <= x + width and
           y <= mouseY and mouseY <= y + height
+    end,
+
+    removeFocus = function(self)
+      self.open = false
     end
   }
 }

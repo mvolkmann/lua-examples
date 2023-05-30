@@ -49,7 +49,7 @@ local mt = {
         g.setFont(font)
         g.print(substr, x, y)
 
-        if focusedWidget == self then
+        if isFocused(self) then
           local c = inputCursor
           if c then
             -- Draw vertical cursor line.
@@ -73,7 +73,7 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local clicked = self:isOver(clickX, clickY)
       if clicked then
-        focusedWidget = self
+        setFocus(self)
 
         -- Enable keyboard.
         -- TODO: Is this needed? Maybe only on mobile devices.

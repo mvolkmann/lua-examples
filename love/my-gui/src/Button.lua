@@ -48,7 +48,7 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local clicked = self:isOver(clickX, clickY)
       if clicked then
-        focusedWidget = self
+        setFocus(self)
         self.onClick()
       end
       return clicked

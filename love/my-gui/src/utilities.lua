@@ -1,8 +1,19 @@
 local colors = require "colors"
 require "string-extensions"
 
-focusedWidget = nil
+local focusedWidget = nil
 hoverColor = colors.green
+
+function isFocused(widget)
+  return widget == focusedWidget
+end
+
+function setFocus(widget)
+  if focusedWidget and focusedWidget.removeFocus then
+    focusedWidget:removeFocus()
+  end
+  focusedWidget = widget
+end
 
 function isStack(widget)
   -- We don't want special processing for ZStacks.
