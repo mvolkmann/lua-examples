@@ -1,5 +1,4 @@
 local colors = require "colors"
-local fonts = require "fonts"
 local love = require "love"
 
 local g = love.graphics
@@ -10,8 +9,16 @@ local mt = {
       g.setColor(colors.white)
       g.setFont(self.font)
       g.print("FPS: " .. love.timer.getFPS(), self.x, self.y)
+    end,
+
+    getHeight = function(self)
+      return self.font:getHeight()
+    end,
+
+    getWidth = function(self)
+      return self.font:getWidth(self.text)
     end
-  }
+  },
 }
 
 function FPS(options)
@@ -21,8 +28,6 @@ function FPS(options)
     font = font,
     kind = "FPS",
     text = text,
-    width = font:getWidth(text),
-    height = font:getHeight()
   }
   setmetatable(instance, mt)
   return instance

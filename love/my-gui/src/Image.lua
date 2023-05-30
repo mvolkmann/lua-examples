@@ -15,6 +15,14 @@ local mt = {
           self.scale
         )
       end
+    end,
+
+    getHeight = function(self)
+      return self.image:getHeight() * self.scale
+    end,
+
+    getWidth = function(self)
+      return self.image:getWidth() * self.scale
     end
   }
 }
@@ -36,8 +44,6 @@ function Image(filePath, options)
     scale = options.height / height
   end
 
-  instance.width = width * scale
-  instance.height = height * scale
   instance.scale = scale
 
   setmetatable(instance, mt)

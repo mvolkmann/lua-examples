@@ -37,9 +37,18 @@ local mt = {
 
       if self.debug then
         g.setColor(colors.red)
-        g.rectangle("line", x, y, self.width, self.height)
+        g.rectangle("line", x, y, self:getWidth(), self:getHeight())
       end
     end,
+
+    getHeight = function(self)
+      return math.max(size, self.font:getHeight())
+    end,
+
+    getWidth = function(self)
+      return size + spacing + self.font:getWidth(self.label)
+    end,
+
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
@@ -79,9 +88,6 @@ function Checkbox(label, table, property, options)
 
   instance.table = table
   instance.property = property
-
-  instance.width = size + spacing + font:getWidth(label)
-  instance.height = math.max(size, font:getHeight())
 
   setmetatable(instance, mt)
 

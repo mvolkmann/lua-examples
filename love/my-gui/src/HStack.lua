@@ -1,10 +1,8 @@
 local fun = require "fun"
 local love = require "love"
-local g = love.graphics
+require "utilities"
 
-local function isSpacerWithoutSize(child)
-  return child.kind == "Spacer" and not child.size
-end
+local g = love.graphics
 
 local function layout(self)
   print("HStack layout entered")
@@ -16,9 +14,9 @@ local function layout(self)
   local y = self.y or 0
 
   -- Get height of tallest child.
-  local maxHeight = fun.max(
+  self.maxHeight = fun.max(
     children,
-    function(child) return child.height or 0 end
+    function(child) return child:getHeight() or 0 end
   )
 
   -- Count spacers with no size.
@@ -30,7 +28,7 @@ local function layout(self)
     local childrenWidth = fun.sumFn(
       children,
       function(child)
-        return isSpacerWithoutSize(child) and 0 or child.width
+        return isSpacerWithoutSize(child) and 0 or child:getWidth()
       end
     )
 
@@ -67,19 +65,16 @@ local function layout(self)
       end
 
       if align == "center" then
-        child.y = y + (maxHeight - child.height) / 2
+        child.y = y + (self.maxHeight - child:getHeight()) / 2
       elseif align == "bottom" then
-        child.y = y + maxHeight - child.height
+        child.y = y + self.maxHeight - child:getHeight()
       else -- assume "top"
         child.y = y
       end
 
-      x = child.x + child.width
+      x = child.x + child:getWidth()
     end
   end
-
-  self.width = avaiableWidth
-  self.height = maxHeight
 
   self.laidOut = true
 end
@@ -87,12 +82,30 @@ end
 local mt = {
   __index = {
     laidOut = false,
-    draw = function(self)
+    draw = function(self, parentX, parentY)
+      parentX = parentX or 0
+      parentY = parentY or 0
+      local x = parentX + self.x
+      local y = parentY + self.y
       for i, child in ipairs(self.children) do
         if child.kind ~= "Spacer" then
-          child:draw(self.x, self.y)
+          child:draw(x, y)
         end
       end
+    end,
+
+    getHeight = function(self)
+      return self.maxHeight
+    end,
+
+    getWidth = function(self)
+      -- If there is a Spacer child then use screen width.
+      if self.haveSpacer then return g.getWidth() end
+
+      -- Compute height based on children.
+      local children = self.children
+      local lastChild = children[#children]
+      return lastChild.x + lastChild:getWidth() - self.x
     end
   }
 }
@@ -106,7 +119,12 @@ function HStack(options, ...)
 
   local instance = options
   instance.kind = "HStack"
-  instance.children = { ... }
+  instance.maxHeight = 0 -- computed in layout method
+  local children = { ... }
+  instance.children = children
+  instance.haveSpacer = fun.some(children, isSpacerWithoutSize)
+  instance.x = 0
+  instance.y = 0
   setmetatable(instance, mt)
   layout(instance)
   return instance

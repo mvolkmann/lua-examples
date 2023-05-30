@@ -6,7 +6,6 @@ local FPS = require "FPS"
 local HStack = require "HStack"
 local Image = require "Image"
 local Input = require "Input"
-require "layout"
 local love = require "love"
 local pprint = require "pprint"
 local RadioButtons = require "RadioButtons"
@@ -23,7 +22,7 @@ local windowWidth, windowHeight = lg.getDimensions()
 
 local clickables, hstack, vstack
 
-local state = { firstName = "Mark" }
+local state = { firstName = "Mark", lastName = "Volkmann" }
 
 pprint.setup { show_all = true, wrap_array = true }
 
@@ -52,17 +51,23 @@ function love.load()
     end
   })
 
-  local input = Input(state, "firstName", {
+  local firstNameInput = Input(state, "firstName", {
+    onChange = function(t, p, v)
+      print("got change to " .. p, v, t[p])
+    end,
+    width = 100
+  })
+  local lastNameInput = Input(state, "lastName", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end,
     width = 100
   })
 
-  local firstNameText = Text("", {
-    table = state,
-    property = "firstName",
-    width = 100
+  local greetingText = Text("", {
+    compute = function()
+      return "Hello, " .. state.firstName .. " " .. state.lastName .. "!"
+    end
   })
 
   local radioButtons = RadioButtons(
@@ -105,7 +110,7 @@ function love.load()
     end
   })
 
-  clickables = { button, checkbox, input, radioButtons, select, toggle }
+  clickables = { button, checkbox, firstNameInput, lastNameInput, radioButtons, select, toggle }
 
   lg.setFont(fonts.default30)
 
@@ -139,9 +144,12 @@ function love.load()
         logo1,
         Text("LÖVE", { color = colors.black, font = fonts.default30 })
       ),
-      input,
-      firstNameText
-    -- VStack({}, input, firstNameText)
+      VStack(
+        { id = 1 },
+        firstNameInput,
+        lastNameInput,
+        greetingText
+      )
     ),
     HStack(
       { spacing = 20 },
@@ -156,6 +164,27 @@ function love.load()
     Spacer(),
     FPS({ font = fonts.default12 })
   )
+  --[[ vstack = VStack(
+    { id = 1 },
+    HStack(
+      { id = 2 },
+      Text("First"),
+      Text("Second")
+    ),
+    HStack(
+      { id = 4 },
+      VStack(
+        { id = 5 },
+        Text("Third"),
+        Text("Fourth")
+      ),
+      VStack(
+        { id = 5 },
+        Text("Fifth"),
+        Text("Sixth")
+      )
+    )
+  ) ]]
 end
 
 function love.update(dt)
@@ -166,11 +195,10 @@ function love.draw()
   lg.setFont(fonts.default30)
   lg.print("Hello, World!", 0, 0) ]]
   lg.setColor(colors.white)
-  -- hstack:draw()
   vstack:draw()
 end
 
--- TODO: Somehow this needs to be done in Input.lua.
+-- TODO: Can this be done in Input.lua?
 function love.keypressed(key)
   inputProcessKey(key)
 end

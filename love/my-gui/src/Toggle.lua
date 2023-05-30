@@ -26,6 +26,15 @@ local mt = {
       local circleY = y + padding + circleRadius
       g.circle("fill", circleX, circleY, circleRadius)
     end,
+
+    getHeight = function()
+      return size
+    end,
+
+    getWidth = function()
+      return width
+    end,
+
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
@@ -57,15 +66,9 @@ function Toggle(table, property, options)
   instance.kind = "Toggle"
   instance.color = instance.color or colors.white
   instance.font = font
-
   instance.table = table
   instance.property = property
-
-  instance.width = width
-  instance.height = size
-
   setmetatable(instance, mt)
-
   return instance
 end
 

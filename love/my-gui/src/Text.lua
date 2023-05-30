@@ -1,5 +1,6 @@
 local colors = require "colors"
 local love = require "love"
+local pprint = require "pprint"
 
 local g = love.graphics
 local padding = 0
@@ -13,15 +14,46 @@ local mt = {
         g.setFont(self.font)
         parentX = parentX or 0
         parentY = parentY or 0
-        local t = self.table
-        local p = self.property
-        local v = t and p and t[p] or self.text
+
+        local v = ""
+        local compute = self.compute
+        if compute then
+          v = compute()
+        else
+          local t = self.table
+          local p = self.property
+          v = t and p and t[p] or self.text
+        end
+
         g.print(v, parentX + self.x + padding, parentY + self.y + padding)
+
         if self.debug then
           g.setColor(colors.red)
-          g.rectangle("line", parentX + self.x, parentY + self.y, self.width, self.height)
+          g.rectangle(
+            "line",
+            parentX + self.x, parentY + self.y,
+            self:getWidth(), self:getHeight()
+          )
         end
       end
+    end,
+
+    getHeight = function(self)
+      return self.font:getHeight() + padding * 2
+    end,
+
+    getWidth = function(self)
+      if self.width then return self.width end
+
+      local v = ""
+      if compute then
+        v = compute()
+      else
+        local t = self.table
+        local p = self.property
+        v = t and p and t[p] or self.text
+      end
+      return self.font:getWidth(v) + padding * 2
     end
   }
 }
@@ -29,6 +61,7 @@ local mt = {
 -- Supported options are:
 -- font: font used for button label
 -- color: color of label and checkbox; defaults to white
+-- compute: function called to compute value
 -- onChange: function called when button is clicked
 -- property: property name whose value should be displayed
 -- table: table containing the property above
@@ -42,21 +75,11 @@ function Text(text, options)
   end
 
   local instance = options or {}
-
   instance.kind = "Text"
-
   local font = instance.font or g.getFont()
   instance.font = font
-
   instance.text = text
-
-  local textWidth = width or font:getWidth(text)
-  local textHeight = font:getHeight()
-  instance.width = textWidth + padding * 2
-  instance.height = textHeight + padding * 2
-
   setmetatable(instance, mt)
-
   return instance
 end
 

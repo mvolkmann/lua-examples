@@ -24,13 +24,15 @@ local mt = {
         return choice.value == selectedValue
       end)
 
-      g.rectangle("line", x, y, self.width, self.height)
+      local width = self:getWidth()
+      local height = self:getHeight()
+      g.rectangle("line", x, y, width, height)
       local value = selectedChoice and selectedChoice.label or "Select ..."
       g.print(value, x + padding, y + padding)
 
       local fontHeight = font:getHeight()
       local triangleSize = fontHeight - 8
-      local triangleX = x + self.width - 6 - triangleSize
+      local triangleX = x + width - 6 - triangleSize
       local triangleTop = y + 6
       local triangleBottom = triangleTop + triangleSize
       g.polygon(
@@ -45,17 +47,28 @@ local mt = {
         for _, choice in ipairs(self.choices) do
           y = y + dy
           g.setColor(colors.white)
-          g.rectangle("fill", x, y, self.width, self.height)
+          g.rectangle("fill", x, y, width, height)
           g.setColor(colors.black)
           g.print(choice.label, x + padding, y + padding)
         end
       end
     end,
+
+    getHeight = function(self)
+      local fontHeight = self.font:getHeight()
+      return fontHeight + padding * 2
+    end,
+
+    getWidth = function(self)
+      local fontHeight = self.font:getHeight()
+      return self.maxWidth + padding * 3 + fontHeight
+    end,
+
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
-      local height = self.height
-      local width = self.width
+      local height = self:getHeight()
+      local width = self:getWidth()
 
       if x <= clickX and clickX <= x + width and
           y <= clickY and clickY <= y + height then
@@ -113,15 +126,13 @@ function Select(choices, table, property, options)
   instance.open = false
 
   -- Find the widest choice label.
-  local maxWidth = fun.max(choices, function(choice)
+  instance.maxWidth = fun.max(choices, function(choice)
     return font:getWidth(choice.label)
   end)
   local defaultWidth = font:getWidth(defaultValue)
-  if defaultWidth > maxWidth then maxWidth = defaultWidth end
-
-  local fontHeight = font:getHeight()
-  instance.width = maxWidth + padding * 3 + fontHeight
-  instance.height = fontHeight + padding * 2
+  if defaultWidth > instance.maxWidth then
+    instance.maxWidth = defaultWidth
+  end
 
   setmetatable(instance, mt)
 

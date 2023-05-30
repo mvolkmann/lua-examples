@@ -48,6 +48,15 @@ local mt = {
         end
       end
     end,
+
+    getHeight = function(self)
+      return self.height
+    end,
+
+    getWidth = function(self)
+      return self.width
+    end,
+
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY

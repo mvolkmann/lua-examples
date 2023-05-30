@@ -12,50 +12,52 @@ local function layout(self)
   -- Get width of widest child.
   local maxWidth = fun.max(
     children,
-    function(child) return child.width or 0 end
+    function(child) return child:getWidth() or 0 end
   )
+  self.maxWidth = maxWidth
 
   -- Get height of tallest child.
   local maxHeight = fun.max(
     children,
-    function(child) return child.height or 0 end
+    function(child) return child:getHeight() or 0 end
   )
+  self.maxHeight = maxHeight
 
-  local centerX = maxWidth / 2
-  local centerY = maxHeight / 2
+  local centerX = self.maxWidth / 2
+  local centerY = self.maxHeight / 2
 
   -- Set the x and y properties of each non-spacer child.
-  for i, child in ipairs(children) do
-    local width = child.width
-    local height = child.height
+  for _, child in ipairs(children) do
+    local width = child:getWidth()
+    local height = child:getHeight()
 
     if align == "center" then
-      child.x = x + centerX - width / 2
-      child.y = y + centerY - height / 2
+      child.x = centerX - width / 2
+      child.y = centerY - height / 2
     elseif align == "north" then
-      child.x = x + centerX - width / 2
-      child.y = y
+      child.x = centerX - width / 2
+      child.y = 0
     elseif align == "south" then
-      child.x = x + centerX - width / 2
-      child.y = y + maxHeight - height
+      child.x = centerX - width / 2
+      child.y = maxHeight - height
     elseif align == "east" then
-      child.x = x + maxWidth - width
-      child.y = y + centerY - height / 2
+      child.x = maxWidth - width
+      child.y = centerY - height / 2
     elseif align == "west" then
-      child.x = x
-      child.y = y + centerY - height / 2
+      child.x = 0
+      child.y = centerY - height / 2
     elseif align == "northeast" then
-      child.x = x + maxWidth - width
-      child.y = y
+      child.x = maxWidth - width
+      child.y = 0
     elseif align == "southeast" then
-      child.x = x + maxWidth - width
-      child.y = y + maxHeight - height
+      child.x = maxWidth - width
+      child.y = maxHeight - height
     elseif align == "southwest" then
-      child.x = x
-      child.y = y + maxHeight - height
+      child.x = 0
+      child.y = maxHeight - height
     else -- assume northwest
-      child.x = x
-      child.y = y
+      child.x = 0
+      child.y = 0
     end
   end
 
@@ -68,9 +70,21 @@ local mt = {
   __index = {
     laidOut = false,
     draw = function(self, parentX, parentY)
+      parentX = parentX or 0
+      parentY = parentY or 0
+      local x = parentX + self.x
+      local y = parentY + self.y
       for _, child in ipairs(self.children) do
-        child:draw(parentX + self.x, parentY + self.y)
+        child:draw(x, y)
       end
+    end,
+
+    getHeight = function(self)
+      return self.maxHeight
+    end,
+
+    getWidth = function(self)
+      return self.maxWidth
     end
   }
 }
@@ -85,6 +99,8 @@ function ZStack(options, ...)
   local instance = options
   instance.kind = "ZStack"
   instance.children = { ... }
+  instance.x = 0
+  instance.y = 0
   setmetatable(instance, mt)
   layout(instance)
   return instance

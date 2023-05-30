@@ -20,7 +20,7 @@ local mt = {
         self.actualX = x
         self.actualY = y
 
-        g.rectangle("line", x, y, self.width, self.height)
+        g.rectangle("line", x, y, self:getWidth(), self:getHeight())
 
         local font = self.font
         g.setFont(font)
@@ -58,11 +58,21 @@ local mt = {
       end
     end,
 
+    getHeight = function(self)
+      return self.font:getHeight() + padding * 2
+    end,
+
+    getWidth = function(self)
+      return self.width
+    end,
+
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
-      local width = self.width
-      local height = self.height
+      if not x or not y then return false end
+
+      local width = self:getWidth()
+      local height = self:getHeight()
       local clicked = x <= clickX and clickX <= x + width and
           y <= clickY and clickY <= y + height
       if clicked then
@@ -106,9 +116,6 @@ function Input(table, property, options)
 
   instance.table = table
   instance.property = property
-
-  instance.width = width
-  instance.height = font:getHeight() + padding * 2
 
   setmetatable(instance, mt)
 
