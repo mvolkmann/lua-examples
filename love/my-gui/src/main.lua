@@ -1,20 +1,7 @@
-local Button = require "Button"
-local Checkbox = require "Checkbox"
-local colors = require "colors"
-local fonts = require "fonts"
-local FPS = require "FPS"
-local HStack = require "HStack"
-local Image = require "Image"
-local Input = require "Input"
 local love = require "love"
-local pprint = require "pprint"
-local RadioButtons = require "RadioButtons"
-local Select = require "Select"
-local Spacer = require "Spacer"
-local Text = require "Text"
-local Toggle = require "Toggle"
-local VStack = require "VStack"
-local ZStack = require "ZStack"
+local fonts = require "glove/fonts"
+local gl = require "glove/index"
+local pprint = require "glove/pprint"
 
 local lg = love.graphics
 
@@ -37,9 +24,9 @@ function love.load()
   lg.setFont(fonts.default18)
 
   local button = Button("Seven", {
-    buttonColor = colors.red,
+    buttonColor = gl.colors.red,
     font = fonts.default18,
-    labelColor = colors.yellow,
+    labelColor = gl.colors.yellow,
     onClick = function()
       print("got click")
     end
@@ -142,7 +129,7 @@ function love.load()
       ZStack(
         { align = "center" },
         logo1,
-        Text("LÖVE", { color = colors.black, font = fonts.default30 })
+        Text("LÖVE", { color = gl.colors.black, font = fonts.default30 })
       ),
       VStack(
         { id = 1 },
@@ -170,10 +157,10 @@ function love.update(dt)
 end
 
 function love.draw()
-  --[[ lg.setColor(colors.red)
+  --[[ lg.setColor(gl.colors.red)
   lg.setFont(fonts.default30)
   lg.print("Hello, World!", 0, 0) ]]
-  lg.setColor(colors.white)
+  lg.setColor(gl.colors.white)
   vstack:draw()
 end
 

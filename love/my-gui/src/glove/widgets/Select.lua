@@ -1,5 +1,5 @@
-local colors = require "colors"
-local fun = require "fun"
+local colors = require "glove/colors"
+local fun = require "glove/fun"
 local love = require "love"
 
 local g = love.graphics
@@ -24,7 +24,7 @@ local mt = {
       end)
 
       local over = self:isOver(0, love.mouse.getPosition())
-      g.setColor(over and hoverColor or self.color)
+      g.setColor(over and _glove_hoverColor or self.color)
       local width = self:getWidth()
       local height = self:getHeight()
       g.rectangle("line", x, y, width, height)
@@ -45,7 +45,7 @@ local mt = {
         triangleX + triangleSize / 2, triangleBottom
       )
 
-      if isFocused(self) and self.open then
+      if _glove_isFocused(self) and self.open then
         local dy = fontHeight + padding * 2
         for _, choice in ipairs(self.choices) do
           y = y + dy
@@ -69,7 +69,7 @@ local mt = {
 
     handleClick = function(self, clickX, clickY)
       if self:isOver(0, clickX, clickY) then
-        setFocus(self)
+        _glove_setFocus(self)
         self.open = not self.open
         return
       end

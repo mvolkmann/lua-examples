@@ -1,4 +1,4 @@
-local fun = require "fun"
+local fun = require "glove/fun"
 local love = require "love"
 local g = love.graphics
 
@@ -70,8 +70,8 @@ local mt = {
   __index = {
     laidOut = false,
     draw = function(self, parentX, parentY)
-      parentX = parentX or margin
-      parentY = parentY or margin
+      parentX = parentX or _glove_margin
+      parentY = parentY or _glove_margin
       local x = parentX + self.x
       local y = parentY + self.y
       for _, child in ipairs(self.children) do

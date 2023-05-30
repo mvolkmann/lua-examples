@@ -1,4 +1,4 @@
-local colors = require "colors"
+local colors = require "glove/colors"
 local love = require "love"
 
 local g = love.graphics
@@ -30,7 +30,7 @@ local mt = {
           local labelWidth = font:getWidth(choice.label)
           local choiceWidth = size + spacing + labelWidth
           local over = self:isOver(x, y, choiceWidth, love.mouse.getPosition())
-          g.setColor(over and hoverColor or self.color)
+          g.setColor(over and _glove_hoverColor or self.color)
           g.circle("line", circleCenterX, circleCenterY, circleRadius)
 
           g.setColor(self.color)
@@ -47,7 +47,7 @@ local mt = {
           local labelWidth = font:getWidth(choice.label)
           local choiceWidth = size + spacing + labelWidth
           local over = self:isOver(x, y, choiceWidth, love.mouse.getPosition())
-          g.setColor(over and hoverColor or self.color)
+          g.setColor(over and _glove_hoverColor or self.color)
           g.circle("line", circleCenterX, circleCenterY, circleRadius)
 
           g.setColor(self.color)
@@ -80,7 +80,7 @@ local mt = {
           local labelWidth = font:getWidth(choice.label)
           local choiceWidth = size + spacing + labelWidth
           if self:isOver(x, y, choiceWidth, clickX, clickY) then
-            setFocus(self)
+            _glove_setFocus(self)
             local value = choice.value
             local t = self.table
             local p = self.property
@@ -95,7 +95,7 @@ local mt = {
           local labelWidth = font:getWidth(choice.label)
           local choiceWidth = size + spacing + labelWidth
           if self:isOver(x, y, choiceWidth, clickX, clickY) then
-            setFocus(self)
+            _glove_setFocus(self)
             local value = choice.value
             local t = self.table
             local p = self.property

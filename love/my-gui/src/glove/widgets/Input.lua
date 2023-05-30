@@ -1,4 +1,4 @@
-local colors = require "colors"
+local colors = require "glove/colors"
 local love = require "love"
 
 love.keyboard.setKeyRepeat(true)
@@ -20,7 +20,7 @@ local mt = {
         self.actualY = y
 
         local over = self:isOver(love.mouse.getPosition())
-        g.setColor(over and hoverColor or self.color)
+        g.setColor(over and _glove_hoverColor or self.color)
         g.rectangle("line", x, y, self:getWidth(), self:getHeight())
 
         -- Get current value.
@@ -49,7 +49,7 @@ local mt = {
         g.setFont(font)
         g.print(substr, x, y)
 
-        if isFocused(self) then
+        if _glove_isFocused(self) then
           local c = inputCursor
           if c then
             -- Draw vertical cursor line.
@@ -73,7 +73,7 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local clicked = self:isOver(clickX, clickY)
       if clicked then
-        setFocus(self)
+        _glove_setFocus(self)
 
         -- Enable keyboard.
         -- TODO: Is this needed? Maybe only on mobile devices.

@@ -1,4 +1,4 @@
-local colors = require "colors"
+local colors = require "glove/colors"
 local love = require "love"
 
 local g = love.graphics
@@ -18,7 +18,7 @@ local mt = {
 
       if self:isOver(love.mouse.getPosition()) then
         local op = 3 -- outline padding
-        g.setColor(hoverColor)
+        g.setColor(_glove_hoverColor)
         g.rectangle(
           "line",
           x - op, y - op,
@@ -48,7 +48,7 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local clicked = self:isOver(clickX, clickY)
       if clicked then
-        setFocus(self)
+        _glove_setFocus(self)
         self.onClick()
       end
       return clicked

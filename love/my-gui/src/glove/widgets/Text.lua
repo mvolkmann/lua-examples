@@ -1,6 +1,5 @@
-local colors = require "colors"
+local colors = require "glove/colors"
 local love = require "love"
-local pprint = require "pprint"
 
 local g = love.graphics
 local padding = 0
