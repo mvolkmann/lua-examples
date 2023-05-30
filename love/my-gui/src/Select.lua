@@ -72,6 +72,7 @@ local mt = {
 
       if x <= clickX and clickX <= x + width and
           y <= clickY and clickY <= y + height then
+        focusedWidget = self
         self.open = not self.open
         return
       end

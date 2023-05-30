@@ -58,6 +58,7 @@ local mt = {
           clickY >= y and
           clickY <= y + size
       if clicked then
+        focusedWidget = self
         local t = self.table
         local p = self.property
         local checked = t[p]

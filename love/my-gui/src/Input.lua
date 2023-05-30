@@ -47,13 +47,15 @@ local mt = {
         y = y + padding
         g.print(substr, x, y)
 
-        local c = inputCursor
-        if c then
-          -- Draw vertical cursor line.
-          local height = font:getHeight()
-          local cursorPosition = math.min(c - i + 1, #substr)
-          local cursorX = x + font:getWidth(substr:sub(1, cursorPosition))
-          g.line(cursorX, y, cursorX, y + height)
+        if focusedWidget == self then
+          local c = inputCursor
+          if c then
+            -- Draw vertical cursor line.
+            local height = font:getHeight()
+            local cursorPosition = math.min(c - i + 1, #substr)
+            local cursorX = x + font:getWidth(substr:sub(1, cursorPosition))
+            g.line(cursorX, y, cursorX, y + height)
+          end
         end
       end
     end,
@@ -76,6 +78,8 @@ local mt = {
       local clicked = x <= clickX and clickX <= x + width and
           y <= clickY and clickY <= y + height
       if clicked then
+        focusedWidget = self
+
         -- Enable keyboard.
         -- TODO: Is this needed? Maybe only on mobile devices.
         love.keyboard.setTextInput(true, x, y, width, height)
@@ -86,10 +90,6 @@ local mt = {
         inputTable = t
         inputProperty = p
         inputCursor = #v
-      else
-        inputTable = nil
-        inputProperty = nil
-        inputCursor = nil
       end
       return clicked
     end

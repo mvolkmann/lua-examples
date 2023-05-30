@@ -68,6 +68,7 @@ local mt = {
           local choiceWidth = size + spacing + font:getWidth(choice.label)
           if x <= clickX and clickX <= x + choiceWidth and
               y <= clickY and clickY <= y + size then
+            focusedWidget = self
             local value = choice.value
             local t = self.table
             local p = self.property
@@ -77,11 +78,12 @@ local mt = {
           end
           y = y + size + spacing
         end
-      else
+      else -- horizontal
         for _, choice in ipairs(self.choices) do
           local choiceWidth = size + spacing + font:getWidth(choice.label)
           if x <= clickX and clickX <= x + choiceWidth and
               y <= clickY and clickY <= y + size then
+            focusedWidget = self
             local value = choice.value
             local t = self.table
             local p = self.property
