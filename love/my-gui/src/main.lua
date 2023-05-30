@@ -17,9 +17,10 @@ local Toggle = require "Toggle"
 local VStack = require "VStack"
 local ZStack = require "ZStack"
 
-local g = love.graphics
+local lg = love.graphics
+local lk = love.keyboard
 
-local windowWidth, windowHeight = g.getDimensions()
+local windowWidth, windowHeight = lg.getDimensions()
 
 local clickables, hstack, vstack
 
@@ -35,7 +36,7 @@ function love.load()
   local text2 = Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
   local text3 = Text("Third Text Widget", { debug = debug, font = fonts.default18 })
 
-  g.setFont(fonts.default18)
+  lg.setFont(fonts.default18)
 
   local button = Button("Seven", {
     buttonColor = colors.red,
@@ -107,7 +108,7 @@ function love.load()
 
   clickables = { button, checkbox, input, radioButtons, select, toggle }
 
-  g.setFont(fonts.default30)
+  lg.setFont(fonts.default30)
 
   vstack = VStack(
     { spacing = 20 },
@@ -162,14 +163,15 @@ function love.update(dt)
 end
 
 function love.draw()
-  --[[ g.setColor(colors.red)
-  g.setFont(fonts.default30)
-  g.print("Hello, World!", 0, 0) ]]
-  g.setColor(colors.white)
+  --[[ lg.setColor(colors.red)
+  lg.setFont(fonts.default30)
+  lg.print("Hello, World!", 0, 0) ]]
+  lg.setColor(colors.white)
   -- hstack:draw()
   vstack:draw()
 end
 
+-- TODO: Somehow this needs to be done in Input.lua.
 function love.keypressed(key)
   -- These global variables are set in Input.lua.
   local t = _G.inputTable
@@ -195,7 +197,9 @@ function love.keypressed(key)
     if #key == 1 then
       local head = c == 0 and "" or value:sub(1, c)
       local tail = value:sub(c + 1, #value)
-      t[p] = head .. key .. tail
+      local shift = lk.isDown("lshift") or lk.isDown("rshift")
+      local char = shift and key:upper() or key
+      t[p] = head .. char .. tail
       _G.inputCursor = c + 1
     end
   end
