@@ -126,7 +126,7 @@ local mt = {
 -- font: font used for choice labels
 -- onChange: function called when a choice is selected
 -- vertical: boolean; defaults to false
-function RadioButtons(choices, table, property, options)
+local function RadioButtons(choices, table, property, options)
   local t = type(choices)
   assert(t == "table", "RadioButtons choices must be a table.")
 

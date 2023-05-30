@@ -9,7 +9,7 @@ local mt = {
   }
 }
 
-function Spacer(size)
+local function Spacer(size)
   local t = type(size)
   assert(t == "number" or t == "nil", "Spacer size must be a number or nil.")
   local instance = { kind = "Spacer", size = size }

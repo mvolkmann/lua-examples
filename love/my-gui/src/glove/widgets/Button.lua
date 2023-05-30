@@ -70,7 +70,7 @@ local mt = {
 -- font: font used for button label
 -- labelColor: color of label; defaults to black
 -- onClick: function called when button is clicked
-function Button(label, options)
+local function Button(label, options)
   options = options or {}
   local t = type(options)
   assert(t == "table", "Button options must be a table.")

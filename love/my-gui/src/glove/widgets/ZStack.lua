@@ -92,7 +92,7 @@ local mt = {
 -- The supported options are:
 -- align: "center" or one of the compass directions "northwest", "north",
 --        "northeast", "east", "southeast", "south", "southwest", or "west"
-function ZStack(options, ...)
+local function ZStack(options, ...)
   local t = type(options)
   assert(t == "table" or t == "nil", "ZStack options must be a table.")
 

@@ -15,15 +15,15 @@ pprint.setup { show_all = true, wrap_array = true }
 
 function love.load()
   local debug = true
-  local logo1 = Image("images/love2d-heart.png", { height = 200 })
-  local logo2 = Image("images/love2d-whale.png", { height = 100 })
-  local text1 = Text("First Text Widget", { debug = debug, font = fonts.default18 })
-  local text2 = Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
-  local text3 = Text("Third Text Widget", { debug = debug, font = fonts.default18 })
+  local logo1 = gl.Image("images/love2d-heart.png", { height = 200 })
+  local logo2 = gl.Image("images/love2d-whale.png", { height = 100 })
+  local text1 = gl.Text("First Text Widget", { debug = debug, font = fonts.default18 })
+  local text2 = gl.Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
+  local text3 = gl.Text("Third Text Widget", { debug = debug, font = fonts.default18 })
 
   lg.setFont(fonts.default18)
 
-  local button = Button("Seven", {
+  local button = gl.Button("Seven", {
     buttonColor = gl.colors.red,
     font = fonts.default18,
     labelColor = gl.colors.yellow,
@@ -32,32 +32,32 @@ function love.load()
     end
   })
 
-  local checkbox = Checkbox("Hungry?", state, "hungry", {
+  local checkbox = gl.Checkbox("Hungry?", state, "hungry", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end
   })
 
-  local firstNameInput = Input(state, "firstName", {
+  local firstNameInput = gl.Input(state, "firstName", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end,
     width = 100
   })
-  local lastNameInput = Input(state, "lastName", {
+  local lastNameInput = gl.Input(state, "lastName", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end,
     width = 100
   })
 
-  local greetingText = Text("", {
+  local greetingText = gl.Text("", {
     compute = function()
       return "Hello, " .. state.firstName .. " " .. state.lastName .. "!"
     end
   })
 
-  local radioButtons = RadioButtons(
+  local radioButtons = gl.RadioButtons(
     {
       { label = "Red",   value = "r" },
       { label = "Green", value = "g" },
@@ -74,7 +74,7 @@ function love.load()
     }
   )
 
-  local select = Select(
+  local select = gl.Select(
     {
       { label = "Red",   value = "r" },
       { label = "Green", value = "g" },
@@ -91,7 +91,7 @@ function love.load()
     }
   )
 
-  local toggle = Toggle(state, "hungry", {
+  local toggle = gl.Toggle(state, "hungry", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end
@@ -101,55 +101,55 @@ function love.load()
 
   lg.setFont(fonts.default30)
 
-  vstack = VStack(
+  vstack = gl.VStack(
     { spacing = 20 },
-    HStack(
+    gl.HStack(
       { align = "center", spacing = 20 },
-      Spacer(),
-      Text("One"),
-      Text("Two", { debug = debug, font = fonts.default18 }),
-      Text("Three")
+      gl.Spacer(),
+      gl.Text("One"),
+      gl.Text("Two", { debug = debug, font = fonts.default18 }),
+      gl.Text("Three")
     ),
-    HStack(
+    gl.HStack(
       { spacing = 20 },
-      Spacer(),
-      Text("Four"),
-      Text("Five"),
-      Spacer()
+      gl.Spacer(),
+      gl.Text("Four"),
+      gl.Text("Five"),
+      gl.Spacer()
     ),
-    HStack(
+    gl.HStack(
       { align = "center", spacing = 20 },
-      Text("Six"),
+      gl.Text("Six"),
       button,
-      Text("Eight"),
-      Text("Nine")
+      gl.Text("Eight"),
+      gl.Text("Nine")
     ),
-    HStack(
+    gl.HStack(
       { spacing = 20 },
-      ZStack(
+      gl.ZStack(
         { align = "center" },
         logo1,
-        Text("LÖVE", { color = gl.colors.black, font = fonts.default30 })
+        gl.Text("LÖVE", { color = gl.colors.black, font = fonts.default30 })
       ),
-      VStack(
+      gl.VStack(
         { id = 1 },
         firstNameInput,
         lastNameInput,
         greetingText
       )
     ),
-    HStack(
+    gl.HStack(
       { spacing = 20 },
       checkbox,
       toggle
     ),
-    HStack(
+    gl.HStack(
       {},
       radioButtons,
       select
     ),
-    Spacer(),
-    FPS({ font = fonts.default12 })
+    gl.Spacer(),
+    gl.FPS({ font = fonts.default12 })
   )
 end
 

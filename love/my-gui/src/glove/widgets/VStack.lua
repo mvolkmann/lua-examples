@@ -116,7 +116,7 @@ local mt = {
 -- The supported options are:
 -- align: "start", "center", or "end"
 -- spacing: positive integer to add space between non-spacer children
-function VStack(options, ...)
+local function VStack(options, ...)
   local t = type(options)
   assert(t == "table" or t == "nil", "VStack options must be a table.")
 

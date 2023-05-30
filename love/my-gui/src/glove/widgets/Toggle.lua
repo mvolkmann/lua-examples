@@ -63,7 +63,7 @@ local mt = {
 -- Supported options are:
 -- color: defaults to white
 -- onChange: function called when button is clicked
-function Toggle(table, property, options)
+local function Toggle(table, property, options)
   options = options or {}
   local t = type(options)
   assert(t == "table", "Toggle options must be a table.")

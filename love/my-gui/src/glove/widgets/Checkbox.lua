@@ -81,7 +81,7 @@ local mt = {
 -- font: font used for button label
 -- color: color of label and checkbox; defaults to white
 -- onChange: function called when button is clicked
-function Checkbox(label, table, property, options)
+local function Checkbox(label, table, property, options)
   options = options or {}
   local t = type(options)
   assert(t == "table", "Checkbox options must be a table.")

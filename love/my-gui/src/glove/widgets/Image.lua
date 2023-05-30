@@ -27,7 +27,7 @@ local mt = {
   }
 }
 
-function Image(filePath, options)
+local function Image(filePath, options)
   local t = type(options)
   assert(t == "table" or t == "nil", "Image options must be a table.")
 

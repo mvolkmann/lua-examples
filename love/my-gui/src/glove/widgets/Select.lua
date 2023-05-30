@@ -116,7 +116,7 @@ local mt = {
 -- color: defaults to white
 -- font: font used for choice labels
 -- onChange: function called when a choice is selected
-function Select(choices, table, property, options)
+local function Select(choices, table, property, options)
   local t = type(choices)
   assert(t == "table", "Select choices must be a table.")
 
