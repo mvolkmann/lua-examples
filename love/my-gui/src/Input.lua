@@ -3,7 +3,10 @@ local love = require "love"
 
 love.keyboard.setKeyRepeat(true)
 local g = love.graphics
+local lk = love.keyboard
 local padding = 4
+
+local inputCursor, inputProperty, inputTable
 
 local mt = {
   __index = {
@@ -44,7 +47,7 @@ local mt = {
         y = y + padding
         g.print(substr, x, y)
 
-        local c = _G.inputCursor
+        local c = inputCursor
         if c then
           -- Draw vertical cursor line.
           local height = font:getHeight()
@@ -70,13 +73,13 @@ local mt = {
         local t = self.table
         local p = self.property
         local v = t[p] or ""
-        _G.inputTable = t
-        _G.inputProperty = p
-        _G.inputCursor = #v
+        inputTable = t
+        inputProperty = p
+        inputCursor = #v
       else
-        _G.inputTable = nil
-        _G.inputProperty = nil
-        _G.inputCursor = nil
+        inputTable = nil
+        inputProperty = nil
+        inputCursor = nil
       end
       return clicked
     end
@@ -110,6 +113,39 @@ function Input(table, property, options)
   setmetatable(instance, mt)
 
   return instance
+end
+
+function inputProcessKey(key)
+  -- These global variables are set in Input.lua.
+  local t = inputTable
+  local p = inputProperty
+  local c = inputCursor
+  if not t or not p then return end
+
+  local value = t[p]
+
+  if key == "backspace" then
+    if c > 0 then
+      t[p] = value:sub(1, c - 1) .. value:sub(c + 1, #value)
+      inputCursor = c - 1
+    end
+  elseif key == "left" then
+    if c > 0 then inputCursor = c - 1 end
+  elseif key == "right" then
+    if c < #value then inputCursor = c + 1 end
+  else
+    if key == "space" then key = " " end
+
+    -- Only process printable ASCII characters.
+    if #key == 1 then
+      local head = c == 0 and "" or value:sub(1, c)
+      local tail = value:sub(c + 1, #value)
+      local shift = lk.isDown("lshift") or lk.isDown("rshift")
+      local char = shift and key:upper() or key
+      t[p] = head .. char .. tail
+      inputCursor = c + 1
+    end
+  end
 end
 
 return Input

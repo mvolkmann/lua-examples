@@ -18,7 +18,6 @@ local VStack = require "VStack"
 local ZStack = require "ZStack"
 
 local lg = love.graphics
-local lk = love.keyboard
 
 local windowWidth, windowHeight = lg.getDimensions()
 
@@ -173,36 +172,7 @@ end
 
 -- TODO: Somehow this needs to be done in Input.lua.
 function love.keypressed(key)
-  -- These global variables are set in Input.lua.
-  local t = _G.inputTable
-  local p = _G.inputProperty
-  local c = _G.inputCursor
-  if not t or not p then return end
-
-  local value = t[p]
-
-  if key == "backspace" then
-    if c > 0 then
-      t[p] = value:sub(1, c - 1) .. value:sub(c + 1, #value)
-      _G.inputCursor = c - 1
-    end
-  elseif key == "left" then
-    if c > 0 then _G.inputCursor = c - 1 end
-  elseif key == "right" then
-    if c < #value then _G.inputCursor = c + 1 end
-  else
-    if key == "space" then key = " " end
-
-    -- Only process printable ASCII characters.
-    if #key == 1 then
-      local head = c == 0 and "" or value:sub(1, c)
-      local tail = value:sub(c + 1, #value)
-      local shift = lk.isDown("lshift") or lk.isDown("rshift")
-      local char = shift and key:upper() or key
-      t[p] = head .. char .. tail
-      _G.inputCursor = c + 1
-    end
-  end
+  inputProcessKey(key)
 end
 
 function love.mousepressed(x, y, button)
