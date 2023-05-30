@@ -5,10 +5,11 @@ local g = love.graphics
 
 local mt = {
   __index = {
-    draw = function(self)
+    draw = function(self, parentX, parentY)
       g.setColor(colors.white)
       g.setFont(self.font)
-      g.print("FPS: " .. love.timer.getFPS(), self.x, self.y)
+      local text = "FPS: " .. love.timer.getFPS()
+      g.print(text, parentX + self.x, parentY + self.y)
     end,
 
     getHeight = function(self)

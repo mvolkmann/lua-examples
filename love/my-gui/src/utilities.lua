@@ -3,6 +3,7 @@ require "string-extensions"
 
 local focusedWidget = nil
 hoverColor = colors.green
+margin = 20
 
 function isFocused(widget)
   return widget == focusedWidget

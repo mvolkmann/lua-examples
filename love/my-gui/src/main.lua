@@ -164,27 +164,6 @@ function love.load()
     Spacer(),
     FPS({ font = fonts.default12 })
   )
-  --[[ vstack = VStack(
-    { id = 1 },
-    HStack(
-      { id = 2 },
-      Text("First"),
-      Text("Second")
-    ),
-    HStack(
-      { id = 4 },
-      VStack(
-        { id = 5 },
-        Text("Third"),
-        Text("Fourth")
-      ),
-      VStack(
-        { id = 5 },
-        Text("Fifth"),
-        Text("Sixth")
-      )
-    )
-  ) ]]
 end
 
 function love.update(dt)

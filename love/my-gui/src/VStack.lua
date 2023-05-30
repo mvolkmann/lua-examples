@@ -48,7 +48,7 @@ local function layout(self)
     -- Account for requested gaps between children.
     childrenHeight = childrenHeight + spacing * gapCount
 
-    local availableHeight = g.getHeight()
+    local availableHeight = g.getHeight() - margin * 2
 
     -- Compute the size of each zero width Spacer.
     spacerWidth = (availableHeight - childrenHeight) / spacerCount
@@ -85,8 +85,8 @@ local mt = {
   __index = {
     laidOut = false,
     draw = function(self, parentX, parentY)
-      parentX = parentX or 0
-      parentY = parentY or 0
+      parentX = parentX or margin
+      parentY = parentY or margin
       local x = parentX + self.x
       local y = parentY + self.y
       for i, child in ipairs(self.children) do
@@ -98,7 +98,9 @@ local mt = {
 
     getHeight = function(self)
       -- If there is a Spacer child then use screen height.
-      if self.haveSpacer then return g.getHeight() end
+      if self.haveSpacer then
+        return g.getHeight() - margin * 2
+      end
 
       -- Compute height based on children.
       local children = self.children

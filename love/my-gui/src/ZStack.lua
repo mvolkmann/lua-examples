@@ -70,8 +70,8 @@ local mt = {
   __index = {
     laidOut = false,
     draw = function(self, parentX, parentY)
-      parentX = parentX or 0
-      parentY = parentY or 0
+      parentX = parentX or margin
+      parentY = parentY or margin
       local x = parentX + self.x
       local y = parentY + self.y
       for _, child in ipairs(self.children) do
