@@ -3,7 +3,6 @@ local love = require "love"
 
 local g = love.graphics
 
-local padding = 4
 local size = 24
 local s2 = size * 0.2
 local s4 = size * 0.4

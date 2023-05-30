@@ -29,6 +29,7 @@ local widgets = {
   "RadioButtons",
   "Select",
   "Spacer",
+  "Tabs",
   "Text",
   "Toggle",
   "VStack",

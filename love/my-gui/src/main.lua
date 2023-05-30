@@ -3,9 +3,9 @@ local fonts = require "glove/fonts"
 local gl = require "glove/index"
 local pprint = require "glove/pprint"
 
-local lg = love.graphics
+local g = love.graphics
 
-local windowWidth, windowHeight = lg.getDimensions()
+local windowWidth, windowHeight = g.getDimensions()
 
 local clickables, hstack, vstack
 
@@ -21,7 +21,7 @@ function love.load()
   local text2 = gl.Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
   local text3 = gl.Text("Third Text Widget", { debug = debug, font = fonts.default18 })
 
-  lg.setFont(fonts.default18)
+  g.setFont(fonts.default18)
 
   local button = gl.Button("Seven", {
     buttonColor = gl.colors.red,
@@ -99,7 +99,7 @@ function love.load()
 
   clickables = { button, checkbox, firstNameInput, lastNameInput, radioButtons, select, toggle }
 
-  lg.setFont(fonts.default30)
+  g.setFont(fonts.default30)
 
   vstack = gl.VStack(
     { spacing = 20 },
@@ -151,17 +151,37 @@ function love.load()
     gl.Spacer(),
     gl.FPS({ font = fonts.default12 })
   )
+
+  tabs = gl.Tabs({
+    {
+      label = "Baseball",
+      widget = gl.Text("Baseball detail goes here!", { font = fonts.default18 })
+    },
+    {
+      label = "Basketball",
+      widget = gl.Text("Basketball detail goes here!", { font = fonts.default18 })
+    },
+    {
+      label = "Football",
+      widget = gl.Text("Football detail goes here!", { font = fonts.default18 })
+    },
+    {
+      label = "Hockey",
+      widget = gl.Text("Hockey detail goes here!", { font = fonts.default18 })
+    }
+  })
 end
 
 function love.update(dt)
 end
 
 function love.draw()
-  --[[ lg.setColor(gl.colors.red)
-  lg.setFont(fonts.default30)
-  lg.print("Hello, World!", 0, 0) ]]
-  lg.setColor(gl.colors.white)
-  vstack:draw()
+  --[[ g.setColor(gl.colors.red)
+  g.setFont(fonts.default30)
+  g.print("Hello, World!", 0, 0) ]]
+  g.setColor(gl.colors.white)
+  -- vstack:draw()
+  tabs:draw()
 end
 
 -- TODO: Can this be done in Input.lua?
