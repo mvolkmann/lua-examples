@@ -121,12 +121,11 @@ local function Input(t, property, options)
   local instance = options or {}
 
   instance.kind = "Input"
-
   local font = instance.font or g.getFont()
   instance.font = font
-
   instance.table = t
   instance.property = property
+  instance.visible = true
 
   setmetatable(instance, mt)
 

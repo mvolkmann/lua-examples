@@ -144,9 +144,9 @@ local function RadioButtons(choices, t, property, options)
   instance.choices = choices
   instance.color = instance.color or colors.white
   instance.font = font
-
   instance.table = t
   instance.property = property
+  instance.visible = true
 
   local fontHeight = font:getHeight()
   local height = 0

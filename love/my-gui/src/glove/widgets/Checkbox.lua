@@ -94,9 +94,9 @@ local function Checkbox(label, t, property, options)
   instance.color = instance.color or colors.white
   instance.font = font
   instance.label = label
-
   instance.table = t
   instance.property = property
+  instance.visible = true
 
   setmetatable(instance, mt)
 

@@ -48,6 +48,7 @@ local mt = {
         if self.onChange then
           self.onChange(t, p, not checked)
         end
+        print("toggled " .. p)
       end
       return clicked
     end,
@@ -79,6 +80,7 @@ local function Toggle(t, property, options)
   instance.font = font
   instance.table = t
   instance.property = property
+  instance.visible = true
 
   setmetatable(instance, mt)
 

@@ -123,8 +123,10 @@ local function HStack(options, ...)
   local children = { ... }
   instance.children = children
   instance.haveSpacer = fun.some(children, isSpacerWithoutSize)
+  instance.visible = true
   instance.x = 0
   instance.y = 0
+
   setmetatable(instance, mt)
   layout(instance)
   return instance

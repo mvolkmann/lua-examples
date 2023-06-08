@@ -36,8 +36,8 @@ Glove = {
 
   mousePressed = function(x, y, button)
     if button ~= 1 then return end
-    for _, b in ipairs(Glove.clickables) do
-      b:handleClick(x, y)
+    for _, widget in ipairs(Glove.clickables) do
+      if widget.visible then widget:handleClick(x, y) end
     end
   end,
 

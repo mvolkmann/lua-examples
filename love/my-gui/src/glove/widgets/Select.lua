@@ -134,10 +134,10 @@ local function Select(choices, t, property, options)
   instance.choices = choices
   instance.color = instance.color or colors.white
   instance.font = font
-
+  instance.open = false
   instance.table = t
   instance.property = property
-  instance.open = false
+  instance.visible = true
 
   -- Find the widest choice label.
   instance.maxWidth = fun.max(choices, function(choice)

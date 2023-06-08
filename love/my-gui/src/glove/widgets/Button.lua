@@ -84,6 +84,7 @@ local function Button(label, options)
   instance.label = label
   instance.labelColor = instance.labelColor or colors.black
   instance.buttonColor = instance.buttonColor or colors.white
+  instance.visible = true
 
   setmetatable(instance, mt)
 
