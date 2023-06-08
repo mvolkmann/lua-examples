@@ -6,7 +6,7 @@ local focusedWidget = nil
 _glove_hoverColor = colors.green
 _glove_margin = 20
 
-local top = { "colors", "fonts", "fun" }
+local utilities = { "colors", "fonts", "fun" }
 
 local widgets = {
   "Button",
@@ -27,21 +27,23 @@ local widgets = {
 
 Glove = {
   hoverColor = colors.green,
-  margin = 20
+
+  margin = 20, -- inside window
+
+  isFocused = function(widget)
+    return widget == focusedWidget
+  end,
+
+  setFocus = function(widget)
+    if focusedWidget and focusedWidget.removeFocus then
+      focusedWidget:removeFocus()
+    end
+    focusedWidget = widget
+  end
 }
 
-function Glove.isFocused(widget)
-  return widget == focusedWidget
-end
 
-function Glove.setFocus(widget)
-  if focusedWidget and focusedWidget.removeFocus then
-    focusedWidget:removeFocus()
-  end
-  focusedWidget = widget
-end
-
-for _, module in ipairs(top) do
+for _, module in ipairs(utilities) do
   Glove[module] = require("glove/" .. module)
 end
 
