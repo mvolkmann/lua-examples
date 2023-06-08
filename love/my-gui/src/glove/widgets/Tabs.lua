@@ -59,6 +59,10 @@ local mt = {
         local index = self.selectedTabIndex
         self.onChange(index, self.tabs[index])
       end
+
+      -- Disable all widgets in previous tab.
+      -- Enable all widgets in new tab.
+
       return clicked
     end,
 

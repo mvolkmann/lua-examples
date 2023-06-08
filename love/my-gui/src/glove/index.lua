@@ -34,6 +34,13 @@ Glove = {
     return widget == focusedWidget
   end,
 
+  mousePressed = function(x, y, button)
+    if button ~= 1 then return end
+    for _, b in ipairs(Glove.clickables) do
+      b:handleClick(x, y)
+    end
+  end,
+
   setFocus = function(widget)
     if focusedWidget and focusedWidget.removeFocus then
       focusedWidget:removeFocus()

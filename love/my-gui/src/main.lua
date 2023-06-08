@@ -219,11 +219,7 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button)
-  if button ~= 1 then return end
-
-  for _, b in ipairs(Glove.clickables) do
-    b:handleClick(x, y)
-  end
+  Glove.mousePressed(x, y, button)
 end
 
 function love.resize()
