@@ -9,6 +9,15 @@ local function getTabHeight(font)
   return font:getHeight() + tabPadding * 2
 end
 
+local function setVisible(widget, visible)
+  widget.visible = visible
+  if widget.children then
+    for _, child in ipairs(widget.children) do
+      setVisible(child, visible)
+    end
+  end
+end
+
 local mt = {
   __index = {
     draw = function(self, parentX, parentY)
@@ -54,14 +63,19 @@ local mt = {
     end,
 
     handleClick = function(self, clickX, clickY)
-      local clicked = self:isOver(clickX, clickY)
-      if clicked and self.onChange then
-        local index = self.selectedTabIndex
-        self.onChange(index, self.tabs[index])
-      end
+      local currentTab = self.tabs[self.selectedTabIndex]
 
-      -- Disable all widgets in previous tab.
-      -- Enable all widgets in new tab.
+      local clicked = self:isOver(clickX, clickY)
+      if clicked then
+        local index = self.selectedTabIndex
+        local newTab = self.tabs[index]
+        if self.onChange then
+          self.onChange(index, newTab)
+        end
+
+        setVisible(currentTab.widget, false)
+        setVisible(newTab.widget, true)
+      end
 
       return clicked
     end,
@@ -102,9 +116,11 @@ local function Tabs(tabs, options)
   options = options or {}
   assert(type(options) == "table", "Tabs options must be a table.")
 
-  for _, tab in ipairs(tabs) do
-    tab.widget.x = 0
-    tab.widget.y = 0
+  for index, tab in ipairs(tabs) do
+    local widget = tab.widget
+    widget.x = 0
+    widget.y = 0
+    widget.visible = index == 1
   end
 
   local instance = options
@@ -113,6 +129,7 @@ local function Tabs(tabs, options)
   instance.font = options.font or g.getFont()
   instance.selectedTabIndex = 1
   instance.tabs = tabs
+  instance.visible = true
   instance.x = 0
   instance.y = 0
 
