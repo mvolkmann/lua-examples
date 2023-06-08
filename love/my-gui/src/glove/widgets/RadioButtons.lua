@@ -80,7 +80,7 @@ local mt = {
           local labelWidth = font:getWidth(choice.label)
           local choiceWidth = size + spacing + labelWidth
           if self:isOver(x, y, choiceWidth, clickX, clickY) then
-            _glove_setFocus(self)
+            Glove.setFocus(self)
             local value = choice.value
             local t = self.table
             local p = self.property
@@ -95,7 +95,7 @@ local mt = {
           local labelWidth = font:getWidth(choice.label)
           local choiceWidth = size + spacing + labelWidth
           if self:isOver(x, y, choiceWidth, clickX, clickY) then
-            _glove_setFocus(self)
+            Glove.setFocus(self)
             local value = choice.value
             local t = self.table
             local p = self.property

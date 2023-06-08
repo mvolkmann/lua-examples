@@ -1,4 +1,3 @@
-local colors = require "glove/colors"
 local love = require "love"
 
 local g = love.graphics
@@ -17,7 +16,7 @@ local mt = {
       self.actualY = y
 
       local over = self:isOver(love.mouse.getPosition())
-      g.setColor(over and _glove_hoverColor or self.color)
+      g.setColor(over and Glove.hoverColor or self.color)
       g.setFont(self.font)
       g.rectangle("line", x, y, width, size, halfSize, halfSize)
 
@@ -41,7 +40,7 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local clicked = self:isOver(clickX, clickY)
       if clicked then
-        _glove_setFocus(self)
+        Glove.setFocus(self)
         local t = self.table
         local p = self.property
         local checked = t[p]
@@ -72,7 +71,7 @@ local function Toggle(table, property, options)
 
   local instance = options
   instance.kind = "Toggle"
-  instance.color = instance.color or colors.white
+  instance.color = instance.color or Glove.colors.white
   instance.font = font
   instance.table = table
   instance.property = property

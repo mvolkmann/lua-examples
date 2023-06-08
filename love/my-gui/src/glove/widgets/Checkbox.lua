@@ -54,7 +54,7 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local clicked = self:isOver(clickX, clickY)
       if clicked then
-        _glove_setFocus(self)
+        Glove.setFocus(self)
         local t = self.table
         local p = self.property
         local checked = t[p]

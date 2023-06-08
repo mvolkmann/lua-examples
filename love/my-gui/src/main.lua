@@ -180,8 +180,9 @@ function love.draw()
   g.setFont(fonts.default30)
   g.print("Hello, World!", 0, 0) ]]
   g.setColor(gl.colors.white)
-  -- vstack:draw()
-  tabs:draw()
+
+  vstack:draw()
+  -- tabs:draw()
 end
 
 -- TODO: Can this be done in Input.lua?
@@ -198,5 +199,5 @@ function love.mousepressed(x, y, button)
 end
 
 function love.resize()
-  hstack.computed = false
+  vstack.computed = false
 end

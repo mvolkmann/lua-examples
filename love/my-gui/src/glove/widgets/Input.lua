@@ -49,7 +49,7 @@ local mt = {
         g.setFont(font)
         g.print(substr, x, y)
 
-        if _glove_isFocused(self) then
+        if Glove.isFocused(self) then
           local c = inputCursor
           if c then
             -- Draw vertical cursor line.
@@ -73,7 +73,7 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local clicked = self:isOver(clickX, clickY)
       if clicked then
-        _glove_setFocus(self)
+        Glove.setFocus(self)
 
         -- Enable keyboard.
         -- TODO: Is this needed? Maybe only on mobile devices.

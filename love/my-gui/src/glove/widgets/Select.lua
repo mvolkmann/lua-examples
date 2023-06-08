@@ -45,7 +45,7 @@ local mt = {
         triangleX + triangleSize / 2, triangleBottom
       )
 
-      if _glove_isFocused(self) and self.open then
+      if Glove.isFocused(self) and self.open then
         local dy = fontHeight + padding * 2
         for _, choice in ipairs(self.choices) do
           y = y + dy
@@ -69,7 +69,7 @@ local mt = {
 
     handleClick = function(self, clickX, clickY)
       if self:isOver(0, clickX, clickY) then
-        _glove_setFocus(self)
+        Glove.setFocus(self)
         self.open = not self.open
         return
       end
