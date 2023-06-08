@@ -72,6 +72,8 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local x = self.actualX
       local y = self.actualY
+      if not x or not y then return end
+
       local font = self.font
       local spacing = circleRadius
 
@@ -112,6 +114,8 @@ local mt = {
     end,
 
     isOver = function(self, x, y, width, mouseX, mouseY)
+      if not x or not y then return false end
+
       return x <= mouseX and mouseX <= x + width and
           y <= mouseY and mouseY <= y + size
     end

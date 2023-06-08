@@ -67,6 +67,8 @@ local mt = {
     isOver = function(self, mouseX, mouseY)
       local x = self.actualX
       local y = self.actualY
+      if not x or not y then return false end
+
       local labelWidth = self.font:getWidth(self.label)
       return mouseX >= x and
           mouseX <= x + size + spacing + labelWidth and

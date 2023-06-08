@@ -97,8 +97,6 @@ function createUI()
     end
   })
 
-  clickables = { button, checkbox, firstNameInput, lastNameInput, radioButtons, select, toggle }
-
   g.setFont(fonts.default30)
 
   vstack = gl.VStack(
@@ -170,6 +168,11 @@ function createUI()
       widget = gl.Text("Hockey detail goes here!", { font = fonts.default18 })
     }
   })
+
+  clickables = {
+    button, checkbox, firstNameInput, lastNameInput,
+    radioButtons, select, tabs, toggle
+  }
 end
 
 function love.load()
@@ -186,8 +189,8 @@ function love.draw()
   g.print("Hello, World!", 0, 0) ]]
   g.setColor(gl.colors.white)
 
-  vstack:draw()
-  -- tabs:draw()
+  -- vstack:draw()
+  tabs:draw()
 end
 
 -- TODO: Can this be done in Input.lua?

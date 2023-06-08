@@ -96,7 +96,11 @@ local mt = {
 
     isOver = function(self, y, mouseX, mouseY)
       local x = self.actualX
-      y = self.actualY + y
+      local testY = self.actualY
+      if not x or not testY then return false end
+
+      y = y + testY
+
       local width = self:getWidth()
       local height = self:getHeight()
       return x <= mouseX and mouseX <= x + width and

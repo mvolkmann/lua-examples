@@ -5,6 +5,10 @@ local g = love.graphics
 
 local tabPadding = 5
 
+local function getTabHeight(font)
+  return font:getHeight() + tabPadding * 2
+end
+
 local mt = {
   __index = {
     draw = function(self, parentX, parentY)
@@ -20,7 +24,7 @@ local mt = {
 
       local font = self.font
       g.setFont(font)
-      local tabHeight = font:getHeight() + tabPadding * 2
+      local tabHeight = getTabHeight(font)
 
       for index, tab in ipairs(self.tabs) do
         local selected = index == self.selectedTabIndex
@@ -50,26 +54,33 @@ local mt = {
     end,
 
     handleClick = function(self, clickX, clickY)
-      --[[ local clicked = self:isOver(clickX, clickY)
-      if clicked then
-        Glove.setFocus(self)
-        local t = self.table
-        local p = self.property
-        local checked = t[p]
-        t[p] = not checked
-        self.onChange(t, p, not checked)
+      local clicked = self:isOver(clickX, clickY)
+      if clicked and self.onChange then
+        local tab = tabs[self.selectedTabIndex]
+        self.onChange(tab)
       end
-      return clicked ]]
+      return clicked
     end,
 
     isOver = function(self, mouseX, mouseY)
       local x = self.actualX
       local y = self.actualY
-      local labelWidth = self.font:getWidth(self.label)
-      return mouseX >= x and
-          mouseX <= x + size + spacing + labelWidth and
-          mouseY >= y and
-          mouseY <= y + size
+      local font = self.font
+      local tabHeight = getTabHeight(font)
+
+      for index, tab in ipairs(self.tabs) do
+        local tabWidth = font:getWidth(tab.label) + tabPadding * 2
+        local endX = x + tabWidth
+        local over = mouseX >= x and mouseX <= endX and
+            mouseY >= y and mouseY <= y + tabHeight
+        if over then
+          self.selectedTabIndex = index
+          return true
+        end
+        x = endX
+      end
+
+      return false
     end
   }
 }
