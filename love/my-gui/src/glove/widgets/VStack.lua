@@ -116,8 +116,8 @@ local mt = {
 -- align: "start", "center", or "end"
 -- spacing: positive integer to add space between non-spacer children
 local function VStack(options, ...)
-  local t = type(options)
-  assert(t == "table" or t == "nil", "VStack options must be a table.")
+  local to = type(options)
+  assert(to == "table" or to == "nil", "VStack options must be a table.")
 
   local instance = options
   instance.kind = "VStack"

@@ -22,6 +22,7 @@ local mt = {
   },
 }
 
+-- This displays the current frames per second.
 local function FPS(options)
   local font = options.font or g.getFont()
   local text = "FPS:" .. love.timer.getFPS()

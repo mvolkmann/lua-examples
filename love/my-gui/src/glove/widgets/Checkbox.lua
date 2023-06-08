@@ -78,14 +78,14 @@ local mt = {
   }
 }
 
+-- t[property] is set to true or false.
 -- Supported options are:
 -- font: font used for button label
 -- color: color of label and checkbox; defaults to white
 -- onChange: function called when button is clicked
-local function Checkbox(label, table, property, options)
+local function Checkbox(label, t, property, options)
   options = options or {}
-  local t = type(options)
-  assert(t == "table", "Checkbox options must be a table.")
+  assert(type(options) == "table", "Checkbox options must be a table.")
 
   local font = options.font or g.getFont()
 
@@ -95,10 +95,12 @@ local function Checkbox(label, table, property, options)
   instance.font = font
   instance.label = label
 
-  instance.table = table
+  instance.table = t
   instance.property = property
 
   setmetatable(instance, mt)
+
+  table.insert(Glove.clickables, instance)
 
   return instance
 end

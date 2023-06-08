@@ -42,7 +42,9 @@ local mt = {
       if clicked then
         Glove.setFocus(self)
         local t = self.table
+        print("Toggle handleClick: t =", t)
         local p = self.property
+        print("Toggle handleClick: p =", p)
         local checked = t[p]
         t[p] = not checked
         self.onChange(t, p, not checked)
@@ -61,13 +63,13 @@ local mt = {
   }
 }
 
+-- t[property] is set to true or false.
 -- Supported options are:
 -- color: defaults to white
 -- onChange: function called when button is clicked
-local function Toggle(table, property, options)
+local function Toggle(t, property, options)
   options = options or {}
-  local t = type(options)
-  assert(t == "table", "Toggle options must be a table.")
+  assert(type(options) == "table", "Toggle options must be a table.")
 
   local font = options.font or g.getFont()
 
@@ -75,9 +77,13 @@ local function Toggle(table, property, options)
   instance.kind = "Toggle"
   instance.color = instance.color or Glove.colors.white
   instance.font = font
-  instance.table = table
+  instance.table = t
   instance.property = property
+
   setmetatable(instance, mt)
+
+  table.insert(Glove.clickables, instance)
+
   return instance
 end
 

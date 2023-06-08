@@ -10,8 +10,9 @@ local mt = {
 }
 
 local function Spacer(size)
-  local t = type(size)
-  assert(t == "number" or t == "nil", "Spacer size must be a number or nil.")
+  local to = type(size)
+  assert(to == "number" or to == "nil", "Spacer size must be a number or nil.")
+
   local instance = { kind = "Spacer", size = size }
   setmetatable(instance, mt)
   return instance

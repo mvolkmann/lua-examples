@@ -106,13 +106,14 @@ local mt = {
   }
 }
 
+-- t[property] is set to the text that is entered.
 -- Supported options are:
 -- font: font used for button label
 -- color: color of label and checkbox; defaults to white
 -- onChange: function called when button is clicked
-local function Input(table, property, options)
-  local t = type(options)
-  assert(t == "table" or t == "nil", "Input options must be a table.")
+local function Input(t, property, options)
+  local to = type(options)
+  assert(to == "table" or to == "nil", "Input options must be a table.")
 
   local width = options.width
   assert(type(width) == "number", "Input requires a number width option.")
@@ -124,10 +125,12 @@ local function Input(table, property, options)
   local font = instance.font or g.getFont()
   instance.font = font
 
-  instance.table = table
+  instance.table = t
   instance.property = property
 
   setmetatable(instance, mt)
+
+  table.insert(Glove.clickables, instance)
 
   return instance
 end

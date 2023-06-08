@@ -65,6 +65,8 @@ local mt = {
     isOver = function(self, mouseX, mouseY)
       local x = self.actualX
       local y = self.actualY
+      if not x or not y then return false end
+
       local font = self.font
       local tabHeight = getTabHeight(font)
 
@@ -94,8 +96,7 @@ local mt = {
 --           (passed the tab index and tab object)
 local function Tabs(tabs, options)
   options = options or {}
-  local t = type(options)
-  assert(t == "table", "Tabs options must be a table.")
+  assert(type(options) == "table", "Tabs options must be a table.")
 
   for _, tab in ipairs(tabs) do
     tab.widget.x = 0
@@ -112,6 +113,8 @@ local function Tabs(tabs, options)
   instance.y = 0
 
   setmetatable(instance, mt)
+
+  table.insert(Glove.clickables, instance)
 
   return instance
 end

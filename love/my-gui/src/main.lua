@@ -1,13 +1,13 @@
 local love = require "love"
-local fonts = require "glove/fonts"
-local gl = require "glove/index"
+require "glove/index"
+local fonts = Glove.fonts
 local pprint = require "glove/pprint"
 
 local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local clickables, hstack, tabs, vstack
+local hstack, tabs, vstack
 
 local state = { firstName = "Mark", lastName = "Volkmann" }
 
@@ -15,49 +15,49 @@ pprint.setup { show_all = true, wrap_array = true }
 
 function createUI()
   local debug = true
-  local logo1 = gl.Image("images/love2d-heart.png", { height = 200 })
-  local logo2 = gl.Image("images/love2d-whale.png", { height = 100 })
-  local text1 = gl.Text("First Text Widget", { debug = debug, font = fonts.default18 })
-  local text2 = gl.Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
-  local text3 = gl.Text("Third Text Widget", { debug = debug, font = fonts.default18 })
+  local logo1 = Glove.Image("images/love2d-heart.png", { height = 200 })
+  local logo2 = Glove.Image("images/love2d-whale.png", { height = 100 })
+  local text1 = Glove.Text("First Text Widget", { debug = debug, font = fonts.default18 })
+  local text2 = Glove.Text("Second Text Widget (long)", { debug = debug, font = fonts.default30 })
+  local text3 = Glove.Text("Third Text Widget", { debug = debug, font = fonts.default18 })
 
   g.setFont(fonts.default18)
 
-  local button = gl.Button("Seven", {
-    buttonColor = gl.colors.red,
+  local button = Glove.Button("Seven", {
+    buttonColor = Glove.colors.red,
     font = fonts.default18,
-    labelColor = gl.colors.yellow,
+    labelColor = Glove.colors.yellow,
     onClick = function()
       print("got click")
     end
   })
 
-  local checkbox = gl.Checkbox("Hungry?", state, "hungry", {
+  local checkbox = Glove.Checkbox("Hungry?", state, "hungry", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end
   })
 
-  local firstNameInput = gl.Input(state, "firstName", {
+  local firstNameInput = Glove.Input(state, "firstName", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end,
     width = 100
   })
-  local lastNameInput = gl.Input(state, "lastName", {
+  local lastNameInput = Glove.Input(state, "lastName", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end,
     width = 100
   })
 
-  local greetingText = gl.Text("", {
+  local greetingText = Glove.Text("", {
     compute = function()
       return "Hello, " .. state.firstName .. " " .. state.lastName .. "!"
     end
   })
 
-  local radioButtons = gl.RadioButtons(
+  local radioButtons = Glove.RadioButtons(
     {
       { label = "Red",   value = "r" },
       { label = "Green", value = "g" },
@@ -74,7 +74,7 @@ function createUI()
     }
   )
 
-  local select = gl.Select(
+  local select = Glove.Select(
     {
       { label = "Red",   value = "r" },
       { label = "Green", value = "g" },
@@ -91,7 +91,7 @@ function createUI()
     }
   )
 
-  local toggle = gl.Toggle(state, "hungry", {
+  local toggle = Glove.Toggle(state, "hungry", {
     onChange = function(t, p, v)
       print("got change to " .. p, v, t[p])
     end
@@ -99,75 +99,75 @@ function createUI()
 
   g.setFont(fonts.default30)
 
-  vstack = gl.VStack(
+  vstack = Glove.VStack(
     { spacing = 20 },
-    gl.HStack(
+    Glove.HStack(
       { align = "center", spacing = 20 },
-      gl.Spacer(),
-      gl.Text("One"),
-      gl.Text("Two", { debug = debug, font = fonts.default18 }),
-      gl.Text("Three")
+      Glove.Spacer(),
+      Glove.Text("One"),
+      Glove.Text("Two", { debug = debug, font = fonts.default18 }),
+      Glove.Text("Three")
     ),
-    gl.HStack(
+    Glove.HStack(
       { spacing = 20 },
-      gl.Spacer(),
-      gl.Text("Four"),
-      gl.Text("Five"),
-      gl.Spacer()
+      Glove.Spacer(),
+      Glove.Text("Four"),
+      Glove.Text("Five"),
+      Glove.Spacer()
     ),
-    gl.HStack(
+    Glove.HStack(
       { align = "center", spacing = 20 },
-      gl.Text("Six"),
+      Glove.Text("Six"),
       button,
-      gl.Text("Eight"),
-      gl.Text("Nine")
+      Glove.Text("Eight"),
+      Glove.Text("Nine")
     ),
-    gl.HStack(
+    Glove.HStack(
       { spacing = 20 },
-      gl.ZStack(
+      Glove.ZStack(
         { align = "center" },
         logo1,
-        gl.Text("LÖVE", { color = gl.colors.black, font = fonts.default30 })
+        Glove.Text("LÖVE", { color = Glove.colors.black, font = fonts.default30 })
       ),
-      gl.VStack(
+      Glove.VStack(
         { id = 1 },
         firstNameInput,
         lastNameInput,
         greetingText
       )
     ),
-    gl.HStack(
+    Glove.HStack(
       { spacing = 20 },
       checkbox,
       toggle
     ),
-    gl.HStack(
+    Glove.HStack(
       {},
       radioButtons,
       select
     ),
-    gl.Spacer(),
-    gl.FPS({ font = fonts.default12 })
+    Glove.Spacer(),
+    Glove.FPS({ font = fonts.default12 })
   )
 
   local tabFont = fonts.default12
-  tabs = gl.Tabs(
+  tabs = Glove.Tabs(
     {
       {
         label = "Baseball",
-        widget = gl.Text("Baseball detail goes here!", { font = tabFont })
+        widget = Glove.Text("Baseball detail goes here!", { font = tabFont })
       },
       {
         label = "Basketball",
-        widget = gl.Text("Basketball detail goes here!", { font = tabFont })
+        widget = Glove.Text("Basketball detail goes here!", { font = tabFont })
       },
       {
         label = "Football",
-        widget = gl.Text("Football detail goes here!", { font = tabFont })
+        widget = Glove.Text("Football detail goes here!", { font = tabFont })
       },
       {
         label = "Hockey",
-        widget = gl.Text("Hockey detail goes here!", { font = tabFont })
+        widget = Glove.Text("Hockey detail goes here!", { font = tabFont })
       }
     },
     {
@@ -177,11 +177,6 @@ function createUI()
       end,
     }
   )
-
-  clickables = {
-    button, checkbox, firstNameInput, lastNameInput,
-    radioButtons, select, tabs, toggle
-  }
 end
 
 function love.load()
@@ -193,13 +188,13 @@ function love.update(dt)
 end
 
 function love.draw()
-  --[[ g.setColor(gl.colors.red)
+  --[[ g.setColor(Glove.colors.red)
   g.setFont(fonts.default30)
   g.print("Hello, World!", 0, 0) ]]
-  g.setColor(gl.colors.white)
+  g.setColor(Glove.colors.white)
 
-  -- vstack:draw()
-  tabs:draw()
+  vstack:draw()
+  -- tabs:draw()
 end
 
 -- TODO: Can this be done in Input.lua?
@@ -210,7 +205,7 @@ end
 function love.mousepressed(x, y, button)
   if button ~= 1 then return end
 
-  for _, b in ipairs(clickables) do
+  for _, b in ipairs(Glove.clickables) do
     b:handleClick(x, y)
   end
 end

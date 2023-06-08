@@ -74,8 +74,7 @@ local mt = {
 -- onClick: function called when button is clicked
 local function Button(label, options)
   options = options or {}
-  local t = type(options)
-  assert(t == "table", "Button options must be a table.")
+  assert(type(options) == "table", "Button options must be a table.")
 
   local font = options.font or g.getFont()
 
@@ -87,6 +86,8 @@ local function Button(label, options)
   instance.buttonColor = instance.buttonColor or colors.white
 
   setmetatable(instance, mt)
+
+  table.insert(Glove.clickables, instance)
 
   return instance
 end

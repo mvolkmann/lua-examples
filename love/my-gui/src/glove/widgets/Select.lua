@@ -113,6 +113,7 @@ local mt = {
   }
 }
 
+-- t[property] is set to the value of the selected choice.
 -- choices is an array-like table containing
 -- tables with label and value properties.
 --
@@ -120,13 +121,11 @@ local mt = {
 -- color: defaults to white
 -- font: font used for choice labels
 -- onChange: function called when a choice is selected
-local function Select(choices, table, property, options)
-  local t = type(choices)
-  assert(t == "table", "Select choices must be a table.")
+local function Select(choices, t, property, options)
+  assert(type(choices) == "table", "Select choices must be a table.")
 
   options = options or {}
-  local t = type(options)
-  assert(t == "table", "Select options must be a table.")
+  assert(type(options) == "table", "Select options must be a table.")
 
   local font = options.font or g.getFont()
 
@@ -136,7 +135,7 @@ local function Select(choices, table, property, options)
   instance.color = instance.color or colors.white
   instance.font = font
 
-  instance.table = table
+  instance.table = t
   instance.property = property
   instance.open = false
 
@@ -150,6 +149,8 @@ local function Select(choices, table, property, options)
   end
 
   setmetatable(instance, mt)
+
+  table.insert(Glove.clickables, instance)
 
   return instance
 end

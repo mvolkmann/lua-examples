@@ -66,8 +66,8 @@ local mt = {
 -- table: table containing the property above
 -- width: used when property and table are specified
 local function Text(text, options)
-  local t = type(options)
-  assert(t == "table" or t == "nil", "Text options must be a table.")
+  local to = type(options)
+  assert(to == "table" or to == "nil", "Text options must be a table.")
 
   if not text then
     error("Text requires text")

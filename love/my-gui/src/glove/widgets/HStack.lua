@@ -114,8 +114,8 @@ local mt = {
 -- align: "top", "center", or "bottom"
 -- spacing: positive integer to add space between non-spacer children
 local function HStack(options, ...)
-  local t = type(options)
-  assert(t == "table" or t == "nil", "HStack options must be a table.")
+  local to = type(options)
+  assert(to == "table" or to == "nil", "HStack options must be a table.")
 
   local instance = options
   instance.kind = "HStack"

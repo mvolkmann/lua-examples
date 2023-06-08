@@ -91,8 +91,8 @@ local mt = {
 -- align: "center" or one of the compass directions "northwest", "north",
 --        "northeast", "east", "southeast", "south", "southwest", or "west"
 local function ZStack(options, ...)
-  local t = type(options)
-  assert(t == "table" or t == "nil", "ZStack options must be a table.")
+  local to = type(options)
+  assert(to == "table" or to == "nil", "ZStack options must be a table.")
 
   local instance = options
   instance.kind = "ZStack"

@@ -28,8 +28,8 @@ local mt = {
 }
 
 local function Image(filePath, options)
-  local t = type(options)
-  assert(t == "table" or t == "nil", "Image options must be a table.")
+  local to = type(options)
+  assert(to == "table" or to == "nil", "Image options must be a table.")
 
   local image = g.newImage(filePath)
 

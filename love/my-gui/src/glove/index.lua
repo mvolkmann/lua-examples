@@ -24,6 +24,8 @@ local widgets = {
 }
 
 Glove = {
+  clickables = {},
+
   hoverColor = colors.green,
 
   margin = 20, -- inside window
