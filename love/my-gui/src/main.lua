@@ -7,7 +7,7 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local clickables, hstack, vstack
+local clickables, hstack, tabs, vstack
 
 local state = { firstName = "Mark", lastName = "Volkmann" }
 
@@ -150,24 +150,30 @@ function createUI()
     gl.FPS({ font = fonts.default12 })
   )
 
-  tabs = gl.Tabs({
+  local tabFont = fonts.default12
+  tabs = gl.Tabs(
     {
-      label = "Baseball",
-      widget = gl.Text("Baseball detail goes here!", { font = fonts.default18 })
+      {
+        label = "Baseball",
+        widget = gl.Text("Baseball detail goes here!", { font = tabFont })
+      },
+      {
+        label = "Basketball",
+        widget = gl.Text("Basketball detail goes here!", { font = tabFont })
+      },
+      {
+        label = "Football",
+        widget = gl.Text("Football detail goes here!", { font = tabFont })
+      },
+      {
+        label = "Hockey",
+        widget = gl.Text("Hockey detail goes here!", { font = tabFont })
+      }
     },
     {
-      label = "Basketball",
-      widget = gl.Text("Basketball detail goes here!", { font = fonts.default18 })
-    },
-    {
-      label = "Football",
-      widget = gl.Text("Football detail goes here!", { font = fonts.default18 })
-    },
-    {
-      label = "Hockey",
-      widget = gl.Text("Hockey detail goes here!", { font = fonts.default18 })
+      font = fonts.default18
     }
-  })
+  )
 
   clickables = {
     button, checkbox, firstNameInput, lastNameInput,
