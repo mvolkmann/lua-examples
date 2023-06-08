@@ -8,15 +8,15 @@ local tabPadding = 5
 local mt = {
   __index = {
     draw = function(self, parentX, parentY)
-      parentX = parentX or _glove_margin
-      parentY = parentY or _glove_margin
+      parentX = parentX or Glove.margin
+      parentY = parentY or Glove.margin
       local x = parentX + self.x
       local y = parentY + self.y
       self.actualX = x
       self.actualY = y
 
       -- local over = self:isOver(love.mouse.getPosition())
-      -- g.setColor(over and _glove_hoverColor or self.color)
+      -- g.setColor(over and Glove.hoverColor or self.color)
 
       local font = self.font
       g.setFont(font)
@@ -46,7 +46,7 @@ local mt = {
     end,
 
     getWidth = function()
-      return g.getWidth - _glove_margin * 2
+      return g.getWidth - Glove.margin * 2
     end,
 
     handleClick = function(self, clickX, clickY)

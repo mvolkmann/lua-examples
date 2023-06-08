@@ -19,7 +19,7 @@ local mt = {
       self.actualY = y
 
       local over = self:isOver(love.mouse.getPosition())
-      g.setColor(over and _glove_hoverColor or self.color)
+      g.setColor(over and Glove.hoverColor or self.color)
       g.rectangle("line", x, y, size, size)
 
       g.setColor(self.color)

@@ -18,7 +18,7 @@ local mt = {
 
       if self:isOver(love.mouse.getPosition()) then
         local op = 3 -- outline padding
-        g.setColor(_glove_hoverColor)
+        g.setColor(Glove.hoverColor)
         g.rectangle(
           "line",
           x - op, y - op,

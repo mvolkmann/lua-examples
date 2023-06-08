@@ -3,8 +3,6 @@ require "glove/pprint"
 require "glove/string-extensions"
 
 local focusedWidget = nil
-_glove_hoverColor = colors.green
-_glove_margin = 20
 
 local utilities = { "colors", "fonts", "fun" }
 

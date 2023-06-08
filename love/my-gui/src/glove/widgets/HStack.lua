@@ -4,7 +4,6 @@ local love = require "love"
 local g = love.graphics
 
 local function layout(self)
-  print("HStack layout entered")
   local align = self.align or "start"
   local children = self.children
   local spacerWidth = 0
@@ -45,7 +44,7 @@ local function layout(self)
     -- Account for requested gaps between children.
     childrenWidth = childrenWidth + spacing * gapCount
 
-    local availableWidth = g.getWidth() - _glove_margin * 2
+    local availableWidth = g.getWidth() - Glove.margin * 2
 
     -- Compute the size of each zero width Spacer.
     spacerWidth = (availableWidth - childrenWidth) / spacerCount
@@ -82,8 +81,8 @@ local mt = {
   __index = {
     laidOut = false,
     draw = function(self, parentX, parentY)
-      parentX = parentX or _glove_margin
-      parentY = parentY or _glove_margin
+      parentX = parentX or Glove.margin
+      parentY = parentY or Glove.margin
       local x = parentX + self.x
       local y = parentY + self.y
       for i, child in ipairs(self.children) do
@@ -100,7 +99,7 @@ local mt = {
     getWidth = function(self)
       -- If there is a Spacer child then use screen width.
       if self.haveSpacer then
-        return g.getWidth() - _glove_margin * 2
+        return g.getWidth() - Glove.margin * 2
       end
 
       -- Compute height based on children.

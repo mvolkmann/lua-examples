@@ -13,7 +13,7 @@ local state = { firstName = "Mark", lastName = "Volkmann" }
 
 pprint.setup { show_all = true, wrap_array = true }
 
-function love.load()
+function createUI()
   local debug = true
   local logo1 = gl.Image("images/love2d-heart.png", { height = 200 })
   local logo2 = gl.Image("images/love2d-whale.png", { height = 100 })
@@ -172,7 +172,12 @@ function love.load()
   })
 end
 
+function love.load()
+  createUI()
+end
+
 function love.update(dt)
+  -- Currently nothing is needed here.
 end
 
 function love.draw()
@@ -200,4 +205,5 @@ end
 
 function love.resize()
   vstack.computed = false
+  createUI()
 end

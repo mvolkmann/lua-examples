@@ -1,9 +1,7 @@
 local fun = require "glove/fun"
 local love = require "love"
-local g = love.graphics
 
 local function layout(self)
-  print("ZStack layout entered")
   local align = self.align or "NW"
   local children = self.children
   local x = self.x or 0
@@ -70,8 +68,8 @@ local mt = {
   __index = {
     laidOut = false,
     draw = function(self, parentX, parentY)
-      parentX = parentX or _glove_margin
-      parentY = parentY or _glove_margin
+      parentX = parentX or Glove.margin
+      parentY = parentY or Glove.margin
       local x = parentX + self.x
       local y = parentY + self.y
       for _, child in ipairs(self.children) do

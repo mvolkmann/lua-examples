@@ -30,7 +30,7 @@ local mt = {
           local labelWidth = font:getWidth(choice.label)
           local choiceWidth = size + spacing + labelWidth
           local over = self:isOver(x, y, choiceWidth, love.mouse.getPosition())
-          g.setColor(over and _glove_hoverColor or self.color)
+          g.setColor(over and Glove.hoverColor or self.color)
           g.circle("line", circleCenterX, circleCenterY, circleRadius)
 
           g.setColor(self.color)
@@ -47,7 +47,7 @@ local mt = {
           local labelWidth = font:getWidth(choice.label)
           local choiceWidth = size + spacing + labelWidth
           local over = self:isOver(x, y, choiceWidth, love.mouse.getPosition())
-          g.setColor(over and _glove_hoverColor or self.color)
+          g.setColor(over and Glove.hoverColor or self.color)
           g.circle("line", circleCenterX, circleCenterY, circleRadius)
 
           g.setColor(self.color)
