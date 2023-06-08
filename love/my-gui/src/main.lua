@@ -171,7 +171,10 @@ function createUI()
       }
     },
     {
-      font = fonts.default18
+      font = fonts.default18,
+      onChange = function(index, tab)
+        print("selected tab " .. tab.label .. " at index " .. index)
+      end,
     }
   )
 

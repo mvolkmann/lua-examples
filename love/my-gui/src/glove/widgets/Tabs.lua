@@ -56,8 +56,8 @@ local mt = {
     handleClick = function(self, clickX, clickY)
       local clicked = self:isOver(clickX, clickY)
       if clicked and self.onChange then
-        local tab = tabs[self.selectedTabIndex]
-        self.onChange(tab)
+        local index = self.selectedTabIndex
+        self.onChange(index, self.tabs[index])
       end
       return clicked
     end,
@@ -91,6 +91,7 @@ local mt = {
 -- font: font used for button label
 -- color: color of label and checkbox; defaults to white
 -- onChange: function called when button is clicked
+--           (passed the tab index and tab object)
 local function Tabs(tabs, options)
   options = options or {}
   local t = type(options)
