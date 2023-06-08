@@ -64,15 +64,17 @@ local mt = {
       -- Draw vertical lines to close the bottom of the rounded rectangles
       -- that was erased by the non-rounded rectangles drawn above.
       x = self.actualX
-      for _, tab in ipairs(self.tabs) do
+      for index, tab in ipairs(self.tabs) do
+        local selected = index == self.selectedTabIndex
         local label = tab.label
         local tabWidth = font:getWidth(label) + tabPadding * 2
 
         g.setColor(self.color)
         local y1 = y + tabHeight - 1
         local y2 = y1 - tabPadding + 2
+        if not selected then g.line(x, y1, x, y2) end
+
         local x2 = x + tabWidth
-        g.line(x, y1, x, y2)
         g.line(x2, y1, x2, y2)
 
         x = x + tabWidth
