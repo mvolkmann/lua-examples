@@ -42,16 +42,44 @@ local mt = {
 
         local label = tab.label
         local tabWidth = font:getWidth(label) + tabPadding * 2
+
+        -- Draw a rounded rectangle.
         g.setColor(self.color)
-        g.rectangle(mode, x, y, tabWidth, tabHeight)
-        if selected then g.setColor(colors.black) end
+        g.rectangle(mode, x, y, tabWidth, tabHeight, tabPadding, tabPadding)
+
+        -- Draw a non-rounded rectangle.
+        g.setColor(selected and self.color or colors.black)
+        g.rectangle("fill", x, y + tabHeight - tabPadding + 1, tabWidth, tabPadding)
+
+        -- Draw a line across the bottom.
+        g.setColor(self.color)
+        g.line(x, y + tabHeight, x + tabWidth, y + tabHeight)
+
+        -- Draw the tab text.
+        g.setColor(selected and colors.black or self.color)
         g.print(label, x + tabPadding, y + tabPadding)
         x = x + tabWidth
       end
 
+      -- Draw vertical lines to close the bottom of the rounded rectangles
+      -- that was erased by the non-rounded rectangles drawn above.
+      x = self.actualX
+      for _, tab in ipairs(self.tabs) do
+        local label = tab.label
+        local tabWidth = font:getWidth(label) + tabPadding * 2
+
+        g.setColor(self.color)
+        local y1 = y + tabHeight - 1
+        local y2 = y1 - tabPadding + 2
+        local x2 = x + tabWidth
+        g.line(x, y1, x, y2)
+        g.line(x2, y1, x2, y2)
+
+        x = x + tabWidth
+      end
+
       local selectedTab = self.tabs[self.selectedTabIndex]
-      local widget = selectedTab.widget
-      widget:draw(parentX, parentY + tabHeight + tabPadding)
+      selectedTab.widget:draw(parentX, parentY + tabHeight + tabPadding)
     end,
 
     getHeight = function(self)
