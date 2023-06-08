@@ -42,12 +42,12 @@ local mt = {
       if clicked then
         Glove.setFocus(self)
         local t = self.table
-        print("Toggle handleClick: t =", t)
         local p = self.property
-        print("Toggle handleClick: p =", p)
         local checked = t[p]
         t[p] = not checked
-        self.onChange(t, p, not checked)
+        if self.onChange then
+          self.onChange(t, p, not checked)
+        end
       end
       return clicked
     end,

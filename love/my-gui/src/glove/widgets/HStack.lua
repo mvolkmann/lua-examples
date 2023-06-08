@@ -4,7 +4,7 @@ local love = require "love"
 local g = love.graphics
 
 local function layout(self)
-  local align = self.align or "start"
+  local align = self.align or "top"
   local children = self.children
   local spacerWidth = 0
   local spacing = self.spacing or 0
@@ -111,7 +111,7 @@ local mt = {
 }
 
 -- The supported options are:
--- align: "top", "center", or "bottom"
+-- align: "top" (default), "center", or "bottom"
 -- spacing: positive integer to add space between non-spacer children
 local function HStack(options, ...)
   local to = type(options)

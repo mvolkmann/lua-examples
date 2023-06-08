@@ -7,7 +7,7 @@ local g = love.graphics
 
 local windowWidth, windowHeight = g.getDimensions()
 
-local hstack, tabs, vstack
+local tabs, vstack
 
 local state = { firstName = "Mark", lastName = "Volkmann" }
 
@@ -155,11 +155,27 @@ function createUI()
     {
       {
         label = "Baseball",
-        widget = Glove.Text("Baseball detail goes here!", { font = tabFont })
+        widget = Glove.VStack(
+          { spacing = 10 },
+          Glove.Text("There's no crying in baseball!", { font = tabFont }),
+          Glove.HStack(
+            { align = "center", spacing = 10 },
+            Glove.Text("Like baseball?", { font = tabFont }),
+            Glove.Toggle(state, "likeBaseball")
+          )
+        )
       },
       {
         label = "Basketball",
-        widget = Glove.Text("Basketball detail goes here!", { font = tabFont })
+        widget = Glove.VStack(
+          { spacing = 10 },
+          Glove.Text("Nuggets Rule!", { font = tabFont }),
+          Glove.HStack(
+            { align = "center", spacing = 10 },
+            Glove.Text("Like basketball?", { font = tabFont }),
+            Glove.Toggle(state, "likeBasketball")
+          )
+        )
       },
       {
         label = "Football",
@@ -193,8 +209,8 @@ function love.draw()
   g.print("Hello, World!", 0, 0) ]]
   g.setColor(Glove.colors.white)
 
-  vstack:draw()
-  -- tabs:draw()
+  -- vstack:draw()
+  tabs:draw()
 end
 
 -- TODO: Can this be done in Input.lua?
